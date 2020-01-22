@@ -1,0 +1,679 @@
+--------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\firststage2.log
+  log type:  text
+ opened on:   9 Dec 2019, 16:41:22
+
+. /*****************************************
+> 
+> Run first stages "manually" for table 6 estimates.
+> Cluster on year only.
+> 
+> *******************************************/
+> 
+> 
+> set matsize 100 ;
+
+. set mem 1g ;
+set memory ignored.
+    Memory no longer needs to be set in modern Statas; memory adjustments are performed on
+    the fly automatically.
+
+. use marchcps_mig.dta ;
+
+. *set mem 500m ;
+. *use ~waggoner/bulk/marchcps_mig_test.dta ;
+. drop if age < 18 | age > 65 ;
+(0 observations deleted)
+
+. drop if head~= 1 ;
+(0 observations deleted)
+
+. * Create age grouping along major mobility lines ;
+. gen agegrp = . ;
+(1,616,025 missing values generated)
+
+. replace agegrp = 1 if age <= 25 & age ~=. ;
+(141,914 real changes made)
+
+. replace agegrp = 2 if age >= 26 & age <= 30 ;
+(186,648 real changes made)
+
+. replace agegrp = 3 if age >= 31 & age <= 35 ;
+(210,201 real changes made)
+
+. replace agegrp = 4 if age >= 36 & age <= 45 ;
+(431,283 real changes made)
+
+. replace agegrp = 5 if age >= 46 & age <= 55 ;
+(363,959 real changes made)
+
+. replace agegrp = 6 if age >= 56 & age ~=. ;
+(282,020 real changes made)
+
+. char educ[omit] 2 ;
+
+. egen timet = group(year) ;
+
+. gen timet2 = timet*timet ;
+
+. gen kids = (nchild >=1 ) ;
+
+. summ kids nchild ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        kids |  1,616,025    .4885296    .4998686          0          1
+      nchild |  1,616,025    .9466933    1.204934          0         14
+
+. * metro status - lots of not identifiable early on - set these to . ;
+. gen metrostat=. ;
+(1,616,025 missing values generated)
+
+. replace metrostat=0 if metro==1 ;
+(396,265 real changes made)
+
+. replace metrostat=1 if metro==2 | metro==3 | metro==4 ;
+(1,179,543 real changes made)
+
+.  * in later years there are lots of 4s so merge these in one group ;
+. replace ruc_rst = . if year < 1977 ;
+(0 real changes made)
+
+. replace rrucx = . if year < 1977 ;
+(289,546 real changes made, 289,546 to missing)
+
+. summ rgap gapus rruc ur12 rurate urateus ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        rgap |  1,616,025   -.0002381    .0163804  -.1046872    .123191
+       gapus |  1,616,025   -.0012208    .0187673  -.0464203   .0287829
+        rruc |  1,326,479   -.0011204    .0135105    -.04575   .0768333
+        ur12 |  1,616,025    .0582521     .015102     .03475   .1009167
+      rurate |  1,616,025   -.0008002    .0308686  -.1160798   .1917409
+-------------+---------------------------------------------------------
+     urateus |  1,616,025    .0988496    .0264881    .067097   .1887099
+
+. * Standardize aggregate and state level variables ;
+. foreach varn in rgap gapus rruc ur12 rurate urateus bartik15r oilshock151r oilshock1512r {
+>  ;
+  2.    egen `varn'_std = std(`varn') ;
+  3. } ;
+(289546 missing values generated)
+(313305 missing values generated)
+(313305 missing values generated)
+(313305 missing values generated)
+
+. summ *_std ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    rgap_std |  1,616,025   -7.18e-10           1  -6.376475   7.535176
+   gapus_std |  1,616,025   -2.59e-09           1  -2.408417   1.598714
+    rruc_std |  1,326,479   -3.78e-11           1  -3.303334   5.769878
+    ur12_std |  1,616,025   -2.66e-09           1  -1.556224   2.825089
+  rurate_std |  1,616,025    1.10e-09           1  -3.734528   6.237441
+-------------+---------------------------------------------------------
+ urateus_std |  1,616,025   -2.49e-09           1  -1.198748   3.392474
+bartik15r_~d |  1,302,720   -1.58e-10           1  -8.628649   5.082719
+oilsh~1r_std |  1,302,720    9.48e-10           1  -17.27189   7.859238
+oilsh~2r_std |  1,302,720    6.70e-10           1  -2.721642   22.23755
+
+. program define firststage1 ;
+  1. ivreg2 $lbc bartik15r_std oilshock151r_std oilshock1512r_std $bc black hisp female spou
+> se kids metrostat timet timet2 _I*, cluster(year) robust ;
+  2. test (bartik15r_std=0) (oilshock151r_std=0) (oilshock1512r_std=0) ;
+  3. outreg using firststage2.out, se bdec(4) replace ;
+  4. end ;
+
+. program define firststage ;
+  1. ivreg2 $lbc bartik15r_std oilshock151r_std oilshock1512r_std $bc black hisp female spou
+> se kids metrostat timet timet2 _I*, cluster(year) robust ;
+  2. test (bartik15r_std=0) (oilshock151r_std=0) (oilshock1512r_std=0) ;
+  3. outreg using firststage2.out, se bdec(4) merge ;
+  4. end ;
+
+. xi i.agegrp i.educ i.empstat ;
+i.agegrp          _Iagegrp_1-6        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.empstat         _Iempstat_1-3       (naturally coded; _Iempstat_1 omitted)
+
+. gen styr = (year*100) + statefip ;
+
+. preserve ;
+
+. drop if age > 35 ;
+(1,077,262 observations deleted)
+
+. tab age;
+
+                Age |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+                 18 |      3,512        0.65        0.65
+                 19 |      6,728        1.25        1.90
+                 20 |     11,049        2.05        3.95
+                 21 |     15,005        2.79        6.74
+                 22 |     20,197        3.75       10.49
+                 23 |     25,017        4.64       15.13
+                 24 |     28,721        5.33       20.46
+                 25 |     31,685        5.88       26.34
+                 26 |     34,113        6.33       32.67
+                 27 |     36,054        6.69       39.36
+                 28 |     37,546        6.97       46.33
+                 29 |     38,791        7.20       53.53
+                 30 |     40,144        7.45       60.98
+                 31 |     40,694        7.55       68.54
+                 32 |     41,270        7.66       76.20
+                 33 |     42,041        7.80       84.00
+                 34 |     42,710        7.93       91.93
+                 35 |     43,486        8.07      100.00
+--------------------+-----------------------------------
+              Total |    538,763      100.00
+
+. global bc ur12_std ;
+
+. global lbc rruc_std  ;
+
+. firststage1 ;
+Warning - collinearities detected
+Vars dropped:       _Iagegrp_4 _Iagegrp_5 _Iagegrp_6
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 19,    25) =   116.65
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  425573.1639                Centered R2   =   0.0577
+Total (uncentered) SS   =  425874.8826                Uncentered R2 =   0.0584
+Residual SS             =  401016.7549                Root MSE      =    .9872
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rruc_std |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+    bartik15r_std |  -.1368672   .0399625    -3.42   0.001    -.2151921   -.0585422
+ oilshock151r_std |  -.1015354   .0736491    -1.38   0.168     -.245885    .0428141
+oilshock1512r_std |   .0231289   .0606043     0.38   0.703    -.0956533    .1419112
+         ur12_std |  -.0239388   .0163736    -1.46   0.144    -.0560304    .0081529
+            black |     .13737   .0125272    10.97   0.000     .1128172    .1619228
+             hisp |   .1849741   .0461553     4.01   0.000     .0945113    .2754369
+           female |   .0047661   .0060663     0.79   0.432    -.0071236    .0166558
+           spouse |   .0118352    .006425     1.84   0.065    -.0007575     .024428
+             kids |   .0072368   .0073129     0.99   0.322    -.0070962    .0215697
+        metrostat |   .2011214   .0429533     4.68   0.000     .1169346    .2853083
+            timet |   .0116358   .0079853     1.46   0.145    -.0040151    .0272868
+           timet2 |  -.0004202   .0001469    -2.86   0.004    -.0007082   -.0001322
+       _Iagegrp_2 |   .0336608   .0073557     4.58   0.000      .019244    .0480776
+       _Iagegrp_3 |   .0385592    .009435     4.09   0.000      .020067    .0570514
+       _Iagegrp_4 |          0  (omitted)
+       _Iagegrp_5 |          0  (omitted)
+       _Iagegrp_6 |          0  (omitted)
+         _Ieduc_1 |   .0607081   .0082177     7.39   0.000     .0446017    .0768145
+         _Ieduc_3 |  -.0260447   .0089721    -2.90   0.004    -.0436297   -.0084598
+         _Ieduc_4 |  -.0293814   .0120261    -2.44   0.015    -.0529522   -.0058106
+      _Iempstat_2 |   .1982655     .03013     6.58   0.000     .1392117    .2573193
+      _Iempstat_3 |   .0577343   .0070726     8.16   0.000     .0438722    .0715963
+            _cons |   -.253889   .1011225    -2.51   0.012    -.4520854   -.0556925
+-----------------------------------------------------------------------------------
+Included instruments: bartik15r_std oilshock151r_std oilshock1512r_std ur12_std
+                      black hisp female spouse kids metrostat timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3
+Dropped collinear:    _Iagegrp_4 _Iagegrp_5 _Iagegrp_6
+------------------------------------------------------------------------------
+
+ ( 1)  bartik15r_std = 0
+ ( 2)  oilshock151r_std = 0
+ ( 3)  oilshock1512r_std = 0
+
+           chi2(  3) =   29.11
+         Prob > chi2 =    0.0000
+
+                             ---------------------------------
+                                                   rruc_std  
+                             ---------------------------------
+                              bartik15r_std        -0.1369   
+                                                  (0.0400)** 
+                              oilshock151r_std     -0.1015   
+                                                   (0.0736)  
+                              oilshock1512r_std     0.0231   
+                                                   (0.0606)  
+                              ur12_std             -0.0239   
+                                                   (0.0164)  
+                              black                 0.1374   
+                                                  (0.0125)** 
+                              hisp                  0.1850   
+                                                  (0.0462)** 
+                              female                0.0048   
+                                                   (0.0061)  
+                              spouse                0.0118   
+                                                   (0.0064)  
+                              kids                  0.0072   
+                                                   (0.0073)  
+                              metrostat             0.2011   
+                                                  (0.0430)** 
+                              timet                 0.0116   
+                                                   (0.0080)  
+                              timet2               -0.0004   
+                                                  (0.0001)** 
+                              _Iagegrp_2            0.0337   
+                                                  (0.0074)** 
+                              _Iagegrp_3            0.0386   
+                                                  (0.0094)** 
+                              _Ieduc_1              0.0607   
+                                                  (0.0082)** 
+                              _Ieduc_3             -0.0260   
+                                                  (0.0090)** 
+                              _Ieduc_4             -0.0294   
+                                                  (0.0120)*  
+                              _Iempstat_2           0.1983   
+                                                  (0.0301)** 
+                              _Iempstat_3           0.0577   
+                                                  (0.0071)** 
+                              _cons                -0.2539   
+                                                  (0.1011)*  
+                              R2                     0.06    
+                              N                    411,484   
+                             ---------------------------------
+                                    * p<0.05; ** p<0.01
+
+
+. global bc gapus_std ;
+
+. global lbc rgap_std  ;
+
+. firststage ;
+Warning - collinearities detected
+Vars dropped:       _Iagegrp_4 _Iagegrp_5 _Iagegrp_6
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 19,    26) =    17.86
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  466214.8154                Centered R2   =   0.0642
+Total (uncentered) SS   =  466242.2772                Uncentered R2 =   0.0642
+Residual SS             =  436301.3447                Root MSE      =    1.012
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgap_std |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+    bartik15r_std |   .0560231    .032254     1.74   0.082    -.0071936    .1192398
+ oilshock151r_std |   .2537338   .1829451     1.39   0.165    -.1048321    .6122996
+oilshock1512r_std |   .0857382   .1529775     0.56   0.575    -.2140922    .3855686
+        gapus_std |  -.0416268     .02038    -2.04   0.041    -.0815709   -.0016827
+            black |   .0233118   .0149482     1.56   0.119    -.0059862    .0526097
+             hisp |   .0503234   .0459985     1.09   0.274     -.039832    .1404788
+           female |   .0047284   .0110106     0.43   0.668     -.016852    .0263088
+           spouse |  -.0077266   .0074503    -1.04   0.300    -.0223288    .0068756
+             kids |  -.0208256    .009131    -2.28   0.023     -.038722   -.0029293
+        metrostat |   .0462078   .0679454     0.68   0.496    -.0869627    .1793783
+            timet |  -.0178787    .018028    -0.99   0.321     -.053213    .0174557
+           timet2 |   .0003092   .0003703     0.83   0.404    -.0004166    .0010349
+       _Iagegrp_2 |  -.0035432   .0114611    -0.31   0.757    -.0260065    .0189201
+       _Iagegrp_3 |   .0029671   .0137343     0.22   0.829    -.0239517    .0298859
+       _Iagegrp_4 |          0  (omitted)
+       _Iagegrp_5 |          0  (omitted)
+       _Iagegrp_6 |          0  (omitted)
+         _Ieduc_1 |   .0183864   .0094144     1.95   0.051    -.0000656    .0368384
+         _Ieduc_3 |   .0080678   .0123104     0.66   0.512    -.0160601    .0321957
+         _Ieduc_4 |     .02725   .0131469     2.07   0.038     .0014825    .0530174
+      _Iempstat_2 |  -.1156994   .0224147    -5.16   0.000    -.1596314   -.0717675
+      _Iempstat_3 |  -.0337109   .0098534    -3.42   0.001    -.0530231   -.0143986
+            _cons |   .1778355   .2035417     0.87   0.382    -.2210989    .5767698
+-----------------------------------------------------------------------------------
+Included instruments: bartik15r_std oilshock151r_std oilshock1512r_std
+                      gapus_std black hisp female spouse kids metrostat timet
+                      timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3
+Dropped collinear:    _Iagegrp_4 _Iagegrp_5 _Iagegrp_6
+------------------------------------------------------------------------------
+
+ ( 1)  bartik15r_std = 0
+ ( 2)  oilshock151r_std = 0
+ ( 3)  oilshock1512r_std = 0
+
+           chi2(  3) =    5.90
+         Prob > chi2 =    0.1165
+
+                       ---------------------------------------------
+                                             rruc_std    rgap_std  
+                       ---------------------------------------------
+                        bartik15r_std        -0.1369      0.0560   
+                                            (0.0400)**   (0.0323)  
+                        oilshock151r_std     -0.1015      0.2537   
+                                             (0.0736)    (0.1829)  
+                        oilshock1512r_std     0.0231      0.0857   
+                                             (0.0606)    (0.1530)  
+                        ur12_std             -0.0239               
+                                             (0.0164)              
+                        black                 0.1374      0.0233   
+                                            (0.0125)**   (0.0149)  
+                        hisp                  0.1850      0.0503   
+                                            (0.0462)**   (0.0460)  
+                        female                0.0048      0.0047   
+                                             (0.0061)    (0.0110)  
+                        spouse                0.0118     -0.0077   
+                                             (0.0064)    (0.0075)  
+                        kids                  0.0072     -0.0208   
+                                             (0.0073)   (0.0091)*  
+                        metrostat             0.2011      0.0462   
+                                            (0.0430)**   (0.0679)  
+                        timet                 0.0116     -0.0179   
+                                             (0.0080)    (0.0180)  
+                        timet2               -0.0004      0.0003   
+                                            (0.0001)**   (0.0004)  
+                        _Iagegrp_2            0.0337     -0.0035   
+                                            (0.0074)**   (0.0115)  
+                        _Iagegrp_3            0.0386      0.0030   
+                                            (0.0094)**   (0.0137)  
+                        _Ieduc_1              0.0607      0.0184   
+                                            (0.0082)**   (0.0094)  
+                        _Ieduc_3             -0.0260      0.0081   
+                                            (0.0090)**   (0.0123)  
+                        _Ieduc_4             -0.0294      0.0272   
+                                            (0.0120)*   (0.0131)*  
+                        _Iempstat_2           0.1983     -0.1157   
+                                            (0.0301)**  (0.0224)** 
+                        _Iempstat_3           0.0577     -0.0337   
+                                            (0.0071)**  (0.0099)** 
+                        gapus_std                        -0.0416   
+                                                        (0.0204)*  
+                        _cons                -0.2539      0.1778   
+                                            (0.1011)*    (0.2035)  
+                        R2                     0.06        0.06    
+                        N                    411,484     425,682   
+                       ---------------------------------------------
+                                    * p<0.05; ** p<0.01
+
+
+. drop _I* ;
+
+. restore ;
+
+. ** Repeat for the less than 35 sample ;
+. drop if age < 36 ;
+(538,763 observations deleted)
+
+. tab age;
+
+                Age |      Freq.     Percent        Cum.
+--------------------+-----------------------------------
+                 36 |     43,177        4.01        4.01
+                 37 |     43,236        4.01        8.02
+                 38 |     43,401        4.03       12.05
+                 39 |     43,440        4.03       16.08
+                 40 |     44,636        4.14       20.23
+                 41 |     43,223        4.01       24.24
+                 42 |     43,082        4.00       28.24
+                 43 |     42,918        3.98       32.22
+                 44 |     42,133        3.91       36.13
+                 45 |     42,037        3.90       40.04
+                 46 |     40,700        3.78       43.81
+                 47 |     39,757        3.69       47.50
+                 48 |     38,454        3.57       51.07
+                 49 |     37,779        3.51       54.58
+                 50 |     37,715        3.50       58.08
+                 51 |     35,913        3.33       61.42
+                 52 |     34,883        3.24       64.65
+                 53 |     33,532        3.11       67.77
+                 54 |     32,648        3.03       70.80
+                 55 |     32,578        3.02       73.82
+                 56 |     31,488        2.92       76.74
+                 57 |     30,389        2.82       79.56
+                 58 |     29,947        2.78       82.34
+                 59 |     28,948        2.69       85.03
+                 60 |     28,870        2.68       87.71
+                 61 |     27,490        2.55       90.26
+                 62 |     26,756        2.48       92.75
+                 63 |     26,198        2.43       95.18
+                 64 |     25,311        2.35       97.53
+                 65 |     26,623        2.47      100.00
+--------------------+-----------------------------------
+              Total |  1,077,262      100.00
+
+. xi i.agegrp i.educ i.empstat ;
+i.agegrp          _Iagegrp_4-6        (naturally coded; _Iagegrp_4 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.empstat         _Iempstat_1-3       (naturally coded; _Iempstat_1 omitted)
+
+. global bc ur12_std ;
+
+. global lbc rruc_std  ;
+
+. firststage ;
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   802230
+                                                      F( 19,    25) =   183.95
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  748934.3756                Centered R2   =   0.0569
+Total (uncentered) SS   =   749479.789                Uncentered R2 =   0.0576
+Residual SS             =  706294.4686                Root MSE      =    .9383
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rruc_std |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+    bartik15r_std |  -.1366213    .040336    -3.39   0.001    -.2156785   -.0575642
+ oilshock151r_std |  -.0852934   .0716241    -1.19   0.234     -.225674    .0550871
+oilshock1512r_std |   .0538115   .0587599     0.92   0.360    -.0613558    .1689789
+         ur12_std |  -.0098955   .0208887    -0.47   0.636    -.0508366    .0310457
+            black |   .1356901   .0133928    10.13   0.000     .1094408    .1619395
+             hisp |   .1997302   .0438193     4.56   0.000      .113846    .2856144
+           female |  -.0126635   .0057165    -2.22   0.027    -.0238675   -.0014594
+           spouse |  -.0192626   .0042099    -4.58   0.000    -.0275138   -.0110114
+             kids |   .0116101   .0042045     2.76   0.006     .0033694    .0198508
+        metrostat |   .2216316   .0398081     5.57   0.000     .1436091    .2996541
+            timet |   .0051617   .0101104     0.51   0.610    -.0146543    .0249776
+           timet2 |   -.000274   .0001926    -1.42   0.155    -.0006514    .0001034
+       _Iagegrp_5 |   .0129327   .0030218     4.28   0.000     .0070101    .0188553
+       _Iagegrp_6 |   .0064691   .0047279     1.37   0.171    -.0027973    .0157355
+         _Ieduc_1 |   .0602733   .0074509     8.09   0.000     .0456698    .0748769
+         _Ieduc_3 |   .0088252   .0073216     1.21   0.228    -.0055248    .0231752
+         _Ieduc_4 |  -.0059034   .0125441    -0.47   0.638    -.0304894    .0186826
+      _Iempstat_2 |   .1945711   .0260794     7.46   0.000     .1434565    .2456857
+      _Iempstat_3 |   .0868184   .0081917    10.60   0.000      .070763    .1028738
+            _cons |  -.1662063   .1239659    -1.34   0.180     -.409175    .0767624
+-----------------------------------------------------------------------------------
+Included instruments: bartik15r_std oilshock151r_std oilshock1512r_std ur12_std
+                      black hisp female spouse kids metrostat timet timet2
+                      _Iagegrp_5 _Iagegrp_6 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3
+------------------------------------------------------------------------------
+
+ ( 1)  bartik15r_std = 0
+ ( 2)  oilshock151r_std = 0
+ ( 3)  oilshock1512r_std = 0
+
+           chi2(  3) =   49.51
+         Prob > chi2 =    0.0000
+
+                 ---------------------------------------------------------
+                                       rruc_std    rgap_std    rruc_std  
+                 ---------------------------------------------------------
+                  bartik15r_std        -0.1369      0.0560     -0.1366   
+                                      (0.0400)**   (0.0323)   (0.0403)** 
+                  oilshock151r_std     -0.1015      0.2537     -0.0853   
+                                       (0.0736)    (0.1829)    (0.0716)  
+                  oilshock1512r_std     0.0231      0.0857      0.0538   
+                                       (0.0606)    (0.1530)    (0.0588)  
+                  ur12_std             -0.0239                 -0.0099   
+                                       (0.0164)                (0.0209)  
+                  black                 0.1374      0.0233      0.1357   
+                                      (0.0125)**   (0.0149)   (0.0134)** 
+                  hisp                  0.1850      0.0503      0.1997   
+                                      (0.0462)**   (0.0460)   (0.0438)** 
+                  female                0.0048      0.0047     -0.0127   
+                                       (0.0061)    (0.0110)   (0.0057)*  
+                  spouse                0.0118     -0.0077     -0.0193   
+                                       (0.0064)    (0.0075)   (0.0042)** 
+                  kids                  0.0072     -0.0208      0.0116   
+                                       (0.0073)   (0.0091)*   (0.0042)** 
+                  metrostat             0.2011      0.0462      0.2216   
+                                      (0.0430)**   (0.0679)   (0.0398)** 
+                  timet                 0.0116     -0.0179      0.0052   
+                                       (0.0080)    (0.0180)    (0.0101)  
+                  timet2               -0.0004      0.0003     -0.0003   
+                                      (0.0001)**   (0.0004)    (0.0002)  
+                  _Iagegrp_2            0.0337     -0.0035               
+                                      (0.0074)**   (0.0115)              
+                  _Iagegrp_3            0.0386      0.0030               
+                                      (0.0094)**   (0.0137)              
+                  _Ieduc_1              0.0607      0.0184      0.0603   
+                                      (0.0082)**   (0.0094)   (0.0075)** 
+                  _Ieduc_3             -0.0260      0.0081      0.0088   
+                                      (0.0090)**   (0.0123)    (0.0073)  
+                  _Ieduc_4             -0.0294      0.0272     -0.0059   
+                                      (0.0120)*   (0.0131)*    (0.0125)  
+                  _Iempstat_2           0.1983     -0.1157      0.1946   
+                                      (0.0301)**  (0.0224)**  (0.0261)** 
+                  _Iempstat_3           0.0577     -0.0337      0.0868   
+                                      (0.0071)**  (0.0099)**  (0.0082)** 
+                  gapus_std                        -0.0416               
+                                                  (0.0204)*              
+                  _Iagegrp_5                                    0.0129   
+                                                              (0.0030)** 
+                  _Iagegrp_6                                    0.0065   
+                                                               (0.0047)  
+                  _cons                -0.2539      0.1778     -0.1662   
+                                      (0.1011)*    (0.2035)    (0.1240)  
+                  R2                     0.06        0.06        0.06    
+                  N                    411,484     425,682     802,230   
+                 ---------------------------------------------------------
+                                    * p<0.05; ** p<0.01
+
+
+. global bc gapus_std ;
+
+. global lbc rgap_std  ;
+
+. firststage ;
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   825294
+                                                      F( 19,    26) =    19.79
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  755590.2539                Centered R2   =   0.0442
+Total (uncentered) SS   =  755804.3978                Uncentered R2 =   0.0445
+Residual SS             =  722184.7487                Root MSE      =    .9354
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgap_std |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+    bartik15r_std |   .0596187   .0293269     2.03   0.042     .0021389    .1170984
+ oilshock151r_std |   .2030709   .1799297     1.13   0.259    -.1495848    .5557265
+oilshock1512r_std |   .0307038   .1511023     0.20   0.839    -.2654513    .3268589
+        gapus_std |  -.0301389    .014315    -2.11   0.035    -.0581958    -.002082
+            black |    .025323   .0175358     1.44   0.149    -.0090465    .0596925
+             hisp |   .0307452   .0434817     0.71   0.480    -.0544773    .1159677
+           female |   .0096738   .0076008     1.27   0.203    -.0052235    .0245711
+           spouse |  -.0048078    .004264    -1.13   0.260    -.0131651    .0035495
+             kids |  -.0078286   .0058202    -1.35   0.179    -.0192359    .0035788
+        metrostat |   .0513404   .0617608     0.83   0.406    -.0697086    .1723894
+            timet |   .0040077   .0138038     0.29   0.772    -.0230472    .0310626
+           timet2 |  -.0001375   .0002894    -0.47   0.635    -.0007047    .0004298
+       _Iagegrp_5 |  -.0039468   .0032688    -1.21   0.227    -.0103535    .0024598
+       _Iagegrp_6 |  -.0043764   .0045164    -0.97   0.333    -.0132284    .0044756
+         _Ieduc_1 |   .0139937     .00714     1.96   0.050    -4.61e-07    .0279879
+         _Ieduc_3 |  -.0060342   .0104266    -0.58   0.563    -.0264699    .0144016
+         _Ieduc_4 |   .0045406   .0099077     0.46   0.647    -.0148782    .0239594
+      _Iempstat_2 |  -.1091036   .0211807    -5.15   0.000    -.1506171   -.0675902
+      _Iempstat_3 |  -.0164524   .0059363    -2.77   0.006    -.0280873   -.0048175
+            _cons |  -.0611211   .1601704    -0.38   0.703    -.3750493    .2528071
+-----------------------------------------------------------------------------------
+Included instruments: bartik15r_std oilshock151r_std oilshock1512r_std
+                      gapus_std black hisp female spouse kids metrostat timet
+                      timet2 _Iagegrp_5 _Iagegrp_6 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3
+------------------------------------------------------------------------------
+
+ ( 1)  bartik15r_std = 0
+ ( 2)  oilshock151r_std = 0
+ ( 3)  oilshock1512r_std = 0
+
+           chi2(  3) =    7.36
+         Prob > chi2 =    0.0613
+
+           ---------------------------------------------------------------------
+                                 rruc_std    rgap_std    rruc_std    rgap_std  
+           ---------------------------------------------------------------------
+            bartik15r_std        -0.1369      0.0560     -0.1366      0.0596   
+                                (0.0400)**   (0.0323)   (0.0403)**  (0.0293)*  
+            oilshock151r_std     -0.1015      0.2537     -0.0853      0.2031   
+                                 (0.0736)    (0.1829)    (0.0716)    (0.1799)  
+            oilshock1512r_std     0.0231      0.0857      0.0538      0.0307   
+                                 (0.0606)    (0.1530)    (0.0588)    (0.1511)  
+            ur12_std             -0.0239                 -0.0099               
+                                 (0.0164)                (0.0209)              
+            black                 0.1374      0.0233      0.1357      0.0253   
+                                (0.0125)**   (0.0149)   (0.0134)**   (0.0175)  
+            hisp                  0.1850      0.0503      0.1997      0.0307   
+                                (0.0462)**   (0.0460)   (0.0438)**   (0.0435)  
+            female                0.0048      0.0047     -0.0127      0.0097   
+                                 (0.0061)    (0.0110)   (0.0057)*    (0.0076)  
+            spouse                0.0118     -0.0077     -0.0193     -0.0048   
+                                 (0.0064)    (0.0075)   (0.0042)**   (0.0043)  
+            kids                  0.0072     -0.0208      0.0116     -0.0078   
+                                 (0.0073)   (0.0091)*   (0.0042)**   (0.0058)  
+            metrostat             0.2011      0.0462      0.2216      0.0513   
+                                (0.0430)**   (0.0679)   (0.0398)**   (0.0618)  
+            timet                 0.0116     -0.0179      0.0052      0.0040   
+                                 (0.0080)    (0.0180)    (0.0101)    (0.0138)  
+            timet2               -0.0004      0.0003     -0.0003     -0.0001   
+                                (0.0001)**   (0.0004)    (0.0002)    (0.0003)  
+            _Iagegrp_2            0.0337     -0.0035                           
+                                (0.0074)**   (0.0115)                          
+            _Iagegrp_3            0.0386      0.0030                           
+                                (0.0094)**   (0.0137)                          
+            _Ieduc_1              0.0607      0.0184      0.0603      0.0140   
+                                (0.0082)**   (0.0094)   (0.0075)**   (0.0071)  
+            _Ieduc_3             -0.0260      0.0081      0.0088     -0.0060   
+                                (0.0090)**   (0.0123)    (0.0073)    (0.0104)  
+            _Ieduc_4             -0.0294      0.0272     -0.0059      0.0045   
+                                (0.0120)*   (0.0131)*    (0.0125)    (0.0099)  
+            _Iempstat_2           0.1983     -0.1157      0.1946     -0.1091   
+                                (0.0301)**  (0.0224)**  (0.0261)**  (0.0212)** 
+            _Iempstat_3           0.0577     -0.0337      0.0868     -0.0165   
+                                (0.0071)**  (0.0099)**  (0.0082)**  (0.0059)** 
+            gapus_std                        -0.0416                 -0.0301   
+                                            (0.0204)*               (0.0143)*  
+            _Iagegrp_5                                    0.0129     -0.0039   
+                                                        (0.0030)**   (0.0033)  
+            _Iagegrp_6                                    0.0065     -0.0044   
+                                                         (0.0047)    (0.0045)  
+            _cons                -0.2539      0.1778     -0.1662     -0.0611   
+                                (0.1011)*    (0.2035)    (0.1240)    (0.1602)  
+            R2                     0.06        0.06        0.06        0.04    
+            N                    411,484     425,682     802,230     825,294   
+           ---------------------------------------------------------------------
+                                    * p<0.05; ** p<0.01
+
+
+. log close ;
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\firststage2.log
+  log type:  text
+ closed on:   9 Dec 2019, 16:42:50
+--------------------------------------------------------------------------------------------

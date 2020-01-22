@@ -1,0 +1,1942 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\table3.log
+  log type:  text
+ opened on:   3 Dec 2019, 13:14:22
+
+. 
+. use table3, clear
+
+. 
+. xi: ivreg28 inexemss gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clust
+> er(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    19.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1517.798948                Centered R2   =   0.3700
+Total (uncentered) SS   =  1517.798948                Uncentered R2 =   0.3700
+Residual SS             =  956.1780105                Root MSE      =    .7794
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0132326   .0305596     0.43   0.668    -.0490154    .0754805
+            rinc1 |    16.4545   2.390448     6.88   0.000     11.58532    21.32369
+           rincx1 |   5.570686   4.847932     1.15   0.259    -4.304227     15.4456
+            trend |  -.0638763   .0118358    -5.40   0.000     -.087985   -.0397676
+    bartik151rstd |   .0758514   .0515672     1.47   0.151    -.0291876    .1808905
+  oilshock151rstd |   .0651103   .1025647     0.63   0.530     -.143807    .2740277
+ oilshock151rstd2 |   -.007397   .0089312    -0.83   0.414    -.0255893    .0107952
+   bartik151rxstd |  -.0125518   .0427182    -0.29   0.771     -.099566    .0744624
+ oilshock151rxstd |   .0467158   .0617337     0.76   0.455    -.0790316    .1724632
+oilshock151rxstd2 |   .0037354   .0022068     1.69   0.100    -.0007597    .0082304
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0400
+Test of excluded instruments:
+  F(  6,    32) =    13.43
+  Prob > F      =   0.0000
+
+First-stage regression of rgapxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    64.28
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1484.250918                Centered R2   =   0.4775
+Total (uncentered) SS   =  1484.250918                Uncentered R2 =   0.4775
+Residual SS             =  775.5420761                Root MSE      =    .7019
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgapxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |  -.0052066   .0651079    -0.08   0.937    -.1378271    .1274139
+            rinc1 |   .5064807   .6038362     0.84   0.408    -.7234934    1.736455
+           rincx1 |   53.02935    8.44072     6.28   0.000     35.83616    70.22253
+            trend |  -.0721325   .0105936    -6.81   0.000    -.0937109    -.050554
+    bartik151rstd |  -.0413491   .0308313    -1.34   0.189    -.1041504    .0214522
+  oilshock151rstd |  -.0615726    .038848    -1.58   0.123    -.1407034    .0175582
+ oilshock151rstd2 |  -.0116801   .0026502    -4.41   0.000    -.0170784   -.0062819
+   bartik151rxstd |   .0632468   .0593241     1.07   0.294    -.0575924     .184086
+ oilshock151rxstd |   .1431061   .0856557     1.67   0.105    -.0313689    .3175812
+oilshock151rxstd2 |  -.0028616   .0021755    -1.32   0.198     -.007293    .0015699
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0538
+Test of excluded instruments:
+  F(  6,    32) =     9.39
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    32)    P-value
+rgapstd     |     0.0454      |     0.0400      |      13.43        0.0000
+rgapxstd    |     0.0612      |     0.0538      |       9.39        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       64.58         0.0000
+Cragg-Donald N*CDEV statistic                      65.92         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             10.92
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,32)=  37.48     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=233.21    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         33
+Number of observations N           =       1584
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    22.45
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  24640.62877                Centered R2   =  -0.1747
+Total (uncentered) SS   =  24640.62877                Uncentered R2 =  -0.1747
+Residual SS             =   28944.5976                Root MSE      =    4.275
+
+------------------------------------------------------------------------------
+             |               Robust
+    inexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rgapstd |   5.918483   1.734827     3.41   0.001     2.518284    9.318681
+    rgapxstd |  -1.021775   1.237709    -0.83   0.409     -3.44764    1.404091
+    gapusstd |   .6548168   .1940018     3.38   0.001     .2745803    1.035053
+       rinc1 |  -38.44702   30.21241    -1.27   0.203    -97.66227    20.76822
+      rincx1 |   31.83492     65.525     0.49   0.627    -96.59173    160.2616
+       trend |  -.1498561   .1243607    -1.21   0.228    -.3935986    .0938863
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          64.584
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    10.917
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.396
+                                                   Chi-sq(4) P-val =    0.6633
+------------------------------------------------------------------------------
+Instrumented:         rgapstd rgapxstd
+Included instruments: gapusstd rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1igap
+
+. xi: ivreg28 inexemss ur12std (rrucstd rrucxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first cluste
+> r(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rrucstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =   189.20
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  649.0492179                Centered R2   =   0.3114
+Total (uncentered) SS   =  649.0492179                Uncentered R2 =   0.3114
+Residual SS             =  446.9420461                Root MSE      =    .5412
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rrucstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0419486   .0272474    -1.54   0.134    -.0975199    .0136228
+            rinc1 |  -8.801683   .8593008   -10.24   0.000    -10.55424   -7.049127
+           rincx1 |   .1463456   3.366817     0.04   0.966    -6.720322    7.013013
+            trend |  -.0379277   .0167485    -2.26   0.031    -.0720865   -.0037689
+    bartik151rstd |  -.1857031   .0369245    -5.03   0.000    -.2610111   -.1103952
+  oilshock151rstd |  -.0163591   .0225383    -0.73   0.473    -.0623262    .0296081
+ oilshock151rstd2 |   .0051731    .001986     2.60   0.014     .0011225    .0092236
+   bartik151rxstd |   .0194267   .0322817     0.60   0.552    -.0464122    .0852655
+ oilshock151rxstd |  -.0628303   .0485274    -1.29   0.205    -.1618027     .036142
+oilshock151rxstd2 |  -.0004139   .0019653    -0.21   0.835    -.0044221    .0035943
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0957
+Test of excluded instruments:
+  F(  6,    31) =    26.73
+  Prob > F      =   0.0000
+
+First-stage regression of rrucxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =    43.77
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1151.074353                Centered R2   =   0.3102
+Total (uncentered) SS   =  1151.074353                Uncentered R2 =   0.3102
+Residual SS             =  794.0425719                Root MSE      =    .7213
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rrucxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.1276652   .0770927    -1.66   0.108    -.2848969    .0295664
+            rinc1 |  -.7310344   .5910481    -1.24   0.225    -1.936485    .4744162
+           rincx1 |  -33.93527    7.90507    -4.29   0.000    -50.05776   -17.81277
+            trend |   .0386646   .0165299     2.34   0.026     .0049516    .0723776
+    bartik151rstd |   .0189433   .0198022     0.96   0.346    -.0214435    .0593301
+  oilshock151rstd |   .0443278   .0332238     1.33   0.192    -.0234326    .1120883
+ oilshock151rstd2 |   .0112302   .0024788     4.53   0.000     .0061746    .0162859
+   bartik151rxstd |  -.0471315   .0675459    -0.70   0.491    -.1848923    .0906293
+ oilshock151rxstd |  -.1519325   .0928629    -1.64   0.112    -.3413276    .0374626
+oilshock151rxstd2 |  -.0051869   .0045618    -1.14   0.264    -.0144908     .004117
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0535
+Test of excluded instruments:
+  F(  6,    31) =    11.65
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    31)    P-value
+rrucstd     |     0.1096      |     0.0957      |      26.73        0.0000
+rrucxstd    |     0.0613      |     0.0535      |      11.65        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       83.51         0.0000
+Cragg-Donald N*CDEV statistic                      85.83         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             14.21
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,31)=  28.98     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=180.55    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         32
+Number of observations N           =       1536
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F(  6,    31) =    65.49
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  23687.22647                Centered R2   =   0.2874
+Total (uncentered) SS   =  23687.22647                Uncentered R2 =   0.2874
+Residual SS             =  16878.52014                Root MSE      =    3.315
+
+------------------------------------------------------------------------------
+             |               Robust
+    inexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rrucstd |  -4.530209   1.234103    -3.67   0.000    -6.949007   -2.111411
+    rrucxstd |   .1209873   .8215565     0.15   0.883    -1.489234    1.731208
+     ur12std |  -1.245332   .2712999    -4.59   0.000     -1.77707   -.7135941
+       rinc1 |   18.62142   9.847913     1.89   0.059    -.6801384    37.92297
+      rincx1 |   14.01141   34.27775     0.41   0.683    -53.17175    81.19457
+       trend |  -.6845805   .1014334    -6.75   0.000    -.8833862   -.4857748
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          83.514
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    14.211
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         6.269
+                                                   Chi-sq(4) P-val =    0.1800
+------------------------------------------------------------------------------
+Instrumented:         rrucstd rrucxstd
+Included instruments: ur12std rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1iur
+
+. xi: ivreg28 inexemss urateus1std rurate1std ruratex1std rinc1 rincx1 i.state*trend ,  fwl(_I*) cluster(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    42.03
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  24640.62877                Centered R2   =   0.4259
+Total (uncentered) SS   =  24640.62877                Uncentered R2 =   0.4259
+Residual SS             =   14145.0342                Root MSE      =    2.988
+
+------------------------------------------------------------------------------
+             |               Robust
+    inexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |  -.5421304   .3502867    -1.55   0.122     -1.22868    .1444189
+  rurate1std |  -2.531635   .3099329    -8.17   0.000    -3.139092   -1.924178
+ ruratex1std |  -.5943713   .2294915    -2.59   0.010    -1.044166   -.1445762
+       rinc1 |   51.43069   4.211155    12.21   0.000     43.17698     59.6844
+      rincx1 |  -13.94189   18.58275    -0.75   0.453    -50.36341    22.47964
+       trend |  -.6066312   .0545327   -11.12   0.000    -.7135134   -.4997491
+------------------------------------------------------------------------------
+Included instruments: urateus1std rurate1std ruratex1std rinc1 rincx1 trend
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1ic
+
+. 
+. xi: ivreg28 outexemss gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clus
+> ter(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    19.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1517.798948                Centered R2   =   0.3700
+Total (uncentered) SS   =  1517.798948                Uncentered R2 =   0.3700
+Residual SS             =  956.1780105                Root MSE      =    .7794
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0132326   .0305596     0.43   0.668    -.0490154    .0754805
+            rinc1 |    16.4545   2.390448     6.88   0.000     11.58532    21.32369
+           rincx1 |   5.570686   4.847932     1.15   0.259    -4.304227     15.4456
+            trend |  -.0638763   .0118358    -5.40   0.000     -.087985   -.0397676
+    bartik151rstd |   .0758514   .0515672     1.47   0.151    -.0291876    .1808905
+  oilshock151rstd |   .0651103   .1025647     0.63   0.530     -.143807    .2740277
+ oilshock151rstd2 |   -.007397   .0089312    -0.83   0.414    -.0255893    .0107952
+   bartik151rxstd |  -.0125518   .0427182    -0.29   0.771     -.099566    .0744624
+ oilshock151rxstd |   .0467158   .0617337     0.76   0.455    -.0790316    .1724632
+oilshock151rxstd2 |   .0037354   .0022068     1.69   0.100    -.0007597    .0082304
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0400
+Test of excluded instruments:
+  F(  6,    32) =    13.43
+  Prob > F      =   0.0000
+
+First-stage regression of rgapxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    64.28
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1484.250918                Centered R2   =   0.4775
+Total (uncentered) SS   =  1484.250918                Uncentered R2 =   0.4775
+Residual SS             =  775.5420761                Root MSE      =    .7019
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgapxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |  -.0052066   .0651079    -0.08   0.937    -.1378271    .1274139
+            rinc1 |   .5064807   .6038362     0.84   0.408    -.7234934    1.736455
+           rincx1 |   53.02935    8.44072     6.28   0.000     35.83616    70.22253
+            trend |  -.0721325   .0105936    -6.81   0.000    -.0937109    -.050554
+    bartik151rstd |  -.0413491   .0308313    -1.34   0.189    -.1041504    .0214522
+  oilshock151rstd |  -.0615726    .038848    -1.58   0.123    -.1407034    .0175582
+ oilshock151rstd2 |  -.0116801   .0026502    -4.41   0.000    -.0170784   -.0062819
+   bartik151rxstd |   .0632468   .0593241     1.07   0.294    -.0575924     .184086
+ oilshock151rxstd |   .1431061   .0856557     1.67   0.105    -.0313689    .3175812
+oilshock151rxstd2 |  -.0028616   .0021755    -1.32   0.198     -.007293    .0015699
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0538
+Test of excluded instruments:
+  F(  6,    32) =     9.39
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    32)    P-value
+rgapstd     |     0.0454      |     0.0400      |      13.43        0.0000
+rgapxstd    |     0.0612      |     0.0538      |       9.39        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       64.58         0.0000
+Cragg-Donald N*CDEV statistic                      65.92         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             10.92
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,32)=  47.83     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=297.63    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         33
+Number of observations N           =       1584
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    19.68
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  10062.51416                Centered R2   =  -0.6658
+Total (uncentered) SS   =  10062.51416                Uncentered R2 =  -0.6658
+Residual SS             =    16761.985                Root MSE      =    3.253
+
+------------------------------------------------------------------------------
+             |               Robust
+   outexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rgapstd |  -3.985038   1.338928    -2.98   0.003    -6.609289   -1.360788
+    rgapxstd |  -.1391589   1.542162    -0.09   0.928     -3.16174    2.883423
+    gapusstd |   .8822317   .1489692     5.92   0.000     .5902575    1.174206
+       rinc1 |   56.38046   21.34136     2.64   0.008     14.55217    98.20876
+      rincx1 |   76.96908   83.58412     0.92   0.357    -86.85279     240.791
+       trend |  -.6017296   .1133436    -5.31   0.000     -.823879   -.3795803
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          64.584
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    10.917
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.318
+                                                   Chi-sq(4) P-val =    0.6774
+------------------------------------------------------------------------------
+Instrumented:         rgapstd rgapxstd
+Included instruments: gapusstd rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1ogap
+
+. xi: ivreg28 outexemss ur12std (rrucstd rrucxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clust
+> er(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rrucstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =   189.20
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  649.0492179                Centered R2   =   0.3114
+Total (uncentered) SS   =  649.0492179                Uncentered R2 =   0.3114
+Residual SS             =  446.9420461                Root MSE      =    .5412
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rrucstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0419486   .0272474    -1.54   0.134    -.0975199    .0136228
+            rinc1 |  -8.801683   .8593008   -10.24   0.000    -10.55424   -7.049127
+           rincx1 |   .1463456   3.366817     0.04   0.966    -6.720322    7.013013
+            trend |  -.0379277   .0167485    -2.26   0.031    -.0720865   -.0037689
+    bartik151rstd |  -.1857031   .0369245    -5.03   0.000    -.2610111   -.1103952
+  oilshock151rstd |  -.0163591   .0225383    -0.73   0.473    -.0623262    .0296081
+ oilshock151rstd2 |   .0051731    .001986     2.60   0.014     .0011225    .0092236
+   bartik151rxstd |   .0194267   .0322817     0.60   0.552    -.0464122    .0852655
+ oilshock151rxstd |  -.0628303   .0485274    -1.29   0.205    -.1618027     .036142
+oilshock151rxstd2 |  -.0004139   .0019653    -0.21   0.835    -.0044221    .0035943
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0957
+Test of excluded instruments:
+  F(  6,    31) =    26.73
+  Prob > F      =   0.0000
+
+First-stage regression of rrucxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =    43.77
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1151.074353                Centered R2   =   0.3102
+Total (uncentered) SS   =  1151.074353                Uncentered R2 =   0.3102
+Residual SS             =  794.0425719                Root MSE      =    .7213
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rrucxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.1276652   .0770927    -1.66   0.108    -.2848969    .0295664
+            rinc1 |  -.7310344   .5910481    -1.24   0.225    -1.936485    .4744162
+           rincx1 |  -33.93527    7.90507    -4.29   0.000    -50.05776   -17.81277
+            trend |   .0386646   .0165299     2.34   0.026     .0049516    .0723776
+    bartik151rstd |   .0189433   .0198022     0.96   0.346    -.0214435    .0593301
+  oilshock151rstd |   .0443278   .0332238     1.33   0.192    -.0234326    .1120883
+ oilshock151rstd2 |   .0112302   .0024788     4.53   0.000     .0061746    .0162859
+   bartik151rxstd |  -.0471315   .0675459    -0.70   0.491    -.1848923    .0906293
+ oilshock151rxstd |  -.1519325   .0928629    -1.64   0.112    -.3413276    .0374626
+oilshock151rxstd2 |  -.0051869   .0045618    -1.14   0.264    -.0144908     .004117
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0535
+Test of excluded instruments:
+  F(  6,    31) =    11.65
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    31)    P-value
+rrucstd     |     0.1096      |     0.0957      |      26.73        0.0000
+rrucxstd    |     0.0613      |     0.0535      |      11.65        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       83.51         0.0000
+Cragg-Donald N*CDEV statistic                      85.83         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             14.21
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,31)=  32.95     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=205.28    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         32
+Number of observations N           =       1536
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F(  6,    31) =    22.62
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  9655.085771                Centered R2   =   0.0709
+Total (uncentered) SS   =  9655.085771                Uncentered R2 =   0.0709
+Residual SS             =  8971.012285                Root MSE      =    2.417
+
+------------------------------------------------------------------------------
+             |               Robust
+   outexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rrucstd |   3.213641   .8133198     3.95   0.000     1.619564    4.807719
+    rrucxstd |   .6399792   .9523365     0.67   0.502    -1.226566    2.506524
+     ur12std |  -.6099101   .2120478    -2.88   0.004    -1.025516    -.194304
+       rinc1 |   20.99948   6.569666     3.20   0.001     8.123169    33.87579
+      rincx1 |   70.28684   35.10655     2.00   0.045     1.479261    139.0944
+       trend |  -.3052886    .097184    -3.14   0.002    -.4957658   -.1148115
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          83.514
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    14.211
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         1.282
+                                                   Chi-sq(4) P-val =    0.8643
+------------------------------------------------------------------------------
+Instrumented:         rrucstd rrucxstd
+Included instruments: ur12std rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1our
+
+. xi: ivreg28 outexemss urateus1std rurate1std ruratex1std rinc1 rincx1 i.state*trend ,  fwl(_I*) cluster(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    50.43
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  10062.51416                Centered R2   =   0.3046
+Total (uncentered) SS   =  10062.51416                Uncentered R2 =   0.3046
+Residual SS             =  6997.958101                Root MSE      =    2.102
+
+------------------------------------------------------------------------------
+             |               Robust
+   outexemss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |  -1.233984   .1988262    -6.21   0.000    -1.623676   -.8442914
+  rurate1std |   1.947937   .5019858     3.88   0.000     .9640631    2.931811
+ ruratex1std |   .4166153   .1692836     2.46   0.014     .0848256    .7484049
+       rinc1 |  -3.199403   4.445746    -0.72   0.472    -11.91291    5.514099
+      rincx1 |   72.12443   9.130931     7.90   0.000     54.22813    90.02072
+       trend |  -.3502753   .0448627    -7.81   0.000    -.4382046    -.262346
+------------------------------------------------------------------------------
+Included instruments: urateus1std rurate1std ruratex1std rinc1 rincx1 trend
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1oc
+
+. 
+. xi: ivreg28 linexems gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clust
+> er(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    19.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1517.798948                Centered R2   =   0.3700
+Total (uncentered) SS   =  1517.798948                Uncentered R2 =   0.3700
+Residual SS             =  956.1780105                Root MSE      =    .7794
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0132326   .0305596     0.43   0.668    -.0490154    .0754805
+            rinc1 |    16.4545   2.390448     6.88   0.000     11.58532    21.32369
+           rincx1 |   5.570686   4.847932     1.15   0.259    -4.304227     15.4456
+            trend |  -.0638763   .0118358    -5.40   0.000     -.087985   -.0397676
+    bartik151rstd |   .0758514   .0515672     1.47   0.151    -.0291876    .1808905
+  oilshock151rstd |   .0651103   .1025647     0.63   0.530     -.143807    .2740277
+ oilshock151rstd2 |   -.007397   .0089312    -0.83   0.414    -.0255893    .0107952
+   bartik151rxstd |  -.0125518   .0427182    -0.29   0.771     -.099566    .0744624
+ oilshock151rxstd |   .0467158   .0617337     0.76   0.455    -.0790316    .1724632
+oilshock151rxstd2 |   .0037354   .0022068     1.69   0.100    -.0007597    .0082304
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0400
+Test of excluded instruments:
+  F(  6,    32) =    13.43
+  Prob > F      =   0.0000
+
+First-stage regression of rgapxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    64.28
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1484.250918                Centered R2   =   0.4775
+Total (uncentered) SS   =  1484.250918                Uncentered R2 =   0.4775
+Residual SS             =  775.5420761                Root MSE      =    .7019
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgapxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |  -.0052066   .0651079    -0.08   0.937    -.1378271    .1274139
+            rinc1 |   .5064807   .6038362     0.84   0.408    -.7234934    1.736455
+           rincx1 |   53.02935    8.44072     6.28   0.000     35.83616    70.22253
+            trend |  -.0721325   .0105936    -6.81   0.000    -.0937109    -.050554
+    bartik151rstd |  -.0413491   .0308313    -1.34   0.189    -.1041504    .0214522
+  oilshock151rstd |  -.0615726    .038848    -1.58   0.123    -.1407034    .0175582
+ oilshock151rstd2 |  -.0116801   .0026502    -4.41   0.000    -.0170784   -.0062819
+   bartik151rxstd |   .0632468   .0593241     1.07   0.294    -.0575924     .184086
+ oilshock151rxstd |   .1431061   .0856557     1.67   0.105    -.0313689    .3175812
+oilshock151rxstd2 |  -.0028616   .0021755    -1.32   0.198     -.007293    .0015699
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0538
+Test of excluded instruments:
+  F(  6,    32) =     9.39
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    32)    P-value
+rgapstd     |     0.0454      |     0.0400      |      13.43        0.0000
+rgapxstd    |     0.0612      |     0.0538      |       9.39        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       64.58         0.0000
+Cragg-Donald N*CDEV statistic                      65.92         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             10.92
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,32)=  38.00     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=236.46    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         33
+Number of observations N           =       1584
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    36.31
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  13.72732406                Centered R2   =   0.3519
+Total (uncentered) SS   =  13.72732406                Uncentered R2 =   0.3519
+Residual SS             =  8.896206578                Root MSE      =   .07494
+
+------------------------------------------------------------------------------
+             |               Robust
+    linexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rgapstd |   .1095638   .0261519     4.19   0.000     .0583071    .1608205
+    rgapxstd |  -.0198711   .0202001    -0.98   0.325    -.0594625    .0197204
+    gapusstd |   .0223824   .0036707     6.10   0.000      .015188    .0295769
+       rinc1 |  -.3420888   .4646424    -0.74   0.462    -1.252771    .5685935
+      rincx1 |   .9913261   1.070871     0.93   0.355    -1.107542    3.090194
+       trend |  -.0027282   .0019096    -1.43   0.153    -.0064709    .0010145
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          64.584
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    10.917
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.100
+                                                   Chi-sq(4) P-val =    0.7173
+------------------------------------------------------------------------------
+Instrumented:         rgapstd rgapxstd
+Included instruments: gapusstd rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2igap
+
+. xi: ivreg28 linexems ur12std (rrucstd rrucxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first cluste
+> r(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rrucstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =   189.20
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  649.0492179                Centered R2   =   0.3114
+Total (uncentered) SS   =  649.0492179                Uncentered R2 =   0.3114
+Residual SS             =  446.9420461                Root MSE      =    .5412
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rrucstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0419486   .0272474    -1.54   0.134    -.0975199    .0136228
+            rinc1 |  -8.801683   .8593008   -10.24   0.000    -10.55424   -7.049127
+           rincx1 |   .1463456   3.366817     0.04   0.966    -6.720322    7.013013
+            trend |  -.0379277   .0167485    -2.26   0.031    -.0720865   -.0037689
+    bartik151rstd |  -.1857031   .0369245    -5.03   0.000    -.2610111   -.1103952
+  oilshock151rstd |  -.0163591   .0225383    -0.73   0.473    -.0623262    .0296081
+ oilshock151rstd2 |   .0051731    .001986     2.60   0.014     .0011225    .0092236
+   bartik151rxstd |   .0194267   .0322817     0.60   0.552    -.0464122    .0852655
+ oilshock151rxstd |  -.0628303   .0485274    -1.29   0.205    -.1618027     .036142
+oilshock151rxstd2 |  -.0004139   .0019653    -0.21   0.835    -.0044221    .0035943
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0957
+Test of excluded instruments:
+  F(  6,    31) =    26.73
+  Prob > F      =   0.0000
+
+First-stage regression of rrucxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =    43.77
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1151.074353                Centered R2   =   0.3102
+Total (uncentered) SS   =  1151.074353                Uncentered R2 =   0.3102
+Residual SS             =  794.0425719                Root MSE      =    .7213
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rrucxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.1276652   .0770927    -1.66   0.108    -.2848969    .0295664
+            rinc1 |  -.7310344   .5910481    -1.24   0.225    -1.936485    .4744162
+           rincx1 |  -33.93527    7.90507    -4.29   0.000    -50.05776   -17.81277
+            trend |   .0386646   .0165299     2.34   0.026     .0049516    .0723776
+    bartik151rstd |   .0189433   .0198022     0.96   0.346    -.0214435    .0593301
+  oilshock151rstd |   .0443278   .0332238     1.33   0.192    -.0234326    .1120883
+ oilshock151rstd2 |   .0112302   .0024788     4.53   0.000     .0061746    .0162859
+   bartik151rxstd |  -.0471315   .0675459    -0.70   0.491    -.1848923    .0906293
+ oilshock151rxstd |  -.1519325   .0928629    -1.64   0.112    -.3413276    .0374626
+oilshock151rxstd2 |  -.0051869   .0045618    -1.14   0.264    -.0144908     .004117
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0535
+Test of excluded instruments:
+  F(  6,    31) =    11.65
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    31)    P-value
+rrucstd     |     0.1096      |     0.0957      |      26.73        0.0000
+rrucxstd    |     0.0613      |     0.0535      |      11.65        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       83.51         0.0000
+Cragg-Donald N*CDEV statistic                      85.83         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             14.21
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,31)=  39.99     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=249.15    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         32
+Number of observations N           =       1536
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F(  6,    31) =    69.62
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  13.32554793                Centered R2   =   0.4729
+Total (uncentered) SS   =  13.32554793                Uncentered R2 =   0.4729
+Residual SS             =  7.024433955                Root MSE      =   .06763
+
+------------------------------------------------------------------------------
+             |               Robust
+    linexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rrucstd |   -.097313   .0201793    -4.82   0.000    -.1368636   -.0577623
+    rrucxstd |   .0055378   .0158175     0.35   0.726    -.0254638    .0365395
+     ur12std |   -.033921    .005676    -5.98   0.000    -.0450458   -.0227962
+       rinc1 |   .6017215   .1871317     3.22   0.001     .2349502    .9684928
+      rincx1 |   .6816682   .7327599     0.93   0.352    -.7545148    2.117851
+       trend |  -.0138833   .0020598    -6.74   0.000    -.0179205   -.0098461
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          83.514
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    14.211
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.743
+                                                   Chi-sq(4) P-val =    0.6017
+------------------------------------------------------------------------------
+Instrumented:         rrucstd rrucxstd
+Included instruments: ur12std rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2iur
+
+. xi: ivreg28 linexems urateus1std rurate1std ruratex1std rinc1 rincx1 i.state*trend ,  fwl(_I*) cluster(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    33.75
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  13.72732406                Centered R2   =   0.4636
+Total (uncentered) SS   =  13.72732406                Uncentered R2 =   0.4636
+Residual SS             =  7.363293864                Root MSE      =   .06818
+
+------------------------------------------------------------------------------
+             |               Robust
+    linexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |  -.0171137   .0078048    -2.19   0.028    -.0324108   -.0018166
+  rurate1std |  -.0607065   .0087983    -6.90   0.000    -.0779508   -.0434621
+ ruratex1std |  -.0135085   .0060961    -2.22   0.027    -.0254566   -.0015604
+       rinc1 |   1.260659   .1045415    12.06   0.000     1.055761    1.465556
+      rincx1 |  -.0455214   .4041323    -0.11   0.910    -.8376063    .7465634
+       trend |  -.0121465    .001508    -8.05   0.000    -.0151022   -.0091908
+------------------------------------------------------------------------------
+Included instruments: urateus1std rurate1std ruratex1std rinc1 rincx1 trend
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2ic
+
+. 
+. xi: ivreg28 loutexems gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clus
+> ter(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    19.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1517.798948                Centered R2   =   0.3700
+Total (uncentered) SS   =  1517.798948                Uncentered R2 =   0.3700
+Residual SS             =  956.1780105                Root MSE      =    .7794
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0132326   .0305596     0.43   0.668    -.0490154    .0754805
+            rinc1 |    16.4545   2.390448     6.88   0.000     11.58532    21.32369
+           rincx1 |   5.570686   4.847932     1.15   0.259    -4.304227     15.4456
+            trend |  -.0638763   .0118358    -5.40   0.000     -.087985   -.0397676
+    bartik151rstd |   .0758514   .0515672     1.47   0.151    -.0291876    .1808905
+  oilshock151rstd |   .0651103   .1025647     0.63   0.530     -.143807    .2740277
+ oilshock151rstd2 |   -.007397   .0089312    -0.83   0.414    -.0255893    .0107952
+   bartik151rxstd |  -.0125518   .0427182    -0.29   0.771     -.099566    .0744624
+ oilshock151rxstd |   .0467158   .0617337     0.76   0.455    -.0790316    .1724632
+oilshock151rxstd2 |   .0037354   .0022068     1.69   0.100    -.0007597    .0082304
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0400
+Test of excluded instruments:
+  F(  6,    32) =    13.43
+  Prob > F      =   0.0000
+
+First-stage regression of rgapxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F( 10,    32) =    64.28
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1484.250918                Centered R2   =   0.4775
+Total (uncentered) SS   =  1484.250918                Uncentered R2 =   0.4775
+Residual SS             =  775.5420761                Root MSE      =    .7019
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rgapxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |  -.0052066   .0651079    -0.08   0.937    -.1378271    .1274139
+            rinc1 |   .5064807   .6038362     0.84   0.408    -.7234934    1.736455
+           rincx1 |   53.02935    8.44072     6.28   0.000     35.83616    70.22253
+            trend |  -.0721325   .0105936    -6.81   0.000    -.0937109    -.050554
+    bartik151rstd |  -.0413491   .0308313    -1.34   0.189    -.1041504    .0214522
+  oilshock151rstd |  -.0615726    .038848    -1.58   0.123    -.1407034    .0175582
+ oilshock151rstd2 |  -.0116801   .0026502    -4.41   0.000    -.0170784   -.0062819
+   bartik151rxstd |   .0632468   .0593241     1.07   0.294    -.0575924     .184086
+ oilshock151rxstd |   .1431061   .0856557     1.67   0.105    -.0313689    .3175812
+oilshock151rxstd2 |  -.0028616   .0021755    -1.32   0.198     -.007293    .0015699
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0538
+Test of excluded instruments:
+  F(  6,    32) =     9.39
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    32)    P-value
+rgapstd     |     0.0454      |     0.0400      |      13.43        0.0000
+rgapxstd    |     0.0612      |     0.0538      |       9.39        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       64.58         0.0000
+Cragg-Donald N*CDEV statistic                      65.92         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             10.92
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,32)=  27.35     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=170.18    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         33
+Number of observations N           =       1584
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    12.58
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  10.15496311                Centered R2   =  -0.7085
+Total (uncentered) SS   =  10.15496311                Uncentered R2 =  -0.7085
+Residual SS             =  17.34979995                Root MSE      =    .1047
+
+------------------------------------------------------------------------------
+             |               Robust
+   loutexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rgapstd |  -.1142959   .0444594    -2.57   0.010    -.2014347   -.0271572
+    rgapxstd |  -.0123085   .0475998    -0.26   0.796    -.1056025    .0809855
+    gapusstd |   .0310693    .004602     6.75   0.000     .0220495    .0400891
+       rinc1 |   1.642401   .7243359     2.27   0.023     .2227283    3.062073
+      rincx1 |   3.057276    2.69305     1.14   0.256    -2.221005    8.335557
+       trend |  -.0149664   .0043226    -3.46   0.001    -.0234385   -.0064943
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          64.584
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    10.917
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.597
+                                                   Chi-sq(4) P-val =    0.6274
+------------------------------------------------------------------------------
+Instrumented:         rgapstd rgapxstd
+Included instruments: gapusstd rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2ogap
+
+. xi: ivreg28 loutexems ur12std (rrucstd rrucxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clust
+> er(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of rrucstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =   189.20
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  649.0492179                Centered R2   =   0.3114
+Total (uncentered) SS   =  649.0492179                Uncentered R2 =   0.3114
+Residual SS             =  446.9420461                Root MSE      =    .5412
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          rrucstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0419486   .0272474    -1.54   0.134    -.0975199    .0136228
+            rinc1 |  -8.801683   .8593008   -10.24   0.000    -10.55424   -7.049127
+           rincx1 |   .1463456   3.366817     0.04   0.966    -6.720322    7.013013
+            trend |  -.0379277   .0167485    -2.26   0.031    -.0720865   -.0037689
+    bartik151rstd |  -.1857031   .0369245    -5.03   0.000    -.2610111   -.1103952
+  oilshock151rstd |  -.0163591   .0225383    -0.73   0.473    -.0623262    .0296081
+ oilshock151rstd2 |   .0051731    .001986     2.60   0.014     .0011225    .0092236
+   bartik151rxstd |   .0194267   .0322817     0.60   0.552    -.0464122    .0852655
+ oilshock151rxstd |  -.0628303   .0485274    -1.29   0.205    -.1618027     .036142
+oilshock151rxstd2 |  -.0004139   .0019653    -0.21   0.835    -.0044221    .0035943
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0957
+Test of excluded instruments:
+  F(  6,    31) =    26.73
+  Prob > F      =   0.0000
+
+First-stage regression of rrucxstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F( 10,    31) =    43.77
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  1151.074353                Centered R2   =   0.3102
+Total (uncentered) SS   =  1151.074353                Uncentered R2 =   0.3102
+Residual SS             =  794.0425719                Root MSE      =    .7213
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         rrucxstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.1276652   .0770927    -1.66   0.108    -.2848969    .0295664
+            rinc1 |  -.7310344   .5910481    -1.24   0.225    -1.936485    .4744162
+           rincx1 |  -33.93527    7.90507    -4.29   0.000    -50.05776   -17.81277
+            trend |   .0386646   .0165299     2.34   0.026     .0049516    .0723776
+    bartik151rstd |   .0189433   .0198022     0.96   0.346    -.0214435    .0593301
+  oilshock151rstd |   .0443278   .0332238     1.33   0.192    -.0234326    .1120883
+ oilshock151rstd2 |   .0112302   .0024788     4.53   0.000     .0061746    .0162859
+   bartik151rxstd |  -.0471315   .0675459    -0.70   0.491    -.1848923    .0906293
+ oilshock151rxstd |  -.1519325   .0928629    -1.64   0.112    -.3413276    .0374626
+oilshock151rxstd2 |  -.0051869   .0045618    -1.14   0.264    -.0144908     .004117
+-----------------------------------------------------------------------------------
+Included instruments: ur12std rinc1 rincx1 trend bartik151rstd oilshock151rstd
+                      oilshock151rstd2 bartik151rxstd oilshock151rxstd
+                      oilshock151rxstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0535
+Test of excluded instruments:
+  F(  6,    31) =    11.65
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    31)    P-value
+rrucstd     |     0.1096      |     0.0957      |      26.73        0.0000
+rrucxstd    |     0.0613      |     0.0535      |      11.65        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.       83.51         0.0000
+Cragg-Donald N*CDEV statistic                      85.83         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic             14.21
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,31)=  22.66     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=141.15    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         32
+Number of observations N           =       1536
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =     1536
+                                                      F(  6,    31) =    28.28
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  9.682357135                Centered R2   =   0.1157
+Total (uncentered) SS   =  9.682357135                Uncentered R2 =   0.1157
+Residual SS             =  8.562424548                Root MSE      =   .07466
+
+------------------------------------------------------------------------------
+             |               Robust
+   loutexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     rrucstd |   .0966629   .0167221     5.78   0.000     .0638881    .1294376
+    rrucxstd |   .0228615   .0361715     0.63   0.527    -.0480334    .0937564
+     ur12std |  -.0203284   .0064457    -3.15   0.002    -.0329617   -.0076951
+       rinc1 |   .6723196   .1471089     4.57   0.000     .3839914    .9606477
+      rincx1 |   2.554876   1.362971     1.87   0.061    -.1164986     5.22625
+       trend |  -.0063342   .0030065    -2.11   0.035    -.0122267   -.0004416
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):          83.514
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                    14.211
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         3.207
+                                                   Chi-sq(4) P-val =    0.5237
+------------------------------------------------------------------------------
+Instrumented:         rrucstd rrucxstd
+Included instruments: ur12std rinc1 rincx1 trend
+Excluded instruments: bartik151rstd oilshock151rstd oilshock151rstd2
+                      bartik151rxstd oilshock151rxstd oilshock151rxstd2
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2our
+
+. xi: ivreg28 loutexems urateus1std rurate1std ruratex1std rinc1 rincx1 i.state*trend ,  fwl(_I*) cluster(year)
+i.state           _Istate_1-56        (naturally coded; _Istate_1 omitted)
+i.state*trend     _IstaXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =     1584
+                                                      F(  6,    32) =    35.35
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  10.15496311                Centered R2   =   0.3037
+Total (uncentered) SS   =  10.15496311                Uncentered R2 =   0.3037
+Residual SS             =  7.071129497                Root MSE      =   .06681
+
+------------------------------------------------------------------------------
+             |               Robust
+   loutexems |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |  -.0373659   .0063591    -5.88   0.000    -.0498295   -.0249023
+  rurate1std |    .062294   .0112132     5.56   0.000     .0403166    .0842714
+ ruratex1std |   .0175833   .0044333     3.97   0.000     .0088942    .0262723
+       rinc1 |  -.0249834    .097536    -0.26   0.798    -.2161505    .1661838
+      rincx1 |   2.551592   .2877409     8.87   0.000      1.98763    3.115554
+       trend |  -.0069443   .0012796    -5.43   0.000    -.0094522   -.0044364
+------------------------------------------------------------------------------
+Included instruments: urateus1std rurate1std ruratex1std rinc1 rincx1 trend
+Partialled-out (FWL): _Istate_4 _Istate_5 _Istate_6 _Istate_8 _Istate_9
+                      _Istate_10 _Istate_12 _Istate_13 _Istate_16 _Istate_17
+                      _Istate_18 _Istate_19 _Istate_20 _Istate_21 _Istate_22
+                      _Istate_23 _Istate_24 _Istate_25 _Istate_26 _Istate_27
+                      _Istate_28 _Istate_29 _Istate_30 _Istate_31 _Istate_32
+                      _Istate_33 _Istate_34 _Istate_35 _Istate_36 _Istate_37
+                      _Istate_38 _Istate_39 _Istate_40 _Istate_41 _Istate_42
+                      _Istate_44 _Istate_45 _Istate_46 _Istate_47 _Istate_48
+                      _Istate_49 _Istate_50 _Istate_51 _Istate_53 _Istate_54
+                      _Istate_55 _Istate_56 _IstaXtren_4 _IstaXtren_5
+                      _IstaXtren_6 _IstaXtren_8 _IstaXtren_9 _IstaXtren_10
+                      _IstaXtren_12 _IstaXtren_13 _IstaXtren_16 _IstaXtren_17
+                      _IstaXtren_18 _IstaXtren_19 _IstaXtren_20 _IstaXtren_21
+                      _IstaXtren_22 _IstaXtren_23 _IstaXtren_24 _IstaXtren_25
+                      _IstaXtren_26 _IstaXtren_27 _IstaXtren_28 _IstaXtren_29
+                      _IstaXtren_30 _IstaXtren_31 _IstaXtren_32 _IstaXtren_33
+                      _IstaXtren_34 _IstaXtren_35 _IstaXtren_36 _IstaXtren_37
+                      _IstaXtren_38 _IstaXtren_39 _IstaXtren_40 _IstaXtren_41
+                      _IstaXtren_42 _IstaXtren_44 _IstaXtren_45 _IstaXtren_46
+                      _IstaXtren_47 _IstaXtren_48 _IstaXtren_49 _IstaXtren_50
+                      _IstaXtren_51 _IstaXtren_53 _IstaXtren_54 _IstaXtren_55
+                      _IstaXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2oc
+
+. 
+. 
+. estout m1igap m1ogap m2igap m2ogap,  keep(gapusstd rgapstd rgapxstd rinc1 rincx1) cells(b(star fmt(3)) se(par fmt(3))) stats(N)
+
+----------------------------------------------------------------------------
+                   m1igap          m1ogap          m2igap          m2ogap   
+                     b/se            b/se            b/se            b/se   
+----------------------------------------------------------------------------
+rgapstd             5.918***       -3.985**         0.110***       -0.114*  
+                  (1.735)         (1.339)         (0.026)         (0.044)   
+rgapxstd           -1.022          -0.139          -0.020          -0.012   
+                  (1.238)         (1.542)         (0.020)         (0.048)   
+gapusstd            0.655***        0.882***        0.022***        0.031***
+                  (0.194)         (0.149)         (0.004)         (0.005)   
+rinc1             -38.447          56.380**        -0.342           1.642*  
+                 (30.212)        (21.341)         (0.465)         (0.724)   
+rincx1             31.835          76.969           0.991           3.057   
+                 (65.525)        (83.584)         (1.071)         (2.693)   
+----------------------------------------------------------------------------
+N                1584.000        1584.000        1584.000        1584.000   
+----------------------------------------------------------------------------
+
+. estout m1iur m1our m2iur m2our, keep(ur12std rrucstd rrucxstd rinc1 rincx1) cells(b(star fmt(3)) se(par fmt(3))) stats(N)
+
+----------------------------------------------------------------------------
+                    m1iur           m1our           m2iur           m2our   
+                     b/se            b/se            b/se            b/se   
+----------------------------------------------------------------------------
+rrucstd            -4.530***        3.214***       -0.097***        0.097***
+                  (1.234)         (0.813)         (0.020)         (0.017)   
+rrucxstd            0.121           0.640           0.006           0.023   
+                  (0.822)         (0.952)         (0.016)         (0.036)   
+ur12std            -1.245***       -0.610**        -0.034***       -0.020** 
+                  (0.271)         (0.212)         (0.006)         (0.006)   
+rinc1              18.621          20.999**         0.602**         0.672***
+                  (9.848)         (6.570)         (0.187)         (0.147)   
+rincx1             14.011          70.287*          0.682           2.555   
+                 (34.278)        (35.107)         (0.733)         (1.363)   
+----------------------------------------------------------------------------
+N                1536.000        1536.000        1536.000        1536.000   
+----------------------------------------------------------------------------
+
+. estout m1ic m1oc m2ic m2oc, keep(urateus1std rurate1std ruratex1std rinc1 rincx1) cells(b(star fmt(3)) se(par fmt(3))) stats(N)
+
+----------------------------------------------------------------------------
+                     m1ic            m1oc            m2ic            m2oc   
+                     b/se            b/se            b/se            b/se   
+----------------------------------------------------------------------------
+urateus1std        -0.542          -1.234***       -0.017*         -0.037***
+                  (0.350)         (0.199)         (0.008)         (0.006)   
+rurate1std         -2.532***        1.948***       -0.061***        0.062***
+                  (0.310)         (0.502)         (0.009)         (0.011)   
+ruratex1std        -0.594**         0.417*         -0.014*          0.018***
+                  (0.229)         (0.169)         (0.006)         (0.004)   
+rinc1              51.431***       -3.199           1.261***       -0.025   
+                  (4.211)         (4.446)         (0.105)         (0.098)   
+rincx1            -13.942          72.124***       -0.046           2.552***
+                 (18.583)         (9.131)         (0.404)         (0.288)   
+----------------------------------------------------------------------------
+N                1584.000        1584.000        1584.000        1584.000   
+----------------------------------------------------------------------------
+
+. 
+. 
+. quietly log off

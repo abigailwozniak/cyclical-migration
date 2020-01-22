@@ -1,0 +1,2155 @@
+------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_lt35_2.log
+  log type:  text
+ opened on:   5 Dec 2019, 15:32:41
+
+. /*****************************************
+> 
+> Interactions of baseline specs with educ, age, gender, and emp status.
+> Put all interactions in one program.  Now using non-detrended UI claims.
+> 
+> Do without weights.  No weights in data prior to 1976.
+> 
+> Restrict sample to people under 35. 
+> 
+> Add metro status to set of main controls.
+> 
+> *******************************************/
+> 
+> set matsize 100 ;
+
+. set mem 1000m ;
+set memory ignored.
+    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly
+    automatically.
+
+. use marchcps_mig.dta ;
+
+. *set mem 500m ;
+. *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;
+. drop if age > 35 ;
+(1,077,262 observations deleted)
+
+. * Create age grouping along major mobility lines ;
+. gen agegrp = . ;
+(538,763 missing values generated)
+
+. replace agegrp = 1 if age <= 25 & age ~=. ;
+(141,914 real changes made)
+
+. replace agegrp = 2 if age >= 26 & age <= 30 ;
+(186,648 real changes made)
+
+. replace agegrp = 3 if age >= 31 & age <= 35 ;
+(210,201 real changes made)
+
+. replace agegrp = 4 if age >= 36 & age <= 45 ;
+(0 real changes made)
+
+. replace agegrp = 5 if age >= 46 & age <= 55 ;
+(0 real changes made)
+
+. replace agegrp = 6 if age >= 56 & age ~=. ;
+(0 real changes made)
+
+. tab1 agegrp ;
+
+-> tabulation of agegrp  
+
+     agegrp |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          1 |    141,914       26.34       26.34
+          2 |    186,648       34.64       60.98
+          3 |    210,201       39.02      100.00
+------------+-----------------------------------
+      Total |    538,763      100.00
+
+. gen age2=age*age ;
+
+. char educ[omit] 2 ;
+
+. char empstat[omit] 1 ;
+
+. egen timet = group(year) ;
+
+. gen timet2 = timet*timet ;
+
+. gen kids = (nchild >=1 ) ;
+
+. summ kids nchild ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        kids |    538,763    .4762966    .4994383          0          1
+      nchild |    538,763     .922374    1.179702          0         12
+
+. * metro status - lots of not identifiable early on - set these to . ;
+. gen metrostat=. ;
+(538,763 missing values generated)
+
+. replace metrostat=0 if metro==1 ;
+(125,197 real changes made)
+
+. replace metrostat=1 if metro==2 | metro==3 | metro==4 ;
+(397,474 real changes made)
+
+.  * in later years there are lots of 4s so merge these in one group ;
+. tab1 year if blswt==. ;
+
+-> tabulation of year if blswt==. 
+
+Survey year |      Freq.     Percent        Cum.
+------------+-----------------------------------
+       1964 |      5,556        2.35        2.35
+       1965 |      5,558        2.35        4.70
+       1966 |     11,589        4.91        9.61
+       1967 |      7,197        3.05       12.66
+       1968 |     11,550        4.89       17.54
+       1969 |     12,166        5.15       22.69
+       1970 |     11,915        5.04       27.74
+       1971 |     12,369        5.24       32.97
+       2001 |     11,959        5.06       38.04
+       2002 |     19,461        8.24       46.27
+       2003 |     19,207        8.13       54.40
+       2004 |     18,595        7.87       62.27
+       2005 |     18,481        7.82       70.10
+       2006 |     18,184        7.70       77.79
+       2007 |     17,692        7.49       85.28
+       2008 |     17,410        7.37       92.65
+       2009 |     17,363        7.35      100.00
+------------+-----------------------------------
+      Total |    236,252      100.00
+
+. * Controls for state conditions relative to national ;
+. replace ruc_rst = . if year < 1977 ;
+(0 real changes made)
+
+. replace rrucx = . if year < 1977 ;
+(92,111 real changes made, 92,111 to missing)
+
+. summ rgap gapus rruc ur12 rurate urateus ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        rgap |    538,763   -.0001989    .0172585  -.1046872    .123191
+       gapus |    538,763    -.001524    .0189331  -.0464203   .0287829
+        rruc |    446,652   -.0011706    .0139738    -.04575   .0768333
+        ur12 |    538,763    .0595193    .0155988     .03475   .1009167
+      rurate |    538,763   -.0012918    .0316359  -.1160798   .1917409
+-------------+---------------------------------------------------------
+     urateus |    538,763    .1007132    .0274169    .067097   .1887099
+
+. * Standardize aggregate and state level variables ;
+. foreach varn in rgap gapus rruc ur12 rurate urateus { ;
+  2.    egen `varn'_std = std(`varn') ;
+  3. } ;
+(92111 missing values generated)
+
+. summ *_std ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    rgap_std |    538,763   -1.33e-09           1  -6.054321   7.149523
+   gapus_std |    538,763   -1.89e-09           1  -2.371318    1.60074
+    rruc_std |    446,652   -1.08e-10           1  -3.190209   5.582144
+    ur12_std |    538,763    3.05e-09           1  -1.587897   2.653888
+  rurate_std |    538,763   -3.95e-10           1  -3.628412   6.101701
+-------------+---------------------------------------------------------
+ urateus_std |    538,763    1.36e-09           1  -1.226111   3.209578
+
+. gen perid = serial*10000 + year ;
+
+. summ perid ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       perid |    538,763    3.75e+08    2.35e+08      11968   9.71e+08
+
+. tsset perid year ;
+       panel variable:  perid (unbalanced)
+        time variable:  year, 1964 to 2009, but with gaps
+                delta:  1 unit
+
+.  program define regs ;
+  1. ivreg2 cmigrant $bc $lbc black hisp spouse kids timet timet2 _I* ,cluster(year) robust 
+> ;
+  2. capture drop _J* _K* ;
+  3. end ;
+
+. program define regsrace ;
+  1. ivreg2 cmigrant $bc $lbc spouse kids timet timet2 _I* ,cluster(year) robust ;
+  2. capture drop _J* _K* ;
+  3. end ;
+
+. program define regsiv ;
+  1. ivreg2 cmigrant $bc black hisp spouse kids timet timet2 _I* ($lbc = $zvars),cluster(yea
+> r) robust ;
+  2. capture drop _J* _K* _Z* ;
+  3. end ;
+
+. program define regsraceiv ;
+  1. ivreg2 cmigrant $bc spouse kids timet timet2 _I* ($lbc = $zvars),cluster(year) robust ;
+  2. capture drop _J* _K* _Z* ;
+  3. end ;
+
+. gen styr = (year*100) + statefip ;
+
+. summ year ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |    538,763    1990.719    12.70606       1964       2009
+
+. * preferred spec includes aggregate BC, state relative conditions, and group interactions 
+> with these;
+. ** age interactions ;
+. xi i.educ i.owner i.female i.metrostat ;
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.owner           _Iowner_0-1         (naturally coded; _Iowner_0 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.agegrp|ur12_std ;
+i.agegrp          _Jagegrp_1-3        (naturally coded; _Jagegrp_1 omitted)
+i.agegrp|ur12~d   _JageXur12__#       (coded as above)
+
+. xi, prefix(_K) i.agegrp|rruc_std ;
+i.agegrp          _Kagegrp_1-3        (naturally coded; _Kagegrp_1 omitted)
+i.agegrp|rruc~d   _KageXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.agegrp|bartik15r i.agegrp|oilshock151r i.agegrp|oilshock1512r ;
+i.agegrp          _Zagegrp_1-3        (naturally coded; _Zagegrp_1 omitted)
+i.agegrp|ba~15r   _ZageXbarti_#       (coded as above)
+i.agegrp|o~151r   _ZageXoilsh_#       (coded as above)
+i.agegrp|oil~2r   _ZageXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kagegrp_2 _Kagegrp_3
+Warning - collinearities detected
+Vars dropped:       _Jagegrp_2 _Jagegrp_3 _Zagegrp_2 _Zagegrp_3
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 20,    25) =  1969.51
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0445
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1450
+Residual SS             =  37003.59841                Root MSE      =    .2999
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |     .00666   .0192678     0.35   0.730    -.0311042    .0444243
+_KageXrruc__2 |   .0051866   .0105637     0.49   0.623    -.0155179    .0258912
+_KageXrruc__3 |   .0116779   .0124527     0.94   0.348     -.012729    .0360848
+   _Kagegrp_2 |  -.0537271   .0021586   -24.89   0.000    -.0579578   -.0494963
+   _Kagegrp_3 |  -.0731692   .0028764   -25.44   0.000    -.0788068   -.0675315
+     ur12_std |   -.003003   .0032062    -0.94   0.349     -.009287    .0032811
+   _Jagegrp_2 |          0  (omitted)
+   _Jagegrp_3 |          0  (omitted)
+_JageXur12__2 |  -.0013521   .0021718    -0.62   0.534    -.0056087    .0029044
+_JageXur12__3 |  -.0016489   .0029638    -0.56   0.578    -.0074578      .00416
+        black |  -.0418518   .0024944   -16.78   0.000    -.0467407   -.0369629
+         hisp |  -.0411774   .0030152   -13.66   0.000    -.0470871   -.0352676
+       spouse |   .0041586   .0012378     3.36   0.001     .0017326    .0065846
+         kids |  -.0253253   .0013794   -18.36   0.000     -.028029   -.0226217
+        timet |   .0019193   .0013295     1.44   0.149    -.0006864     .004525
+       timet2 |   -.000064   .0000302    -2.12   0.034    -.0001232   -4.86e-06
+     _Ieduc_1 |  -.0112219   .0024174    -4.64   0.000      -.01596   -.0064838
+     _Ieduc_3 |   .0161099   .0012591    12.79   0.000      .013642    .0185778
+     _Ieduc_4 |   .0556372   .0030053    18.51   0.000      .049747    .0615274
+    _Iowner_1 |  -.0899644    .001734   -51.88   0.000    -.0933631   -.0865658
+   _Ifemale_1 |  -.0120669   .0017746    -6.80   0.000    -.0155451   -.0085888
+_Imetrostat_1 |  -.0187275   .0027509    -6.81   0.000    -.0241191   -.0133358
+        _cons |   .2118473   .0157988    13.41   0.000     .1808823    .2428124
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             15.030
+                                                   Chi-sq(7) P-val =    0.0356
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1640.610
+                         (Kleibergen-Paap rk Wald F statistic):         28.618
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KageXrruc__2 _KageXrruc__3
+Included instruments: _Kagegrp_2 _Kagegrp_3 ur12_std _JageXur12__2
+                      _JageXur12__3 black hisp spouse kids timet timet2 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Iowner_1 _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZageXbarti_2
+                      _ZageXbarti_3 _ZageXoilsh_2 _ZageXoilsh_3 _ZageXoilsha2
+                      _ZageXoilsha3
+Dropped collinear:    _Jagegrp_2 _Jagegrp_3 _Zagegrp_2 _Zagegrp_3
+Reclassified as exog: _Kagegrp_2 _Kagegrp_3
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.agegrp|gapus_std ;
+i.agegrp          _Jagegrp_1-3        (naturally coded; _Jagegrp_1 omitted)
+i.agegrp|gapu~d   _JageXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.agegrp|rgap_std ;
+i.agegrp          _Kagegrp_1-3        (naturally coded; _Kagegrp_1 omitted)
+i.agegrp|rgap~d   _KageXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.agegrp|bartik15r i.agegrp|oilshock151r i.agegrp|oilshock1512r ;
+i.agegrp          _Zagegrp_1-3        (naturally coded; _Zagegrp_1 omitted)
+i.agegrp|ba~15r   _ZageXbarti_#       (coded as above)
+i.agegrp|o~151r   _ZageXoilsh_#       (coded as above)
+i.agegrp|oil~2r   _ZageXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kagegrp_2 _Kagegrp_3
+Warning - collinearities detected
+Vars dropped:       _Jagegrp_2 _Jagegrp_3 _Zagegrp_2 _Zagegrp_3
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 20,    26) =  3591.61
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0483
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1490
+Residual SS             =  38321.79818                Root MSE      =       .3
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0103463   .0091542     1.13   0.258    -.0075956    .0282881
+_KageXrgap__2 |  -.0072566   .0047193    -1.54   0.124    -.0165063     .001993
+_KageXrgap__3 |  -.0120061   .0047676    -2.52   0.012    -.0213504   -.0026619
+   _Kagegrp_2 |  -.0539278   .0020115   -26.81   0.000    -.0578702   -.0499854
+   _Kagegrp_3 |  -.0728609   .0027412   -26.58   0.000    -.0782336   -.0674882
+    gapus_std |    .003408   .0025704     1.33   0.185    -.0016299     .008446
+   _Jagegrp_2 |          0  (omitted)
+   _Jagegrp_3 |          0  (omitted)
+_JageXgapus_2 |   .0006182    .002245     0.28   0.783    -.0037819    .0050183
+_JageXgapus_3 |  -.0021669   .0024787    -0.87   0.382    -.0070251    .0026912
+        black |  -.0406415   .0018707   -21.72   0.000    -.0443081   -.0369749
+         hisp |  -.0395863   .0017502   -22.62   0.000    -.0430167    -.036156
+       spouse |   .0046113   .0012265     3.76   0.000     .0022073    .0070152
+         kids |  -.0251953   .0013613   -18.51   0.000    -.0278635   -.0225272
+        timet |   .0024299   .0013185     1.84   0.065    -.0001542    .0050141
+       timet2 |  -.0000716   .0000303    -2.36   0.018    -.0001311   -.0000121
+     _Ieduc_1 |  -.0101643   .0017038    -5.97   0.000    -.0135038   -.0068249
+     _Ieduc_3 |    .015599   .0012424    12.56   0.000     .0131639    .0180341
+     _Ieduc_4 |   .0551552   .0028873    19.10   0.000     .0494962    .0608143
+    _Iowner_1 |  -.0906248   .0017073   -53.08   0.000    -.0939711   -.0872786
+   _Ifemale_1 |  -.0119782   .0017571    -6.82   0.000    -.0154222   -.0085343
+_Imetrostat_1 |  -.0171592   .0017471    -9.82   0.000    -.0205835    -.013735
+        _cons |   .2033426   .0147731    13.76   0.000     .1743879    .2322972
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              3.308
+                                                   Chi-sq(7) P-val =    0.8551
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             2366.496
+                         (Kleibergen-Paap rk Wald F statistic):          1.259
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):        17.023
+                                                   Chi-sq(6) P-val =    0.0092
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KageXrgap__2 _KageXrgap__3
+Included instruments: _Kagegrp_2 _Kagegrp_3 gapus_std _JageXgapus_2
+                      _JageXgapus_3 black hisp spouse kids timet timet2 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Iowner_1 _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZageXbarti_2
+                      _ZageXbarti_3 _ZageXoilsh_2 _ZageXoilsh_3 _ZageXoilsha2
+                      _ZageXoilsha3
+Dropped collinear:    _Jagegrp_2 _Jagegrp_3 _Zagegrp_2 _Zagegrp_3
+Reclassified as exog: _Kagegrp_2 _Kagegrp_3
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.agegrp|urateus_std ;
+i.agegrp          _Jagegrp_1-3        (naturally coded; _Jagegrp_1 omitted)
+i.agegrp|ura~td   _JageXurate_#       (coded as above)
+
+. xi, prefix(_K) i.agegrp|rurate_std ;
+i.agegrp          _Kagegrp_1-3        (naturally coded; _Kagegrp_1 omitted)
+i.agegrp|rura~d   _KageXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Kagegrp_2 _Kagegrp_3
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 20,    27) =  1540.31
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0493
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1487
+Residual SS             =  39393.10069                Root MSE      =    .2983
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |   .0002428   .0034051     0.07   0.943     -.006431    .0069166
+   _Jagegrp_2 |  -.0527485   .0020317   -25.96   0.000    -.0567305   -.0487665
+   _Jagegrp_3 |  -.0715497   .0027249   -26.26   0.000    -.0768904    -.066209
+_JageXurate_2 |  -.0023068   .0016893    -1.37   0.172    -.0056178    .0010042
+_JageXurate_3 |  -.0019394   .0022394    -0.87   0.386    -.0063286    .0024497
+   rurate_std |  -.0138158   .0014907    -9.27   0.000    -.0167376    -.010894
+   _Kagegrp_2 |          0  (omitted)
+   _Kagegrp_3 |          0  (omitted)
+_KageXrurat_2 |   .0049647    .001293     3.84   0.000     .0024305    .0074989
+_KageXrurat_3 |   .0062802    .001396     4.50   0.000     .0035441    .0090163
+        black |  -.0406116   .0018765   -21.64   0.000    -.0442895   -.0369337
+         hisp |  -.0404589   .0017131   -23.62   0.000    -.0438166   -.0371013
+       spouse |    .004683   .0011821     3.96   0.000     .0023662    .0069998
+         kids |  -.0248585   .0013435   -18.50   0.000    -.0274917   -.0222253
+        timet |   .0026347   .0014278     1.85   0.065    -.0001637     .005433
+       timet2 |  -.0000798   .0000299    -2.67   0.008    -.0001383   -.0000212
+     _Ieduc_1 |  -.0100267   .0016675    -6.01   0.000     -.013295   -.0067585
+     _Ieduc_3 |   .0147723   .0012168    12.14   0.000     .0123874    .0171573
+     _Ieduc_4 |   .0538192   .0028485    18.89   0.000     .0482363    .0594021
+    _Iowner_1 |  -.0899965   .0016754   -53.72   0.000    -.0932802   -.0867128
+   _Ifemale_1 |   -.011183   .0017388    -6.43   0.000     -.014591    -.007775
+_Imetrostat_1 |  -.0170851   .0018501    -9.23   0.000    -.0207113   -.0134589
+        _cons |   .2017924   .0167698    12.03   0.000     .1689242    .2346606
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jagegrp_2 _Jagegrp_3 _JageXurate_2
+                      _JageXurate_3 rurate_std _KageXrurat_2 _KageXrurat_3 black
+                      hisp spouse kids timet timet2 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iowner_1 _Ifemale_1 _Imetrostat_1
+Dropped collinear:    _Kagegrp_2 _Kagegrp_3
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. ** education interactions ;
+. xi i.agegrp i.owner i.female i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.owner           _Iowner_0-1         (naturally coded; _Iowner_0 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.educ|ur12_std ;
+i.educ            _Jeduc_1-4          (naturally coded; _Jeduc_2 omitted)
+i.educ|ur12_std   _JeduXur12__#       (coded as above)
+
+. xi, prefix(_K) i.educ|rruc_std ;
+i.educ            _Keduc_1-4          (naturally coded; _Keduc_2 omitted)
+i.educ|rruc_std   _KeduXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.educ|bartik15r i.educ|oilshock151r i.educ|oilshock1512r ;
+i.educ            _Zeduc_1-4          (naturally coded; _Zeduc_2 omitted)
+i.educ|bart~15r   _ZeduXbarti_#       (coded as above)
+i.educ|oil~151r   _ZeduXoilsh_#       (coded as above)
+i.educ|oi~1512r   _ZeduXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Keduc_1 _Keduc_3 _Keduc_4
+Warning - collinearities detected
+Vars dropped:       _Jeduc_1 _Jeduc_3 _Jeduc_4 _Zeduc_1 _Zeduc_3 _Zeduc_4
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 22,    25) =  1057.68
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0446
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1451
+Residual SS             =  36999.14101                Root MSE      =    .2999
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0096379   .0116683     0.83   0.409    -.0132316    .0325074
+_KeduXrruc__1 |   .0052833   .0052288     1.01   0.312    -.0049649    .0155315
+_KeduXrruc__3 |   .0018922   .0090963     0.21   0.835    -.0159361    .0197206
+_KeduXrruc__4 |   .0060004   .0121191     0.50   0.621    -.0177526    .0297534
+     _Keduc_1 |    -.01184   .0026682    -4.44   0.000    -.0170696   -.0066104
+     _Keduc_3 |   .0157582   .0012408    12.70   0.000     .0133262    .0181902
+     _Keduc_4 |   .0551663   .0026773    20.61   0.000     .0499189    .0604137
+     ur12_std |  -.0061779   .0016048    -3.85   0.000    -.0093232   -.0030326
+     _Jeduc_1 |          0  (omitted)
+     _Jeduc_3 |          0  (omitted)
+     _Jeduc_4 |          0  (omitted)
+_JeduXur12__1 |   .0012868   .0013995     0.92   0.358    -.0014561    .0040298
+_JeduXur12__3 |   .0013386   .0009881     1.35   0.176    -.0005981    .0032752
+_JeduXur12__4 |   .0058555   .0025316     2.31   0.021     .0008937    .0108173
+        black |  -.0416743   .0025014   -16.66   0.000     -.046577   -.0367716
+         hisp |  -.0410942   .0030543   -13.45   0.000    -.0470805    -.035108
+       spouse |   .0043837   .0012395     3.54   0.000     .0019542    .0068131
+         kids |  -.0254933   .0013761   -18.53   0.000    -.0281904   -.0227961
+        timet |    .001785   .0013202     1.35   0.176    -.0008026    .0043726
+       timet2 |  -.0000612     .00003    -2.04   0.041    -.0001201   -2.44e-06
+   _Iagegrp_2 |  -.0537674   .0020883   -25.75   0.000    -.0578604   -.0496743
+   _Iagegrp_3 |  -.0730167   .0028006   -26.07   0.000    -.0785058   -.0675275
+    _Iowner_1 |  -.0899862    .001736   -51.84   0.000    -.0933887   -.0865838
+   _Ifemale_1 |  -.0119087    .001798    -6.62   0.000    -.0154327   -.0083847
+_Imetrostat_1 |  -.0186368   .0027003    -6.90   0.000    -.0239293   -.0133443
+        _cons |   .2135201    .015838    13.48   0.000     .1824781     .244562
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             17.715
+                                                   Chi-sq(9) P-val =    0.0386
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):              858.702
+                         (Kleibergen-Paap rk Wald F statistic):         11.318
+Stock-Yogo weak ID test critical values:                       <not available>
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KeduXrruc__1 _KeduXrruc__3 _KeduXrruc__4
+Included instruments: _Keduc_1 _Keduc_3 _Keduc_4 ur12_std _JeduXur12__1
+                      _JeduXur12__3 _JeduXur12__4 black hisp spouse kids timet
+                      timet2 _Iagegrp_2 _Iagegrp_3 _Iowner_1 _Ifemale_1
+                      _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZeduXbarti_1
+                      _ZeduXbarti_3 _ZeduXbarti_4 _ZeduXoilsh_1 _ZeduXoilsh_3
+                      _ZeduXoilsh_4 _ZeduXoilsha1 _ZeduXoilsha3 _ZeduXoilsha4
+Dropped collinear:    _Jeduc_1 _Jeduc_3 _Jeduc_4 _Zeduc_1 _Zeduc_3 _Zeduc_4
+Reclassified as exog: _Keduc_1 _Keduc_3 _Keduc_4
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.educ|gapus_std ;
+i.educ            _Jeduc_1-4          (naturally coded; _Jeduc_2 omitted)
+i.educ|gapus_~d   _JeduXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.educ|rgap_std ;
+i.educ            _Keduc_1-4          (naturally coded; _Keduc_2 omitted)
+i.educ|rgap_std   _KeduXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.educ|bartik15r i.educ|oilshock151r i.educ|oilshock1512r ;
+i.educ            _Zeduc_1-4          (naturally coded; _Zeduc_2 omitted)
+i.educ|bart~15r   _ZeduXbarti_#       (coded as above)
+i.educ|oil~151r   _ZeduXoilsh_#       (coded as above)
+i.educ|oi~1512r   _ZeduXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Keduc_1 _Keduc_3 _Keduc_4
+Warning - collinearities detected
+Vars dropped:       _Jeduc_1 _Jeduc_3 _Jeduc_4 _Zeduc_1 _Zeduc_3 _Zeduc_4
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 22,    26) =  1102.36
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0484
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1491
+Residual SS             =  38315.47268                Root MSE      =       .3
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0053072   .0096196     0.55   0.581    -.0135469    .0241612
+_KeduXrgap__1 |  -.0040859   .0051661    -0.79   0.429    -.0142113    .0060395
+_KeduXrgap__3 |  -.0002192   .0051537    -0.04   0.966    -.0103203    .0098819
+_KeduXrgap__4 |  -.0024256   .0065729    -0.37   0.712    -.0153082     .010457
+     _Keduc_1 |  -.0101843    .001722    -5.91   0.000    -.0135594   -.0068091
+     _Keduc_3 |   .0155296   .0011972    12.97   0.000     .0131831     .017876
+     _Keduc_4 |    .055134   .0028369    19.43   0.000     .0495738    .0606942
+    gapus_std |   .0021956   .0014399     1.52   0.127    -.0006266    .0050177
+     _Jeduc_1 |          0  (omitted)
+     _Jeduc_3 |          0  (omitted)
+     _Jeduc_4 |          0  (omitted)
+_JeduXgapus_1 |   .0010528   .0015343     0.69   0.493    -.0019544    .0040599
+_JeduXgapus_3 |   .0014238   .0009825     1.45   0.147    -.0005019    .0033495
+_JeduXgapus_4 |   .0002681   .0020617     0.13   0.897    -.0037727     .004309
+        black |  -.0406492   .0018604   -21.85   0.000    -.0442955    -.037003
+         hisp |  -.0396218    .001769   -22.40   0.000    -.0430889   -.0361547
+       spouse |    .004596   .0012079     3.81   0.000     .0022287    .0069634
+         kids |  -.0251601   .0013634   -18.45   0.000    -.0278324   -.0224878
+        timet |   .0024278   .0013073     1.86   0.063    -.0001345    .0049901
+       timet2 |  -.0000716   .0000301    -2.38   0.017    -.0001305   -.0000126
+   _Iagegrp_2 |  -.0538865   .0020073   -26.85   0.000    -.0578208   -.0499523
+   _Iagegrp_3 |  -.0728023   .0027347   -26.62   0.000    -.0781622   -.0674425
+    _Iowner_1 |  -.0905954    .001697   -53.38   0.000    -.0939215   -.0872693
+   _Ifemale_1 |  -.0120233   .0017751    -6.77   0.000    -.0155024   -.0085442
+_Imetrostat_1 |  -.0172581   .0017275    -9.99   0.000    -.0206438   -.0138723
+        _cons |   .2034591   .0145461    13.99   0.000     .1749492     .231969
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              4.377
+                                                   Chi-sq(9) P-val =    0.8849
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1818.142
+                         (Kleibergen-Paap rk Wald F statistic):          2.833
+Stock-Yogo weak ID test critical values:                       <not available>
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KeduXrgap__1 _KeduXrgap__3 _KeduXrgap__4
+Included instruments: _Keduc_1 _Keduc_3 _Keduc_4 gapus_std _JeduXgapus_1
+                      _JeduXgapus_3 _JeduXgapus_4 black hisp spouse kids timet
+                      timet2 _Iagegrp_2 _Iagegrp_3 _Iowner_1 _Ifemale_1
+                      _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZeduXbarti_1
+                      _ZeduXbarti_3 _ZeduXbarti_4 _ZeduXoilsh_1 _ZeduXoilsh_3
+                      _ZeduXoilsh_4 _ZeduXoilsha1 _ZeduXoilsha3 _ZeduXoilsha4
+Dropped collinear:    _Jeduc_1 _Jeduc_3 _Jeduc_4 _Zeduc_1 _Zeduc_3 _Zeduc_4
+Reclassified as exog: _Keduc_1 _Keduc_3 _Keduc_4
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.educ|urateus_std ;
+i.educ            _Jeduc_1-4          (naturally coded; _Jeduc_2 omitted)
+i.educ|urateu~d   _JeduXurate_#       (coded as above)
+
+. xi, prefix(_K) i.educ|rurate_std ;
+i.educ            _Keduc_1-4          (naturally coded; _Keduc_2 omitted)
+i.educ|rurate~d   _KeduXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Keduc_1 _Keduc_3 _Keduc_4
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 22,    27) =   477.79
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0493
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1486
+Residual SS             =  39395.27694                Root MSE      =    .2983
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |  -.0020594   .0024002    -0.86   0.391    -.0067637    .0026449
+     _Jeduc_1 |   -.010018   .0016733    -5.99   0.000    -.0132976   -.0067384
+     _Jeduc_3 |   .0146816   .0012244    11.99   0.000     .0122818    .0170814
+     _Jeduc_4 |   .0540648   .0026708    20.24   0.000     .0488301    .0592996
+_JeduXurate_1 |   .0005715   .0010441     0.55   0.584     -.001475    .0026179
+_JeduXurate_3 |  -.0002119   .0008098    -0.26   0.794    -.0017992    .0013753
+_JeduXurate_4 |   .0029711   .0017089     1.74   0.082    -.0003783    .0063206
+   rurate_std |  -.0099246   .0010934    -9.08   0.000    -.0120676   -.0077815
+     _Keduc_1 |          0  (omitted)
+     _Keduc_3 |          0  (omitted)
+     _Keduc_4 |          0  (omitted)
+_KeduXrurat_1 |   -.001145   .0009066    -1.26   0.207    -.0029219    .0006318
+_KeduXrurat_3 |   .0004706   .0010532     0.45   0.655    -.0015935    .0025348
+_KeduXrurat_4 |   .0011722   .0011343     1.03   0.301    -.0010509    .0033953
+        black |  -.0406521   .0018794   -21.63   0.000    -.0443356   -.0369686
+         hisp |  -.0405989   .0017082   -23.77   0.000    -.0439469   -.0372509
+       spouse |   .0048995   .0011675     4.20   0.000     .0026114    .0071877
+         kids |  -.0249947   .0013482   -18.54   0.000    -.0276372   -.0223522
+        timet |   .0025853   .0014122     1.83   0.067    -.0001826    .0053532
+       timet2 |  -.0000786   .0000296    -2.66   0.008    -.0001366   -.0000207
+   _Iagegrp_2 |  -.0528826   .0020987   -25.20   0.000    -.0569959   -.0487693
+   _Iagegrp_3 |  -.0716359   .0027955   -25.63   0.000     -.077115   -.0661569
+    _Iowner_1 |  -.0900291   .0016684   -53.96   0.000    -.0932991   -.0867591
+   _Ifemale_1 |  -.0110887   .0017656    -6.28   0.000    -.0145492   -.0076282
+_Imetrostat_1 |  -.0170726   .0018436    -9.26   0.000     -.020686   -.0134592
+        _cons |   .2023954   .0167437    12.09   0.000     .1695784    .2352124
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jeduc_1 _Jeduc_3 _Jeduc_4 _JeduXurate_1
+                      _JeduXurate_3 _JeduXurate_4 rurate_std _KeduXrurat_1
+                      _KeduXrurat_3 _KeduXrurat_4 black hisp spouse kids timet
+                      timet2 _Iagegrp_2 _Iagegrp_3 _Iowner_1 _Ifemale_1
+                      _Imetrostat_1
+Dropped collinear:    _Keduc_1 _Keduc_3 _Keduc_4
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. ** female interactions ;
+. xi i.agegrp i.educ i.owner i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.owner           _Iowner_0-1         (naturally coded; _Iowner_0 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.female|ur12_std ;
+i.female          _Jfemale_0-1        (naturally coded; _Jfemale_0 omitted)
+i.female|ur12~d   _JfemXur12__#       (coded as above)
+
+. xi, prefix(_K) i.female|rruc_std ;
+i.female          _Kfemale_0-1        (naturally coded; _Kfemale_0 omitted)
+i.female|rruc~d   _KfemXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.female|bartik15r i.female|oilshock151r i.female|oilshock1512r ;
+i.female          _Zfemale_0-1        (naturally coded; _Zfemale_0 omitted)
+i.female|ba~15r   _ZfemXbarti_#       (coded as above)
+i.female|o~151r   _ZfemXoilsh_#       (coded as above)
+i.female|oil~2r   _ZfemXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kfemale_1
+Warning - collinearities detected
+Vars dropped:       _Jfemale_1 _Zfemale_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 18,    25) =   574.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0432
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1438
+Residual SS             =   37053.5475                Root MSE      =    .3001
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0070547   .0136087     0.52   0.604    -.0196178    .0337272
+_KfemXrruc__1 |   .0206475   .0155688     1.33   0.185    -.0098667    .0511618
+   _Kfemale_1 |   -.012682   .0014371    -8.82   0.000    -.0154987   -.0098652
+     ur12_std |  -.0019927    .001973    -1.01   0.313    -.0058597    .0018744
+   _Jfemale_1 |          0  (omitted)
+_JfemXur12__1 |  -.0060383   .0011819    -5.11   0.000    -.0083547   -.0037218
+        black |  -.0428166   .0022507   -19.02   0.000     -.047228   -.0384052
+         hisp |  -.0414548   .0028608   -14.49   0.000    -.0470619   -.0358477
+       spouse |   .0037199   .0012733     2.92   0.003     .0012243    .0062156
+         kids |   -.025723   .0012927   -19.90   0.000    -.0282567   -.0231893
+        timet |   .0019769   .0013501     1.46   0.143    -.0006693    .0046231
+       timet2 |  -.0000653   .0000305    -2.14   0.032    -.0001251   -5.47e-06
+   _Iagegrp_2 |  -.0538183   .0020645   -26.07   0.000    -.0578646    -.049772
+   _Iagegrp_3 |  -.0729538   .0027674   -26.36   0.000    -.0783777   -.0675298
+     _Ieduc_1 |  -.0114024   .0024025    -4.75   0.000    -.0161112   -.0066935
+     _Ieduc_3 |   .0159844   .0012576    12.71   0.000     .0135195    .0184492
+     _Ieduc_4 |   .0553981   .0029843    18.56   0.000     .0495491    .0612471
+    _Iowner_1 |  -.0899908   .0017316   -51.97   0.000    -.0933848   -.0865969
+_Imetrostat_1 |  -.0188123   .0027097    -6.94   0.000    -.0241232   -.0135014
+        _cons |   .2117761   .0159757    13.26   0.000     .1804643    .2430879
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             14.394
+                                                   Chi-sq(5) P-val =    0.0133
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1768.744
+                         (Kleibergen-Paap rk Wald F statistic):         14.425
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         6.341
+                                                   Chi-sq(4) P-val =    0.1751
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KfemXrruc__1
+Included instruments: _Kfemale_1 ur12_std _JfemXur12__1 black hisp spouse kids
+                      timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Iowner_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZfemXbarti_1
+                      _ZfemXoilsh_1 _ZfemXoilsha1
+Dropped collinear:    _Jfemale_1 _Zfemale_1
+Reclassified as exog: _Kfemale_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.female|gapus_std ;
+i.female          _Jfemale_0-1        (naturally coded; _Jfemale_0 omitted)
+i.female|gapu~d   _JfemXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.female|rgap_std ;
+i.female          _Kfemale_0-1        (naturally coded; _Kfemale_0 omitted)
+i.female|rgap~d   _KfemXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.female|bartik15r i.female|oilshock151r i.female|oilshock1512r ;
+i.female          _Zfemale_0-1        (naturally coded; _Zfemale_0 omitted)
+i.female|ba~15r   _ZfemXbarti_#       (coded as above)
+i.female|o~151r   _ZfemXoilsh_#       (coded as above)
+i.female|oil~2r   _ZfemXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kfemale_1
+Warning - collinearities detected
+Vars dropped:       _Jfemale_1 _Zfemale_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 18,    26) =   888.42
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0482
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1489
+Residual SS             =  38324.64927                Root MSE      =    .3001
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0064356   .0078327     0.82   0.411    -.0089163    .0217874
+_KfemXrgap__1 |  -.0150185   .0096003    -1.56   0.118    -.0338346    .0037977
+   _Kfemale_1 |  -.0122661   .0016334    -7.51   0.000    -.0154674   -.0090647
+    gapus_std |   .0023198   .0011759     1.97   0.049     .0000151    .0046246
+   _Jfemale_1 |          0  (omitted)
+_JfemXgapus_1 |   .0012888   .0016002     0.81   0.421    -.0018475    .0044251
+        black |  -.0405823   .0019243   -21.09   0.000    -.0443539   -.0368108
+         hisp |  -.0395037   .0017697   -22.32   0.000    -.0429723   -.0360351
+       spouse |   .0045542   .0012679     3.59   0.000     .0020691    .0070394
+         kids |   -.025273   .0013325   -18.97   0.000    -.0278847   -.0226613
+        timet |   .0025199   .0013055     1.93   0.054     -.000039    .0050787
+       timet2 |  -.0000739   .0000302    -2.45   0.014    -.0001332   -.0000147
+   _Iagegrp_2 |  -.0538978   .0020098   -26.82   0.000     -.057837   -.0499587
+   _Iagegrp_3 |   -.072737   .0027334   -26.61   0.000    -.0780944   -.0673796
+     _Ieduc_1 |  -.0101636   .0017074    -5.95   0.000    -.0135101    -.006817
+     _Ieduc_3 |   .0155112   .0012461    12.45   0.000      .013069    .0179534
+     _Ieduc_4 |   .0551165   .0028729    19.19   0.000     .0494858    .0607472
+    _Iowner_1 |  -.0904895   .0016955   -53.37   0.000    -.0938126   -.0871664
+_Imetrostat_1 |  -.0170366   .0017867    -9.54   0.000    -.0205385   -.0135348
+        _cons |   .2025147   .0144981    13.97   0.000      .174099    .2309304
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              2.524
+                                                   Chi-sq(5) P-val =    0.7729
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             2144.965
+                         (Kleibergen-Paap rk Wald F statistic):          0.958
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):        16.934
+                                                   Chi-sq(4) P-val =    0.0020
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KfemXrgap__1
+Included instruments: _Kfemale_1 gapus_std _JfemXgapus_1 black hisp spouse kids
+                      timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Iowner_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZfemXbarti_1
+                      _ZfemXoilsh_1 _ZfemXoilsha1
+Dropped collinear:    _Jfemale_1 _Zfemale_1
+Reclassified as exog: _Kfemale_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.female|urateus_std ;
+i.female          _Jfemale_0-1        (naturally coded; _Jfemale_0 omitted)
+i.female|ura~td   _JfemXurate_#       (coded as above)
+
+. xi, prefix(_K) i.female|rurate_std ;
+i.female          _Kfemale_0-1        (naturally coded; _Kfemale_0 omitted)
+i.female|rura~d   _KfemXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Kfemale_1
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 18,    27) =   477.44
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0493
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1487
+Residual SS             =  39393.94234                Root MSE      =    .2983
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |   .0002686   .0023971     0.11   0.911    -.0044298    .0049669
+   _Jfemale_1 |  -.0120724   .0015334    -7.87   0.000    -.0150778   -.0090669
+_JfemXurate_1 |  -.0049723   .0011455    -4.34   0.000    -.0072174   -.0027272
+   rurate_std |  -.0099699   .0010035    -9.94   0.000    -.0119366   -.0080031
+   _Kfemale_1 |          0  (omitted)
+_KfemXrurat_1 |   .0007834   .0011773     0.67   0.506    -.0015241    .0030908
+        black |  -.0406556     .00187   -21.74   0.000    -.0443207   -.0369904
+         hisp |  -.0404877   .0017067   -23.72   0.000    -.0438327   -.0371427
+       spouse |   .0040356   .0012203     3.31   0.001     .0016438    .0064273
+         kids |   -.024911   .0013521   -18.42   0.000    -.0275611   -.0222609
+        timet |   .0027806   .0014426     1.93   0.054    -.0000467     .005608
+       timet2 |  -.0000831     .00003    -2.77   0.006    -.0001419   -.0000244
+   _Iagegrp_2 |  -.0527801   .0021017   -25.11   0.000    -.0568994   -.0486608
+   _Iagegrp_3 |  -.0714578   .0028104   -25.43   0.000    -.0769662   -.0659495
+     _Ieduc_1 |  -.0100259    .001668    -6.01   0.000    -.0132951   -.0067568
+     _Ieduc_3 |   .0146659   .0012195    12.03   0.000     .0122758    .0170561
+     _Ieduc_4 |   .0537036   .0028458    18.87   0.000     .0481259    .0592813
+    _Iowner_1 |  -.0900844   .0016606   -54.25   0.000    -.0933392   -.0868296
+_Imetrostat_1 |  -.0169581   .0018403    -9.21   0.000    -.0205651   -.0133511
+        _cons |   .2008179   .0170167    11.80   0.000     .1674657    .2341701
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jfemale_1 _JfemXurate_1 rurate_std
+                      _KfemXrurat_1 black hisp spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4 _Iowner_1
+                      _Imetrostat_1
+Dropped collinear:    _Kfemale_1
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. ** race and ethnicity interactions ;
+. xi i.agegrp i.educ i.owner i.female i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.owner           _Iowner_0-1         (naturally coded; _Iowner_0 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.black|ur12_std i.hisp|ur12_std ;
+i.black           _Jblack_0-1         (naturally coded; _Jblack_0 omitted)
+i.black|ur12_~d   _JblaXur12__#       (coded as above)
+i.hisp            _Jhisp_0-1          (naturally coded; _Jhisp_0 omitted)
+i.hisp|ur12_std   _JhisXur12__#       (coded as above)
+
+. xi, prefix(_K) i.black|rruc_std i.hisp|rruc_std ;
+i.black           _Kblack_0-1         (naturally coded; _Kblack_0 omitted)
+i.black|rruc_~d   _KblaXrruc__#       (coded as above)
+i.hisp            _Khisp_0-1          (naturally coded; _Khisp_0 omitted)
+i.hisp|rruc_std   _KhisXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik1
+> 5r i.hisp|oilshock151r i.hisp|oilshock1512r ;
+i.black           _Zblack_0-1         (naturally coded; _Zblack_0 omitted)
+i.black|bar~15r   _ZblaXbarti_#       (coded as above)
+i.black|oi~151r   _ZblaXoilsh_#       (coded as above)
+i.black|o~1512r   _ZblaXoilsha#       (coded as above)
+i.hisp            _Zhisp_0-1          (naturally coded; _Zhisp_0 omitted)
+i.hisp|bart~15r   _ZhisXbarti_#       (coded as above)
+i.hisp|oil~151r   _ZhisXoilsh_#       (coded as above)
+i.hisp|oi~1512r   _ZhisXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsraceiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kblack_1 _Khisp_1
+Warning - collinearities detected
+Vars dropped:       _Jblack_1 _Jhisp_1 _Zblack_1 _Zhisp_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 20,    25) =   550.54
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0451
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1455
+Residual SS             =  36979.20741                Root MSE      =    .2998
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0105653   .0149185     0.71   0.479    -.0186744     .039805
+_KblaXrruc__1 |   .0188474   .0132191     1.43   0.154    -.0070616    .0447564
+_KhisXrruc__1 |  -.0217174   .0195252    -1.11   0.266    -.0599861    .0165514
+    _Kblack_1 |  -.0443315   .0015915   -27.86   0.000    -.0474507   -.0412123
+     _Khisp_1 |  -.0374349   .0022146   -16.90   0.000    -.0417755   -.0330943
+     ur12_std |  -.0029482   .0020356    -1.45   0.148     -.006938    .0010416
+    _Jblack_1 |          0  (omitted)
+_JblaXur12__1 |  -.0065273   .0021004    -3.11   0.002     -.010644   -.0024105
+     _Jhisp_1 |          0  (omitted)
+_JhisXur12__1 |  -.0024906   .0021125    -1.18   0.238    -.0066311    .0016499
+       spouse |   .0045668   .0012623     3.62   0.000     .0020927    .0070409
+         kids |  -.0254659   .0013581   -18.75   0.000    -.0281277   -.0228042
+        timet |   .0028101   .0015561     1.81   0.071    -.0002397      .00586
+       timet2 |  -.0000833   .0000335    -2.49   0.013    -.0001489   -.0000177
+   _Iagegrp_2 |  -.0535985    .002083   -25.73   0.000     -.057681   -.0495159
+   _Iagegrp_3 |  -.0727585   .0028053   -25.94   0.000    -.0782568   -.0672602
+     _Ieduc_1 |  -.0107044   .0022075    -4.85   0.000     -.015031   -.0063778
+     _Ieduc_3 |   .0159398   .0013028    12.23   0.000     .0133863    .0184933
+     _Ieduc_4 |   .0552555   .0030019    18.41   0.000     .0493719    .0611391
+    _Iowner_1 |   -.090223   .0017165   -52.56   0.000    -.0935873   -.0868588
+   _Ifemale_1 |  -.0120112   .0018114    -6.63   0.000    -.0155614   -.0084609
+_Imetrostat_1 |  -.0174193   .0024802    -7.02   0.000    -.0222803   -.0125582
+        _cons |    .201447    .017912    11.25   0.000     .1663401     .236554
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              7.919
+                                                   Chi-sq(7) P-val =    0.3398
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1143.410
+                         (Kleibergen-Paap rk Wald F statistic):          6.854
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KblaXrruc__1 _KhisXrruc__1
+Included instruments: _Kblack_1 _Khisp_1 ur12_std _JblaXur12__1 _JhisXur12__1
+                      spouse kids timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Iowner_1 _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZblaXbarti_1
+                      _ZblaXoilsh_1 _ZblaXoilsha1 _ZhisXbarti_1 _ZhisXoilsh_1
+                      _ZhisXoilsha1
+Dropped collinear:    _Jblack_1 _Jhisp_1 _Zblack_1 _Zhisp_1
+Reclassified as exog: _Kblack_1 _Khisp_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.black|gapus_std i.hisp|gapus_std ;
+i.black           _Jblack_0-1         (naturally coded; _Jblack_0 omitted)
+i.black|gapus~d   _JblaXgapus_#       (coded as above)
+i.hisp            _Jhisp_0-1          (naturally coded; _Jhisp_0 omitted)
+i.hisp|gapus_~d   _JhisXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.black|rgap_std i.hisp|rgap_std ;
+i.black           _Kblack_0-1         (naturally coded; _Kblack_0 omitted)
+i.black|rgap_~d   _KblaXrgap__#       (coded as above)
+i.hisp            _Khisp_0-1          (naturally coded; _Khisp_0 omitted)
+i.hisp|rgap_std   _KhisXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik1
+> 5r i.hisp|oilshock151r i.hisp|oilshock1512r ;
+i.black           _Zblack_0-1         (naturally coded; _Zblack_0 omitted)
+i.black|bar~15r   _ZblaXbarti_#       (coded as above)
+i.black|oi~151r   _ZblaXoilsh_#       (coded as above)
+i.black|o~1512r   _ZblaXoilsha#       (coded as above)
+i.hisp            _Zhisp_0-1          (naturally coded; _Zhisp_0 omitted)
+i.hisp|bart~15r   _ZhisXbarti_#       (coded as above)
+i.hisp|oil~151r   _ZhisXoilsh_#       (coded as above)
+i.hisp|oi~1512r   _ZhisXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsraceiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kblack_1 _Khisp_1
+Warning - collinearities detected
+Vars dropped:       _Jblack_1 _Jhisp_1 _Zblack_1 _Zhisp_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 20,    26) =  1272.76
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0477
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1484
+Residual SS             =   38345.9363                Root MSE      =    .3001
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0061871   .0094564     0.65   0.513     -.012347    .0247213
+_KblaXrgap__1 |  -.0268791   .0098017    -2.74   0.006      -.04609   -.0076682
+_KhisXrgap__1 |   .0099504   .0170341     0.58   0.559    -.0234358    .0433367
+    _Kblack_1 |  -.0410705   .0017657   -23.26   0.000    -.0445313   -.0376098
+     _Khisp_1 |   -.040129   .0018548   -21.64   0.000    -.0437643   -.0364937
+    gapus_std |   .0024267   .0013956     1.74   0.082    -.0003087     .005162
+    _Jblack_1 |          0  (omitted)
+_JblaXgapus_1 |   .0016753   .0020042     0.84   0.403    -.0022529    .0056036
+     _Jhisp_1 |          0  (omitted)
+_JhisXgapus_1 |   .0007199   .0016479     0.44   0.662    -.0025099    .0039497
+       spouse |    .004688   .0012084     3.88   0.000     .0023196    .0070564
+         kids |  -.0251166   .0013634   -18.42   0.000    -.0277888   -.0224444
+        timet |   .0026906   .0013674     1.97   0.049     .0000105    .0053706
+       timet2 |  -.0000768   .0000311    -2.47   0.014    -.0001378   -.0000157
+   _Iagegrp_2 |  -.0539251   .0020215   -26.68   0.000     -.057887   -.0499631
+   _Iagegrp_3 |  -.0728916   .0027563   -26.45   0.000    -.0782939   -.0674893
+     _Ieduc_1 |  -.0102702    .001733    -5.93   0.000    -.0136669   -.0068735
+     _Ieduc_3 |   .0155521   .0012493    12.45   0.000     .0131035    .0180008
+     _Ieduc_4 |   .0550807   .0028612    19.25   0.000     .0494727    .0606886
+    _Iowner_1 |  -.0906214   .0016989   -53.34   0.000    -.0939511   -.0872917
+   _Ifemale_1 |  -.0120055   .0017822    -6.74   0.000    -.0154986   -.0085124
+_Imetrostat_1 |   -.017278   .0016383   -10.55   0.000    -.0204891    -.014067
+        _cons |   .2005846   .0153064    13.10   0.000     .1705846    .2305847
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              3.181
+                                                   Chi-sq(7) P-val =    0.8677
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1641.109
+                         (Kleibergen-Paap rk Wald F statistic):          2.903
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):        16.935
+                                                   Chi-sq(6) P-val =    0.0095
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KblaXrgap__1 _KhisXrgap__1
+Included instruments: _Kblack_1 _Khisp_1 gapus_std _JblaXgapus_1 _JhisXgapus_1
+                      spouse kids timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Iowner_1 _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZblaXbarti_1
+                      _ZblaXoilsh_1 _ZblaXoilsha1 _ZhisXbarti_1 _ZhisXoilsh_1
+                      _ZhisXoilsha1
+Dropped collinear:    _Jblack_1 _Jhisp_1 _Zblack_1 _Zhisp_1
+Reclassified as exog: _Kblack_1 _Khisp_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.black|urateus_std i.hisp|urateus_std ;
+i.black           _Jblack_0-1         (naturally coded; _Jblack_0 omitted)
+i.black|urat~td   _JblaXurate_#       (coded as above)
+i.hisp            _Jhisp_0-1          (naturally coded; _Jhisp_0 omitted)
+i.hisp|urateu~d   _JhisXurate_#       (coded as above)
+
+.  xi, prefix(_K) i.black|rurate_std i.hisp|rurate_std ;
+i.black           _Kblack_0-1         (naturally coded; _Kblack_0 omitted)
+i.black|rurat~d   _KblaXrurat_#       (coded as above)
+i.hisp            _Khisp_0-1          (naturally coded; _Khisp_0 omitted)
+i.hisp|rurate~d   _KhisXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regsrace ;
+Warning - collinearities detected
+Vars dropped:       _Kblack_1 _Khisp_1
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 20,    27) =   647.02
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0493
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1487
+Residual SS             =  39392.58428                Root MSE      =    .2983
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |   .0000921   .0026947     0.03   0.973    -.0051894    .0053736
+    _Jblack_1 |  -.0410599   .0016086   -25.52   0.000    -.0442127   -.0379071
+_JblaXurate_1 |  -.0066243   .0014344    -4.62   0.000    -.0094356    -.003813
+     _Jhisp_1 |  -.0416242   .0015877   -26.22   0.000     -.044736   -.0385124
+_JhisXurate_1 |  -.0038935   .0014429    -2.70   0.007    -.0067216   -.0010654
+   rurate_std |  -.0098298   .0011326    -8.68   0.000    -.0120498   -.0076099
+    _Kblack_1 |          0  (omitted)
+_KblaXrurat_1 |   .0044382   .0021056     2.11   0.035     .0003113    .0085651
+     _Khisp_1 |          0  (omitted)
+_KhisXrurat_1 |  -.0025932   .0023009    -1.13   0.260    -.0071028    .0019165
+       spouse |   .0048239   .0011647     4.14   0.000     .0025412    .0071067
+         kids |  -.0248806    .001353   -18.39   0.000    -.0275325   -.0222287
+        timet |   .0027798   .0014309     1.94   0.052    -.0000248    .0055844
+       timet2 |  -.0000829   .0000298    -2.78   0.005    -.0001412   -.0000245
+   _Iagegrp_2 |  -.0528043   .0021037   -25.10   0.000    -.0569274   -.0486812
+   _Iagegrp_3 |  -.0715239   .0028015   -25.53   0.000    -.0770147   -.0660332
+     _Ieduc_1 |  -.0099156    .001677    -5.91   0.000    -.0132026   -.0066287
+     _Ieduc_3 |    .014736   .0012172    12.11   0.000     .0123502    .0171217
+     _Ieduc_4 |   .0538267   .0028415    18.94   0.000     .0482574    .0593959
+    _Iowner_1 |  -.0901196   .0016512   -54.58   0.000    -.0933558   -.0868833
+   _Ifemale_1 |  -.0110599   .0017557    -6.30   0.000     -.014501   -.0076188
+_Imetrostat_1 |  -.0168794   .0018196    -9.28   0.000    -.0204459    -.013313
+        _cons |   .2002042   .0168555    11.88   0.000      .167168    .2332403
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jblack_1 _JblaXurate_1 _Jhisp_1
+                      _JhisXurate_1 rurate_std _KblaXrurat_1 _KhisXrurat_1
+                      spouse kids timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Iowner_1 _Ifemale_1 _Imetrostat_1
+Dropped collinear:    _Kblack_1 _Khisp_1
+------------------------------------------------------------------------------
+
+. ** empstat interactions ;
+. xi i.agegrp i.educ i.female i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.empstat|ur12_std ;
+i.empstat         _Jempstat_1-3       (naturally coded; _Jempstat_1 omitted)
+i.emps~t|ur12~d   _JempXur12__#       (coded as above)
+
+. xi, prefix(_K) i.empstat|rruc_std ;
+i.empstat         _Kempstat_1-3       (naturally coded; _Kempstat_1 omitted)
+i.emps~t|rruc~d   _KempXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.empstat|bartik15r i.empstat|oilshock151r i.empstat|oilshock1512r ;
+i.empstat         _Zempstat_1-3       (naturally coded; _Zempstat_1 omitted)
+i.emps~t|ba~15r   _ZempXbarti_#       (coded as above)
+i.emps~t|o~151r   _ZempXoilsh_#       (coded as above)
+i.emps~t|oil~2r   _ZempXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kempstat_2 _Kempstat_3
+Warning - collinearities detected
+Vars dropped:       _Jempstat_2 _Jempstat_3 _Zempstat_2 _Zempstat_3
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 21,    25) =   987.76
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0280
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1302
+Residual SS             =  37642.35737                Root MSE      =    .3025
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0048004   .0119474     0.40   0.688     -.018616    .0282169
+_KempXrruc__2 |   .0086513   .0131019     0.66   0.509     -.017028    .0343306
+_KempXrruc__3 |   .0420104    .023042     1.82   0.068     -.003151    .0871718
+  _Kempstat_2 |    .030395   .0048407     6.28   0.000     .0209075    .0398825
+  _Kempstat_3 |   .0285951   .0033816     8.46   0.000     .0219672     .035223
+     ur12_std |  -.0044208   .0019071    -2.32   0.020    -.0081587   -.0006829
+  _Jempstat_2 |          0  (omitted)
+  _Jempstat_3 |          0  (omitted)
+_JempXur12__2 |  -.0071048   .0034706    -2.05   0.041    -.0139071   -.0003026
+_JempXur12__3 |   .0058979    .002268     2.60   0.009     .0014527     .010343
+        black |  -.0312488   .0021997   -14.21   0.000    -.0355602   -.0269373
+         hisp |  -.0287976   .0025598   -11.25   0.000    -.0338148   -.0237804
+       spouse |  -.0175048   .0011904   -14.71   0.000    -.0198379   -.0151718
+         kids |  -.0336083   .0010175   -33.03   0.000    -.0356025   -.0316141
+        timet |    .002994   .0011591     2.58   0.010     .0007223    .0052658
+       timet2 |  -.0000967   .0000258    -3.75   0.000    -.0001472   -.0000461
+   _Iagegrp_2 |  -.0636305   .0024096   -26.41   0.000    -.0683532   -.0589079
+   _Iagegrp_3 |  -.0928105   .0033503   -27.70   0.000    -.0993768   -.0862441
+     _Ieduc_1 |  -.0064658    .002467    -2.62   0.009     -.011301   -.0016306
+     _Ieduc_3 |   .0151544   .0013989    10.83   0.000     .0124126    .0178962
+     _Ieduc_4 |   .0522312   .0033862    15.42   0.000     .0455943    .0588681
+   _Ifemale_1 |  -.0115152   .0015895    -7.24   0.000    -.0146305   -.0083998
+_Imetrostat_1 |  -.0123938    .002466    -5.03   0.000     -.017227   -.0075605
+        _cons |   .1797264   .0141043    12.74   0.000     .1520825    .2073703
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              9.747
+                                                   Chi-sq(7) P-val =    0.2033
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1364.500
+                         (Kleibergen-Paap rk Wald F statistic):         31.821
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KempXrruc__2 _KempXrruc__3
+Included instruments: _Kempstat_2 _Kempstat_3 ur12_std _JempXur12__2
+                      _JempXur12__3 black hisp spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZempXbarti_2
+                      _ZempXbarti_3 _ZempXoilsh_2 _ZempXoilsh_3 _ZempXoilsha2
+                      _ZempXoilsha3
+Dropped collinear:    _Jempstat_2 _Jempstat_3 _Zempstat_2 _Zempstat_3
+Reclassified as exog: _Kempstat_2 _Kempstat_3
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.empstat|gapus_std ;
+i.empstat         _Jempstat_1-3       (naturally coded; _Jempstat_1 omitted)
+i.emps~t|gapu~d   _JempXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.empstat|rgap_std ;
+i.empstat         _Kempstat_1-3       (naturally coded; _Kempstat_1 omitted)
+i.emps~t|rgap~d   _KempXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.empstat|bartik15r i.empstat|oilshock151r i.empstat|oilshock1512r ;
+i.empstat         _Zempstat_1-3       (naturally coded; _Zempstat_1 omitted)
+i.emps~t|ba~15r   _ZempXbarti_#       (coded as above)
+i.emps~t|o~151r   _ZempXoilsh_#       (coded as above)
+i.emps~t|oil~2r   _ZempXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kempstat_2 _Kempstat_3
+Warning - collinearities detected
+Vars dropped:       _Jempstat_2 _Jempstat_3 _Zempstat_2 _Zempstat_3
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 21,    26) =  1211.95
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0325
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1348
+Residual SS             =  38958.03223                Root MSE      =    .3025
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0077866    .007407     1.05   0.293    -.0067309    .0223042
+_KempXrgap__2 |  -.0086893   .0156864    -0.55   0.580    -.0394342    .0220555
+_KempXrgap__3 |  -.0336888   .0228233    -1.48   0.140    -.0784216    .0110439
+  _Kempstat_2 |   .0315907   .0038957     8.11   0.000     .0239552    .0392262
+  _Kempstat_3 |   .0320934   .0031364    10.23   0.000     .0259462    .0382406
+    gapus_std |   .0031152   .0012492     2.49   0.013     .0006669    .0055636
+  _Jempstat_2 |          0  (omitted)
+  _Jempstat_3 |          0  (omitted)
+_JempXgapus_2 |   .0006942    .003341     0.21   0.835     -.005854    .0072423
+_JempXgapus_3 |  -.0026769   .0025599    -1.05   0.296    -.0076942    .0023403
+        black |  -.0298473   .0020007   -14.92   0.000    -.0337687    -.025926
+         hisp |  -.0279301   .0016284   -17.15   0.000    -.0311216   -.0247385
+       spouse |  -.0176712   .0011786   -14.99   0.000    -.0199813   -.0153611
+         kids |  -.0333281   .0010704   -31.14   0.000     -.035426   -.0312301
+        timet |   .0036571   .0013037     2.81   0.005     .0011019    .0062124
+       timet2 |  -.0001078   .0000283    -3.81   0.000    -.0001633   -.0000524
+   _Iagegrp_2 |  -.0640291    .002343   -27.33   0.000    -.0686214   -.0594369
+   _Iagegrp_3 |  -.0929929   .0032504   -28.61   0.000    -.0993635   -.0866223
+     _Ieduc_1 |  -.0047507   .0017855    -2.66   0.008    -.0082503   -.0012512
+     _Ieduc_3 |   .0146266   .0013582    10.77   0.000     .0119647    .0172886
+     _Ieduc_4 |   .0522783   .0032568    16.05   0.000     .0458951    .0586615
+   _Ifemale_1 |  -.0112764   .0015851    -7.11   0.000    -.0143832   -.0081697
+_Imetrostat_1 |  -.0113092   .0016359    -6.91   0.000    -.0145155   -.0081029
+        _cons |   .1698128   .0149272    11.38   0.000     .1405559    .1990696
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              2.526
+                                                   Chi-sq(7) P-val =    0.9251
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1735.371
+                         (Kleibergen-Paap rk Wald F statistic):          1.107
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KempXrgap__2 _KempXrgap__3
+Included instruments: _Kempstat_2 _Kempstat_3 gapus_std _JempXgapus_2
+                      _JempXgapus_3 black hisp spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Ifemale_1 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZempXbarti_2
+                      _ZempXbarti_3 _ZempXoilsh_2 _ZempXoilsh_3 _ZempXoilsha2
+                      _ZempXoilsha3
+Dropped collinear:    _Jempstat_2 _Jempstat_3 _Zempstat_2 _Zempstat_3
+Reclassified as exog: _Kempstat_2 _Kempstat_3
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.empstat|urateus_std ;
+i.empstat         _Jempstat_1-3       (naturally coded; _Jempstat_1 omitted)
+i.emps~t|ura~td   _JempXurate_#       (coded as above)
+
+. xi, prefix(_K) i.empstat|rurate_std ;
+i.empstat         _Kempstat_1-3       (naturally coded; _Kempstat_1 omitted)
+i.emps~t|rura~d   _KempXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Kempstat_2 _Kempstat_3
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         36                Number of obs =   520544
+                                                      F( 21,    35) =   493.63
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  50707.67969                Centered R2   =   0.0374
+Total (uncentered) SS   =        56935                Uncentered R2 =   0.1427
+Residual SS             =  48810.77696                Root MSE      =    .3062
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |  -.0054504   .0016752    -3.25   0.001    -.0087338   -.0021671
+  _Jempstat_2 |   .0392508   .0030218    12.99   0.000     .0333282    .0451733
+  _Jempstat_3 |   .0452081   .0046155     9.79   0.000      .036162    .0542542
+_JempXurate_2 |  -.0030298   .0030044    -1.01   0.313    -.0089182    .0028586
+_JempXurate_3 |    .008746   .0029893     2.93   0.003     .0028871    .0146049
+   rurate_std |  -.0089122    .000733   -12.16   0.000    -.0103489   -.0074755
+  _Kempstat_2 |          0  (omitted)
+  _Kempstat_3 |          0  (omitted)
+_KempXrurat_2 |  -.0035571   .0022388    -1.59   0.112    -.0079451    .0008308
+_KempXrurat_3 |  -.0000614   .0020024    -0.03   0.976    -.0039861    .0038632
+        black |  -.0366829   .0029405   -12.47   0.000    -.0424463   -.0309196
+         hisp |  -.0282899   .0016124   -17.55   0.000    -.0314502   -.0251297
+       spouse |  -.0210311   .0021752    -9.67   0.000    -.0252944   -.0167678
+         kids |  -.0297349   .0019975   -14.89   0.000    -.0336499     -.02582
+        timet |    .000541   .0005166     1.05   0.295    -.0004715    .0015536
+       timet2 |  -.0000512   .0000128    -4.01   0.000    -.0000762   -.0000262
+   _Iagegrp_2 |  -.0667277   .0025196   -26.48   0.000     -.071666   -.0617894
+   _Iagegrp_3 |  -.0969552   .0035373   -27.41   0.000    -.1038881   -.0900223
+     _Ieduc_1 |  -.0081105   .0019093    -4.25   0.000    -.0118526   -.0043683
+     _Ieduc_3 |   .0173597   .0016925    10.26   0.000     .0140425    .0206769
+     _Ieduc_4 |   .0593621   .0043028    13.80   0.000     .0509287    .0677955
+   _Ifemale_1 |  -.0130009   .0019343    -6.72   0.000    -.0167921   -.0092098
+_Imetrostat_1 |  -.0140833   .0018342    -7.68   0.000    -.0176783   -.0104883
+        _cons |   .2091084   .0064296    32.52   0.000     .1965066    .2217102
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jempstat_2 _Jempstat_3 _JempXurate_2
+                      _JempXurate_3 rurate_std _KempXrurat_2 _KempXrurat_3 black
+                      hisp spouse kids timet timet2 _Iagegrp_2 _Iagegrp_3
+                      _Ieduc_1 _Ieduc_3 _Ieduc_4 _Ifemale_1 _Imetrostat_1
+Dropped collinear:    _Kempstat_2 _Kempstat_3
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. ** homeowner interactions ;
+. xi i.agegrp i.educ i.female i.empstat i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.empstat         _Iempstat_1-3       (naturally coded; _Iempstat_1 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. xi, prefix(_J) i.owner|ur12_std i.kids|ur12_std ;
+i.owner           _Jowner_0-1         (naturally coded; _Jowner_0 omitted)
+i.owner|ur12_~d   _JownXur12__#       (coded as above)
+i.kids            _Jkids_0-1          (naturally coded; _Jkids_0 omitted)
+i.kids|ur12_std   _JkidXur12__#       (coded as above)
+
+. xi, prefix(_K) i.owner|rruc_std i.kids|rruc_std ;
+i.owner           _Kowner_0-1         (naturally coded; _Kowner_0 omitted)
+i.owner|rruc_~d   _KownXrruc__#       (coded as above)
+i.kids            _Kkids_0-1          (naturally coded; _Kkids_0 omitted)
+i.kids|rruc_std   _KkidXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik1
+> 5r i.kids|oilshock151r i.kids|oilshock1512r ;
+i.owner           _Zowner_0-1         (naturally coded; _Zowner_0 omitted)
+i.owner|bar~15r   _ZownXbarti_#       (coded as above)
+i.owner|oi~151r   _ZownXoilsh_#       (coded as above)
+i.owner|o~1512r   _ZownXoilsha#       (coded as above)
+i.kids            _Zkids_0-1          (naturally coded; _Zkids_0 omitted)
+i.kids|bart~15r   _ZkidXbarti_#       (coded as above)
+i.kids|oil~151r   _ZkidXoilsh_#       (coded as above)
+i.kids|oi~1512r   _ZkidXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kowner_1 _Kkids_1
+Warning - collinearities detected
+Vars dropped:       _Jowner_1 _Jkids_1 kids _Zowner_1 _Zkids_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 22,    25) =  1369.65
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0406
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1415
+Residual SS             =  37154.25489                Root MSE      =    .3005
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0273318   .0216993     1.26   0.208    -.0151981    .0698617
+_KownXrruc__1 |  -.0343621   .0196941    -1.74   0.081    -.0729619    .0042377
+_KkidXrruc__1 |   .0032651   .0041596     0.78   0.432    -.0048876    .0114179
+    _Kowner_1 |   -.087705   .0016028   -54.72   0.000    -.0908464   -.0845637
+     _Kkids_1 |  -.0274894   .0010323   -26.63   0.000    -.0295126   -.0254661
+     ur12_std |  -.0048396   .0024135    -2.01   0.045    -.0095699   -.0001093
+    _Jowner_1 |          0  (omitted)
+_JownXur12__1 |  -.0010471   .0014416    -0.73   0.468    -.0038725    .0017783
+     _Jkids_1 |          0  (omitted)
+_JkidXur12__1 |    .001334   .0011238     1.19   0.235    -.0008686    .0035366
+        black |  -.0443676   .0026562   -16.70   0.000    -.0495737   -.0391615
+         hisp |  -.0423089   .0032528   -13.01   0.000    -.0486843   -.0359335
+       spouse |   .0039823    .001232     3.23   0.001     .0015676     .006397
+         kids |          0  (omitted)
+        timet |   .0012737   .0014051     0.91   0.365    -.0014802    .0040276
+       timet2 |  -.0000521    .000032    -1.63   0.104    -.0001148    .0000106
+   _Iagegrp_2 |  -.0532117   .0022075   -24.11   0.000    -.0575383   -.0488852
+   _Iagegrp_3 |  -.0721392   .0028142   -25.63   0.000     -.077655   -.0666234
+     _Ieduc_1 |  -.0150198   .0026141    -5.75   0.000    -.0201434   -.0098962
+     _Ieduc_3 |   .0162521   .0012787    12.71   0.000     .0137459    .0187583
+     _Ieduc_4 |   .0563173   .0029931    18.82   0.000     .0504511    .0621836
+   _Ifemale_1 |  -.0153826   .0018815    -8.18   0.000    -.0190702    -.011695
+  _Iempstat_2 |   .0191481   .0038884     4.92   0.000     .0115269    .0267694
+  _Iempstat_3 |   .0223269   .0026897     8.30   0.000     .0170552    .0275986
+_Imetrostat_1 |  -.0189674   .0029647    -6.40   0.000     -.024778   -.0131567
+        _cons |   .2171755   .0169765    12.79   0.000     .1839021    .2504489
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             13.088
+                                                   Chi-sq(7) P-val =    0.0700
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1494.699
+                         (Kleibergen-Paap rk Wald F statistic):          6.896
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KownXrruc__1 _KkidXrruc__1
+Included instruments: _Kowner_1 _Kkids_1 ur12_std _JownXur12__1 _JkidXur12__1
+                      black hisp spouse timet timet2 _Iagegrp_2 _Iagegrp_3
+                      _Ieduc_1 _Ieduc_3 _Ieduc_4 _Ifemale_1 _Iempstat_2
+                      _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZownXbarti_1
+                      _ZownXoilsh_1 _ZownXoilsha1 _ZkidXbarti_1 _ZkidXoilsh_1
+                      _ZkidXoilsha1
+Dropped collinear:    _Jowner_1 _Jkids_1 kids _Zowner_1 _Zkids_1
+Reclassified as exog: _Kowner_1 _Kkids_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.owner|gapus_std i.kids|gapus_std ;
+i.owner           _Jowner_0-1         (naturally coded; _Jowner_0 omitted)
+i.owner|gapus~d   _JownXgapus_#       (coded as above)
+i.kids            _Jkids_0-1          (naturally coded; _Jkids_0 omitted)
+i.kids|gapus_~d   _JkidXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.owner|rgap_std i.kids|rgap_std ;
+i.owner           _Kowner_0-1         (naturally coded; _Kowner_0 omitted)
+i.owner|rgap_~d   _KownXrgap__#       (coded as above)
+i.kids            _Kkids_0-1          (naturally coded; _Kkids_0 omitted)
+i.kids|rgap_std   _KkidXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik1
+> 5r i.kids|oilshock151r i.kids|oilshock1512r ;
+i.owner           _Zowner_0-1         (naturally coded; _Zowner_0 omitted)
+i.owner|bar~15r   _ZownXbarti_#       (coded as above)
+i.owner|oi~151r   _ZownXoilsh_#       (coded as above)
+i.owner|o~1512r   _ZownXoilsha#       (coded as above)
+i.kids            _Zkids_0-1          (naturally coded; _Zkids_0 omitted)
+i.kids|bart~15r   _ZkidXbarti_#       (coded as above)
+i.kids|oil~151r   _ZkidXoilsh_#       (coded as above)
+i.kids|oi~1512r   _ZkidXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kowner_1 _Kkids_1
+Warning - collinearities detected
+Vars dropped:       _Jowner_1 _Jkids_1 kids _Zowner_1 _Zkids_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 22,    26) =  1447.86
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0493
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1499
+Residual SS             =  38280.25577                Root MSE      =    .2999
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0040792   .0145332     0.28   0.779    -.0244053    .0325636
+_KownXrgap__1 |   .0005718   .0128681     0.04   0.965    -.0246493    .0257929
+_KkidXrgap__1 |  -.0008918   .0031706    -0.28   0.779     -.007106    .0053224
+    _Kowner_1 |  -.0888979   .0016327   -54.45   0.000    -.0920979   -.0856978
+     _Kkids_1 |  -.0269095   .0011279   -23.86   0.000    -.0291202   -.0246988
+    gapus_std |   .0045576   .0019941     2.29   0.022     .0006492     .008466
+    _Jowner_1 |          0  (omitted)
+_JownXgapus_1 |  -.0004498   .0017036    -0.26   0.792    -.0037887    .0028892
+     _Jkids_1 |          0  (omitted)
+_JkidXgapus_1 |  -.0024128   .0010852    -2.22   0.026    -.0045397   -.0002859
+        black |  -.0422483   .0019354   -21.83   0.000    -.0460416    -.038455
+         hisp |  -.0401129   .0017952   -22.34   0.000    -.0436314   -.0365944
+       spouse |   .0047422   .0011748     4.04   0.000     .0024397    .0070447
+         kids |          0  (omitted)
+        timet |   .0024708   .0013091     1.89   0.059     -.000095    .0050365
+       timet2 |   -.000073   .0000301    -2.43   0.015    -.0001319   -.0000141
+   _Iagegrp_2 |   -.052803    .002027   -26.05   0.000    -.0567757   -.0488302
+   _Iagegrp_3 |  -.0714688    .002737   -26.11   0.000    -.0768332   -.0661045
+     _Ieduc_1 |  -.0132984   .0017354    -7.66   0.000    -.0166997   -.0098972
+     _Ieduc_3 |   .0159402   .0012338    12.92   0.000      .013522    .0183583
+     _Ieduc_4 |   .0566248   .0028504    19.87   0.000      .051038    .0622115
+   _Ifemale_1 |  -.0152661   .0018532    -8.24   0.000    -.0188983   -.0116339
+  _Iempstat_2 |   .0233126   .0030276     7.70   0.000     .0173786    .0292465
+  _Iempstat_3 |   .0242207   .0024732     9.79   0.000     .0193732    .0290682
+_Imetrostat_1 |  -.0170831   .0017678    -9.66   0.000    -.0205479   -.0136183
+        _cons |   .1993051   .0146152    13.64   0.000     .1706598    .2279503
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              5.671
+                                                   Chi-sq(7) P-val =    0.5787
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             2400.267
+                         (Kleibergen-Paap rk Wald F statistic):          1.503
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    16.10
+                                         10% maximal IV relative bias     9.37
+                                         20% maximal IV relative bias     5.78
+                                         30% maximal IV relative bias     4.46
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KownXrgap__1 _KkidXrgap__1
+Included instruments: _Kowner_1 _Kkids_1 gapus_std _JownXgapus_1 _JkidXgapus_1
+                      black hisp spouse timet timet2 _Iagegrp_2 _Iagegrp_3
+                      _Ieduc_1 _Ieduc_3 _Ieduc_4 _Ifemale_1 _Iempstat_2
+                      _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZownXbarti_1
+                      _ZownXoilsh_1 _ZownXoilsha1 _ZkidXbarti_1 _ZkidXoilsh_1
+                      _ZkidXoilsha1
+Dropped collinear:    _Jowner_1 _Jkids_1 kids _Zowner_1 _Zkids_1
+Reclassified as exog: _Kowner_1 _Kkids_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.owner|urateus_std i.kids|urateus_std ;
+i.owner           _Jowner_0-1         (naturally coded; _Jowner_0 omitted)
+i.owner|urat~td   _JownXurate_#       (coded as above)
+i.kids            _Jkids_0-1          (naturally coded; _Jkids_0 omitted)
+i.kids|urateu~d   _JkidXurate_#       (coded as above)
+
+. xi, prefix(_K) i.owner|rurate_std i.kids|rurate_std ;
+i.owner           _Kowner_0-1         (naturally coded; _Kowner_0 omitted)
+i.owner|rurat~d   _KownXrurat_#       (coded as above)
+i.kids            _Kkids_0-1          (naturally coded; _Kkids_0 omitted)
+i.kids|rurate~d   _KkidXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Kowner_1 _Kkids_1 kids
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 22,    27) =   543.84
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0503
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1495
+Residual SS             =  39353.76694                Root MSE      =    .2981
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |  -.0022064   .0033315    -0.66   0.508    -.0087359    .0043231
+    _Jowner_1 |  -.0883068     .00156   -56.61   0.000    -.0913642   -.0852493
+_JownXurate_1 |  -.0008051   .0012279    -0.66   0.512    -.0032118    .0016016
+     _Jkids_1 |  -.0265491    .001138   -23.33   0.000    -.0287795   -.0243186
+_JkidXurate_1 |   .0015864   .0010559     1.50   0.133     -.000483    .0036559
+   rurate_std |  -.0140367   .0014637    -9.59   0.000    -.0169056   -.0111678
+    _Kowner_1 |          0  (omitted)
+_KownXrurat_1 |   .0067736   .0012892     5.25   0.000     .0042467    .0093004
+     _Kkids_1 |          0  (omitted)
+_KkidXrurat_1 |   .0016262   .0009949     1.63   0.102    -.0003237    .0035761
+        black |  -.0424175   .0019278   -22.00   0.000    -.0461959   -.0386392
+         hisp |  -.0408213    .001757   -23.23   0.000    -.0442651   -.0373776
+       spouse |   .0049159    .001166     4.22   0.000     .0026305    .0072013
+         kids |          0  (omitted)
+        timet |   .0026173   .0014326     1.83   0.068    -.0001906    .0054253
+       timet2 |  -.0000805     .00003    -2.68   0.007    -.0001392   -.0000217
+   _Iagegrp_2 |  -.0516654   .0021195   -24.38   0.000    -.0558194   -.0475113
+   _Iagegrp_3 |  -.0702007    .002802   -25.05   0.000    -.0756925    -.064709
+     _Ieduc_1 |  -.0131906   .0017013    -7.75   0.000    -.0165251    -.009856
+     _Ieduc_3 |   .0151845   .0012154    12.49   0.000     .0128024    .0175666
+     _Ieduc_4 |   .0554071   .0028246    19.62   0.000     .0498709    .0609433
+   _Ifemale_1 |  -.0142722   .0018491    -7.72   0.000    -.0178963    -.010648
+  _Iempstat_2 |   .0251408   .0025675     9.79   0.000     .0201085    .0301731
+  _Iempstat_3 |   .0242836   .0022749    10.67   0.000     .0198248    .0287423
+_Imetrostat_1 |  -.0168948   .0018668    -9.05   0.000    -.0205535    -.013236
+        _cons |   .1982833   .0167999    11.80   0.000     .1653562    .2312105
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jowner_1 _JownXurate_1 _Jkids_1
+                      _JkidXurate_1 rurate_std _KownXrurat_1 _KkidXrurat_1 black
+                      hisp spouse timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1
+                      _Ieduc_3 _Ieduc_4 _Ifemale_1 _Iempstat_2 _Iempstat_3
+                      _Imetrostat_1
+Dropped collinear:    _Kowner_1 _Kkids_1 kids
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. ** metrostat interactions ;
+. xi i.agegrp i.educ i.female i.empstat i.owner i.kids ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.female          _Ifemale_0-1        (naturally coded; _Ifemale_0 omitted)
+i.empstat         _Iempstat_1-3       (naturally coded; _Iempstat_1 omitted)
+i.owner           _Iowner_0-1         (naturally coded; _Iowner_0 omitted)
+i.kids            _Ikids_0-1          (naturally coded; _Ikids_0 omitted)
+
+. xi, prefix(_J) i.metrostat|ur12_std ;
+i.metrostat       _Jmetrostat_0-1     (naturally coded; _Jmetrostat_0 omitted)
+i.metr~t|ur12~d   _JmetXur12__#       (coded as above)
+
+. xi, prefix(_K) i.metrostat|rruc_std ;
+i.metrostat       _Kmetrostat_0-1     (naturally coded; _Kmetrostat_0 omitted)
+i.metr~t|rruc~d   _KmetXrruc__#       (coded as above)
+
+. global bc ur12_std _J* ;
+
+. global lbc rruc_std _K* ;
+
+. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.
+> kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
+i.metrostat       _Zmetrostat_0-1     (naturally coded; _Zmetrostat_0 omitted)
+i.metr~t|ba~15r   _ZmetXbarti_#       (coded as above)
+i.metr~t|o~151r   _ZmetXoilsh_#       (coded as above)
+i.metr~t|oil~2r   _ZmetXoilsha#       (coded as above)
+i.kids            _Zkids_0-1          (naturally coded; _Zkids_0 omitted)
+i.kids|bart~15r   _ZkidXbarti_#       (coded as above)
+i.kids|oil~151r   _ZkidXoilsh_#       (coded as above)
+i.kids|oi~1512r   _ZkidXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kmetrostat_1
+Warning - collinearities detected
+Vars dropped:       _Jmetrostat_1 _Ikids_1 _Zmetrostat_1 _Zkids_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 20,    25) =   579.32
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0396
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1406
+Residual SS             =  37191.26186                Root MSE      =    .3006
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |  -.0116696   .0089973    -1.30   0.195     -.029304    .0059648
+_KmetXrruc__1 |   .0397343   .0141725     2.80   0.005     .0119567     .067512
+_Kmetrostat_1 |  -.0157104   .0023725    -6.62   0.000    -.0203604   -.0110603
+     ur12_std |  -.0029861   .0022861    -1.31   0.191    -.0074668    .0014946
+_Jmetrostat_1 |          0  (omitted)
+_JmetXur12__1 |  -.0037581   .0013975    -2.69   0.007    -.0064972    -.001019
+        black |   -.043774   .0022048   -19.85   0.000    -.0480953   -.0394526
+         hisp |  -.0439939   .0032579   -13.50   0.000    -.0503792   -.0376086
+       spouse |   .0045502   .0011712     3.89   0.000     .0022546    .0068457
+         kids |   -.026952   .0012321   -21.88   0.000    -.0293668   -.0245372
+        timet |   .0008353   .0015204     0.55   0.583    -.0021446    .0038151
+       timet2 |  -.0000449   .0000341    -1.32   0.188    -.0001117    .0000219
+   _Iagegrp_2 |   -.053059   .0021588   -24.58   0.000    -.0572901   -.0488279
+   _Iagegrp_3 |  -.0721253   .0027579   -26.15   0.000    -.0775307   -.0667199
+     _Ieduc_1 |  -.0138445   .0023124    -5.99   0.000    -.0183767   -.0093122
+     _Ieduc_3 |   .0159735   .0012784    12.50   0.000      .013468    .0184791
+     _Ieduc_4 |   .0565748    .003053    18.53   0.000      .050591    .0625586
+   _Ifemale_1 |  -.0149579   .0018932    -7.90   0.000    -.0186684   -.0112474
+  _Iempstat_2 |   .0197724   .0034784     5.68   0.000     .0129548      .02659
+  _Iempstat_3 |   .0226251   .0026059     8.68   0.000     .0175176    .0277326
+    _Iowner_1 |  -.0879979   .0017553   -50.13   0.000    -.0914382   -.0845576
+     _Ikids_1 |          0  (omitted)
+        _cons |   .2188001   .0178752    12.24   0.000     .1837655    .2538348
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):             10.461
+                                                   Chi-sq(8) P-val =    0.2341
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1463.085
+                         (Kleibergen-Paap rk Wald F statistic):         16.331
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    18.30
+                                         10% maximal IV relative bias    10.43
+                                         20% maximal IV relative bias     6.22
+                                         30% maximal IV relative bias     4.69
+                                         10% maximal IV size             27.51
+                                         15% maximal IV size             15.24
+                                         20% maximal IV size             11.03
+                                         25% maximal IV size              8.85
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rruc_std _KmetXrruc__1
+Included instruments: _Kmetrostat_1 ur12_std _JmetXur12__1 black hisp spouse
+                      kids timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Ifemale_1 _Iempstat_2 _Iempstat_3 _Iowner_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZmetXbarti_1
+                      _ZmetXoilsh_1 _ZmetXoilsha1 _ZkidXbarti_1 _ZkidXoilsh_1
+                      _ZkidXoilsha1
+Dropped collinear:    _Jmetrostat_1 _Ikids_1 _Zmetrostat_1 _Zkids_1
+Reclassified as exog: _Kmetrostat_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.metrostat|gapus_std ;
+i.metrostat       _Jmetrostat_0-1     (naturally coded; _Jmetrostat_0 omitted)
+i.metr~t|gapu~d   _JmetXgapus_#       (coded as above)
+
+. xi, prefix(_K) i.metrostat|rgap_std ;
+i.metrostat       _Kmetrostat_0-1     (naturally coded; _Kmetrostat_0 omitted)
+i.metr~t|rgap~d   _KmetXrgap__#       (coded as above)
+
+. global bc gapus_std _J* ;
+
+. global lbc rgap_std _K* ;
+
+. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.
+> kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
+i.metrostat       _Zmetrostat_0-1     (naturally coded; _Zmetrostat_0 omitted)
+i.metr~t|ba~15r   _ZmetXbarti_#       (coded as above)
+i.metr~t|o~151r   _ZmetXoilsh_#       (coded as above)
+i.metr~t|oil~2r   _ZmetXoilsha#       (coded as above)
+i.kids            _Zkids_0-1          (naturally coded; _Zkids_0 omitted)
+i.kids|bart~15r   _ZkidXbarti_#       (coded as above)
+i.kids|oil~151r   _ZkidXoilsh_#       (coded as above)
+i.kids|oi~1512r   _ZkidXoilsha#       (coded as above)
+
+. global zvars bartik15r oilshock151r oilshock1512r _Z* ;
+
+. regsiv ;
+Warning - endogenous variable(s) collinear with instruments
+Vars now exogenous: _Kmetrostat_1
+Warning - collinearities detected
+Vars dropped:       _Jmetrostat_1 _Ikids_1 _Zmetrostat_1 _Zkids_1
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 20,    26) =   666.80
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0470
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1478
+Residual SS             =  38374.12798                Root MSE      =    .3002
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0153482    .003797     4.04   0.000     .0079063    .0227901
+_KmetXrgap__1 |  -.0302142   .0178224    -1.70   0.090    -.0651456    .0047171
+_Kmetrostat_1 |  -.0177493   .0016176   -10.97   0.000    -.0209198   -.0145789
+    gapus_std |   .0039141   .0018598     2.10   0.035     .0002691    .0075592
+_Jmetrostat_1 |          0  (omitted)
+_JmetXgapus_1 |  -.0003263   .0015841    -0.21   0.837    -.0034311    .0027784
+        black |  -.0421086   .0020251   -20.79   0.000    -.0460777   -.0381395
+         hisp |  -.0393702   .0019899   -19.79   0.000    -.0432703   -.0354701
+       spouse |   .0046402   .0011951     3.88   0.000     .0022979    .0069826
+         kids |  -.0270899   .0012219   -22.17   0.000    -.0294848   -.0246949
+        timet |   .0024818   .0013551     1.83   0.067    -.0001741    .0051377
+       timet2 |  -.0000748   .0000316    -2.37   0.018    -.0001366   -.0000129
+   _Iagegrp_2 |  -.0526668   .0020052   -26.27   0.000    -.0565969   -.0487367
+   _Iagegrp_3 |  -.0712161   .0026632   -26.74   0.000    -.0764358   -.0659963
+     _Ieduc_1 |  -.0130765   .0016981    -7.70   0.000    -.0164048   -.0097483
+     _Ieduc_3 |   .0159933   .0012192    13.12   0.000     .0136037    .0183828
+     _Ieduc_4 |   .0568322   .0028923    19.65   0.000     .0511634     .062501
+   _Ifemale_1 |   -.015235   .0018652    -8.17   0.000    -.0188906   -.0115793
+  _Iempstat_2 |   .0222356   .0029016     7.66   0.000     .0165485    .0279227
+  _Iempstat_3 |    .023876   .0024033     9.93   0.000     .0191656    .0285865
+    _Iowner_1 |  -.0890052   .0016205   -54.92   0.000    -.0921815    -.085829
+     _Ikids_1 |          0  (omitted)
+        _cons |   .2005484   .0148403    13.51   0.000      .171462    .2296348
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              6.357
+                                                   Chi-sq(8) P-val =    0.6073
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             1796.704
+                         (Kleibergen-Paap rk Wald F statistic):          6.861
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    18.30
+                                         10% maximal IV relative bias    10.43
+                                         20% maximal IV relative bias     6.22
+                                         30% maximal IV relative bias     4.69
+                                         10% maximal IV size             27.51
+                                         15% maximal IV size             15.24
+                                         20% maximal IV size             11.03
+                                         25% maximal IV size              8.85
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Warning: estimated covariance matrix of moment conditions not of full rank.
+         overidentification statistic not reported, and standard errors and
+         model tests should be interpreted with caution.
+Possible causes:
+         number of clusters insufficient to calculate robust covariance matrix
+         singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+partial option may address problem.
+------------------------------------------------------------------------------
+Instrumented:         rgap_std _KmetXrgap__1
+Included instruments: _Kmetrostat_1 gapus_std _JmetXgapus_1 black hisp spouse
+                      kids timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Ifemale_1 _Iempstat_2 _Iempstat_3 _Iowner_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r _ZmetXbarti_1
+                      _ZmetXoilsh_1 _ZmetXoilsha1 _ZkidXbarti_1 _ZkidXoilsh_1
+                      _ZkidXoilsha1
+Dropped collinear:    _Jmetrostat_1 _Ikids_1 _Zmetrostat_1 _Zkids_1
+Reclassified as exog: _Kmetrostat_1
+------------------------------------------------------------------------------
+
+. xi, prefix(_J) i.metrostat|urateus_std ;
+i.metrostat       _Jmetrostat_0-1     (naturally coded; _Jmetrostat_0 omitted)
+i.metr~t|ura~td   _JmetXurate_#       (coded as above)
+
+. xi, prefix(_K) i.metrostat|rurate_std ;
+i.metrostat       _Kmetrostat_0-1     (naturally coded; _Kmetrostat_0 omitted)
+i.metr~t|rura~d   _KmetXrurat_#       (coded as above)
+
+. global bc urateus_std _J* ;
+
+. global lbc rurate_std _K* ;
+
+. regs ;
+Warning - collinearities detected
+Vars dropped:       _Kmetrostat_1 _Ikids_1
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         28                Number of obs =   442747
+                                                      F( 20,    27) =   515.71
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  41436.85085                Centered R2   =   0.0502
+Total (uncentered) SS   =        46273                Uncentered R2 =   0.1495
+Residual SS             =  39356.73341                Root MSE      =    .2981
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |    .002394   .0027357     0.88   0.382    -.0029678    .0077559
+_Jmetrostat_1 |  -.0165762   .0015811   -10.48   0.000     -.019675   -.0134774
+_JmetXurate_1 |  -.0054016   .0010011    -5.40   0.000    -.0073637   -.0034394
+   rurate_std |    -.00929   .0017801    -5.22   0.000     -.012779    -.005801
+_Kmetrostat_1 |          0  (omitted)
+_KmetXrurat_1 |  -.0011853   .0021004    -0.56   0.573     -.005302    .0029315
+        black |  -.0425089   .0019281   -22.05   0.000    -.0462879   -.0387299
+         hisp |  -.0411853   .0017712   -23.25   0.000    -.0446568   -.0377139
+       spouse |   .0047887   .0011514     4.16   0.000     .0025319    .0070455
+         kids |  -.0265876   .0012223   -21.75   0.000    -.0289831    -.024192
+        timet |   .0026716   .0014302     1.87   0.062    -.0001317    .0054748
+       timet2 |  -.0000817   .0000299    -2.73   0.006    -.0001402   -.0000231
+   _Iagegrp_2 |  -.0517195   .0021075   -24.54   0.000    -.0558502   -.0475889
+   _Iagegrp_3 |  -.0701938    .002801   -25.06   0.000    -.0756836    -.064704
+     _Ieduc_1 |  -.0132958   .0016978    -7.83   0.000    -.0166234   -.0099683
+     _Ieduc_3 |   .0152316   .0012088    12.60   0.000     .0128623    .0176009
+     _Ieduc_4 |   .0553096   .0028164    19.64   0.000     .0497895    .0608296
+   _Ifemale_1 |   -.014354   .0018791    -7.64   0.000    -.0180369   -.0106711
+  _Iempstat_2 |   .0250264   .0025659     9.75   0.000     .0199974    .0300555
+  _Iempstat_3 |   .0242084   .0022613    10.71   0.000     .0197764    .0286405
+    _Iowner_1 |  -.0883622   .0015743   -56.13   0.000    -.0914477   -.0852766
+     _Ikids_1 |          0  (omitted)
+        _cons |   .1976706   .0165228    11.96   0.000     .1652865    .2300546
+-------------------------------------------------------------------------------
+Included instruments: urateus_std _Jmetrostat_1 _JmetXurate_1 rurate_std
+                      _KmetXrurat_1 black hisp spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Ifemale_1 _Iempstat_2 _Iempstat_3 _Iowner_1
+Dropped collinear:    _Kmetrostat_1 _Ikids_1
+------------------------------------------------------------------------------
+
+. drop _I* ;
+
+. log close ;
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_lt35_2
+> .log
+  log type:  text
+ closed on:   5 Dec 2019, 15:37:02
+--------------------------------------------------------------------------------------------

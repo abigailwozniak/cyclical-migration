@@ -1,0 +1,865 @@
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\table2.log
+  log type:  text
+ opened on:   3 Dec 2019, 13:09:41
+
+. 
+. use table2, clear
+
+. 
+. xi: ivreg28 exemptss  gapusstd  (orgapstd drgapstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2) orinc1 drinc1  i.ofips*trend i.dfips*trend ,  
+> cluster(year) first fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of orgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74448
+                                                      F( 10,    32) =    40.57
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  71365.48904                Centered R2   =   0.3651
+Total (uncentered) SS   =  71365.48904                Uncentered R2 =   0.3651
+Residual SS             =  45307.15782                Root MSE      =    .7802
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         orgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0040462   .0260895     0.16   0.878    -.0490963    .0571887
+           orinc1 |    17.7367   2.741256     6.47   0.000     12.15294    23.32045
+           drinc1 |   .3098791   .1675204     1.85   0.074    -.0313488    .6511071
+            trend |  -.0621305   .0111463    -5.57   0.000    -.0848349   -.0394262
+   obartik15r1std |   .0681508   .0584711     1.17   0.252    -.0509509    .1872525
+   dbartik15r1std |   .0064935   .0046661     1.39   0.174     -.003011     .015998
+ ooilshock151rstd |   .0870523   .0966953     0.90   0.375    -.1099095    .2840141
+ doilshock151rstd |  -.0155423   .0116322    -1.34   0.191    -.0392364    .0081517
+ooilshock151rstd2 |   -.006316   .0078698    -0.80   0.428    -.0223462    .0097143
+doilshock151rstd2 |  -.0026662    .001299    -2.05   0.048    -.0053121   -.0000203
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd orinc1 drinc1 trend obartik15r1std dbartik15r1std
+                      ooilshock151rstd doilshock151rstd ooilshock151rstd2
+                      doilshock151rstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0377
+Test of excluded instruments:
+  F(  6,    32) =    14.28
+  Prob > F      =   0.0000
+
+First-stage regression of drgapstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74448
+                                                      F( 10,    32) =    40.57
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  71365.48904                Centered R2   =   0.3651
+Total (uncentered) SS   =  71365.48904                Uncentered R2 =   0.3651
+Residual SS             =  45307.15782                Root MSE      =    .7802
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+         drgapstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+         gapusstd |   .0040462   .0260895     0.16   0.878    -.0490963    .0571887
+           orinc1 |   .3098791   .1675204     1.85   0.074    -.0313488    .6511071
+           drinc1 |    17.7367   2.741256     6.47   0.000     12.15294    23.32045
+            trend |  -.0621305   .0111463    -5.57   0.000    -.0848349   -.0394262
+   obartik15r1std |   .0064935   .0046661     1.39   0.174     -.003011     .015998
+   dbartik15r1std |   .0681508   .0584711     1.17   0.252    -.0509509    .1872525
+ ooilshock151rstd |  -.0155423   .0116322    -1.34   0.191    -.0392364    .0081517
+ doilshock151rstd |   .0870523   .0966953     0.90   0.375    -.1099095    .2840141
+ooilshock151rstd2 |  -.0026662    .001299    -2.05   0.048    -.0053121   -.0000203
+doilshock151rstd2 |   -.006316   .0078698    -0.80   0.428    -.0223462    .0097143
+-----------------------------------------------------------------------------------
+Included instruments: gapusstd orinc1 drinc1 trend obartik15r1std dbartik15r1std
+                      ooilshock151rstd doilshock151rstd ooilshock151rstd2
+                      doilshock151rstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0377
+Test of excluded instruments:
+  F(  6,    32) =    14.28
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    32)    P-value
+orgapstd    |     0.0374      |     0.0377      |      14.28        0.0000
+drgapstd    |     0.0374      |     0.0377      |      14.28        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.     2645.70         0.0000
+Cragg-Donald N*CDEV statistic                    2693.27         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic            448.82
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,32)=  68.92     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=426.47    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         33
+Number of observations N           =      74448
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74448
+                                                      F(  6,    32) =    37.01
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  77100.69524                Centered R2   =  -0.0020
+Total (uncentered) SS   =  77100.69524                Uncentered R2 =  -0.0020
+Residual SS             =   77258.5793                Root MSE      =    1.019
+
+------------------------------------------------------------------------------
+             |               Robust
+    exemptss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    orgapstd |   -.094299   .0261716    -3.60   0.000    -.1455945   -.0430035
+    drgapstd |   .0673248   .0171044     3.94   0.000     .0338009    .1008488
+    gapusstd |   .0177009   .0022688     7.80   0.000     .0132542    .0221476
+      orinc1 |   1.636873   .4576945     3.58   0.000     .7398081    2.533937
+      drinc1 |  -.2725408   .3362119    -0.81   0.418     -.931504    .3864225
+       trend |  -.0094075   .0013221    -7.12   0.000    -.0119987   -.0068162
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):        2645.699
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                   448.818
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         3.839
+                                                   Chi-sq(4) P-val =    0.4283
+------------------------------------------------------------------------------
+Instrumented:         orgapstd drgapstd
+Included instruments: gapusstd orinc1 drinc1 trend
+Excluded instruments: obartik15r1std dbartik15r1std ooilshock151rstd
+                      doilshock151rstd ooilshock151rstd2 doilshock151rstd2
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1gap
+
+. xi: ivreg28 exemptss  ur12std  (orurstd drurstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2) orinc1 drinc1  i.ofips*trend i.dfips*trend ,  clu
+> ster(year) first fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+Error: estimated covariance matrix of moment conditions not of full rank;
+       overidentification statistic not reported, and standard errors and
+       model tests should be interpreted with caution.
+Possible causes:
+       number of clusters insufficient to calculate robust covariance matrix
+       singleton dummy variable (dummy with one 1 and N-1 0s or vice versa)
+ option may address problem.
+
+First-stage regressions
+-----------------------
+
+First-stage regression of orurstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =    72192
+                                                      F( 10,    31) =   190.13
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  30305.72787                Centered R2   =   0.2990
+Total (uncentered) SS   =  30305.72787                Uncentered R2 =   0.2990
+Residual SS             =  21243.53035                Root MSE      =    .5425
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          orurstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0495608   .0194662    -2.55   0.016    -.0892624   -.0098591
+           orinc1 |  -8.886551   1.299416    -6.84   0.000    -11.53673   -6.236375
+           drinc1 |   .0014175   .0620801     0.02   0.982    -.1251956    .1280307
+            trend |  -.0379563   .0159092    -2.39   0.023    -.0704034   -.0055092
+   obartik15r1std |  -.1753178   .0388529    -4.51   0.000    -.2545587   -.0960768
+   dbartik15r1std |  -.0027686   .0022243    -1.24   0.223    -.0073052    .0017679
+ ooilshock151rstd |  -.0457364   .0359906    -1.27   0.213    -.1191398    .0276669
+ doilshock151rstd |   .0044154   .0041233     1.07   0.293    -.0039941    .0128249
+ooilshock151rstd2 |   .0038538   .0028698     1.34   0.189    -.0019992    .0097068
+doilshock151rstd2 |   .0007687   .0003961     1.94   0.061    -.0000392    .0015766
+-----------------------------------------------------------------------------------
+Included instruments: ur12std orinc1 drinc1 trend obartik15r1std dbartik15r1std
+                      ooilshock151rstd doilshock151rstd ooilshock151rstd2
+                      doilshock151rstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0862
+Test of excluded instruments:
+  F(  6,    31) =    49.87
+  Prob > F      =   0.0000
+
+First-stage regression of drurstd:
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =    72192
+                                                      F( 10,    31) =   190.13
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  30305.72787                Centered R2   =   0.2990
+Total (uncentered) SS   =  30305.72787                Uncentered R2 =   0.2990
+Residual SS             =  21243.53035                Root MSE      =    .5425
+
+-----------------------------------------------------------------------------------
+                  |               Robust
+          drurstd |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+          ur12std |  -.0495608   .0194662    -2.55   0.016    -.0892624   -.0098591
+           orinc1 |   .0014175   .0620801     0.02   0.982    -.1251956    .1280307
+           drinc1 |  -8.886551   1.299416    -6.84   0.000    -11.53673   -6.236375
+            trend |  -.0379563   .0159092    -2.39   0.023    -.0704034   -.0055092
+   obartik15r1std |  -.0027686   .0022243    -1.24   0.223    -.0073052    .0017679
+   dbartik15r1std |  -.1753178   .0388529    -4.51   0.000    -.2545587   -.0960768
+ ooilshock151rstd |   .0044154   .0041233     1.07   0.293    -.0039941    .0128249
+ doilshock151rstd |  -.0457364   .0359906    -1.27   0.213    -.1191398    .0276669
+ooilshock151rstd2 |   .0007687   .0003961     1.94   0.061    -.0000392    .0015766
+doilshock151rstd2 |   .0038538   .0028698     1.34   0.189    -.0019992    .0097068
+-----------------------------------------------------------------------------------
+Included instruments: ur12std orinc1 drinc1 trend obartik15r1std dbartik15r1std
+                      ooilshock151rstd doilshock151rstd ooilshock151rstd2
+                      doilshock151rstd2
+------------------------------------------------------------------------------
+Partial R-squared of excluded instruments:   0.0862
+Test of excluded instruments:
+  F(  6,    31) =    49.87
+  Prob > F      =   0.0000
+
+
+
+Summary results for first-stage regressions
+-------------------------------------------
+
+Variable    | Shea Partial R2 |   Partial R2    |  F(  6,    31)    P-value
+orurstd     |     0.0861      |     0.0862      |      49.87        0.0000
+drurstd     |     0.0861      |     0.0862      |      49.87        0.0000
+
+NB: first-stage F-stat cluster-robust
+
+Underidentification tests
+Ho: matrix of reduced form coefficients has rank=K-1 (underidentified)
+Ha: matrix has rank=K (identified)
+                                                 Chi-sq(5)      P-value
+Anderson canon. corr. -N*ln(1-CCEV) LR stat.     6340.69         0.0000
+Cragg-Donald N*CDEV statistic                    6627.48         0.0000
+
+Weak identification tests
+Ho: equation is weakly identified
+Cragg-Donald (N-L)*CDEV/L1 F-statistic           1104.43
+See main output for Cragg-Donald weak id test critical values
+
+NB: Anderson and Cragg-Donald under- and weak identification stats not robust
+
+Weak-instrument-robust inference
+Tests of joint significance of endogenous regressors B1 in main equation
+Ho: B1=0 and overidentifying restrictions are valid
+Anderson-Rubin test          F(6,31)=  65.12     P-val=0.0000
+Anderson-Rubin test          Chi-sq(6)=403.35    P-val=0.0000
+Stock-Wright S statistic     Chi-sq(6)=.         P-val=     .
+NB: Test statistics cluster-robust
+
+Number of clusters     N_clust     =         32
+Number of observations N           =      72192
+Number of regressors   K           =          6
+Number of instruments  L           =         10
+Number of excluded instruments L1  =          6
+
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =    72192
+                                                      F(  6,    31) =    35.27
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  74138.03106                Centered R2   =   0.0009
+Total (uncentered) SS   =  74138.03106                Uncentered R2 =   0.0009
+Residual SS             =  74067.76016                Root MSE      =    1.013
+
+------------------------------------------------------------------------------
+             |               Robust
+    exemptss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     orurstd |   .0798827   .0181709     4.40   0.000     .0442683    .1154971
+     drurstd |  -.0743412   .0164617    -4.52   0.000    -.1066055   -.0420768
+     ur12std |  -.0172821   .0041913    -4.12   0.000    -.0254969   -.0090674
+      orinc1 |   .7367026   .1712333     4.30   0.000     .4010915    1.072314
+      drinc1 |   .2142316   .1607952     1.33   0.183    -.1009211    .5293844
+       trend |  -.0084463   .0012681    -6.66   0.000    -.0109318   -.0059608
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):        6340.687
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                  1104.426
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         4.719
+                                                   Chi-sq(4) P-val =    0.3174
+------------------------------------------------------------------------------
+Instrumented:         orurstd drurstd
+Included instruments: ur12std orinc1 drinc1 trend
+Excluded instruments: obartik15r1std dbartik15r1std ooilshock151rstd
+                      doilshock151rstd ooilshock151rstd2 doilshock151rstd2
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1ur
+
+. xi: ivreg28 exemptss  urateus1std orurate1std drurate1std orinc1 drinc1  i.ofips*trend i.dfips*trend ,  cluster(year) fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74448
+                                                      F(  6,    32) =    61.00
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  77100.69524                Centered R2   =   0.0019
+Total (uncentered) SS   =  77100.69524                Uncentered R2 =   0.0019
+Residual SS             =  76957.84224                Root MSE      =    1.017
+
+------------------------------------------------------------------------------
+             |               Robust
+    exemptss |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |   -.023054   .0032324    -7.13   0.000    -.0293895   -.0167186
+ orurate1std |   .0454666   .0099122     4.59   0.000      .026039    .0648943
+ drurate1std |  -.0379734   .0063515    -5.98   0.000    -.0504221   -.0255246
+      orinc1 |   .2002469   .0911216     2.20   0.028     .0216518    .3788419
+      drinc1 |    .755853   .0893119     8.46   0.000     .5808048    .9309011
+       trend |  -.0092244   .0010296    -8.96   0.000    -.0112424   -.0072064
+------------------------------------------------------------------------------
+Included instruments: urateus1std orurate1std drurate1std orinc1 drinc1 trend
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m1c
+
+. xi: ivreg28 lexempts  gapusstd  (orgapstd drgapstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2)  orinc1 drinc1  i.ofips*trend i.dfips*trend , 
+>  cluster(year) fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74419
+                                                      F(  6,    32) =   136.68
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  57154.28169                Centered R2   =  -0.0058
+Total (uncentered) SS   =  57154.28169                Uncentered R2 =  -0.0058
+Residual SS             =  57486.18411                Root MSE      =    .8789
+
+------------------------------------------------------------------------------
+             |               Robust
+    lexempts |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    orgapstd |  -.1440404   .0511362    -2.82   0.005    -.2442654   -.0438153
+    drgapstd |   .1233633     .03721     3.32   0.001     .0504331    .1962936
+    gapusstd |   .0256693   .0036554     7.02   0.000     .0185048    .0328338
+      orinc1 |   2.545375   .8890153     2.86   0.004     .8029368    4.287813
+      drinc1 |  -.4865892    .642795    -0.76   0.449    -1.746444    .7732659
+       trend |  -.0115072   .0014486    -7.94   0.000    -.0143464   -.0086681
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):        2648.111
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                   449.238
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         8.750
+                                                   Chi-sq(4) P-val =    0.0677
+------------------------------------------------------------------------------
+Instrumented:         orgapstd drgapstd
+Included instruments: gapusstd orinc1 drinc1 trend
+Excluded instruments: obartik15r1std dbartik15r1std ooilshock151rstd
+                      doilshock151rstd ooilshock151rstd2 doilshock151rstd2
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2gap
+
+. xi: ivreg28 lexempts  ur12std  (orurstd drurstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2) orinc1 drinc1  i.ofips*trend i.dfips*trend ,  clu
+> ster(year) fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+
+IV (2SLS) estimation
+--------------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 32                        Number of obs =    72163
+                                                      F(  6,    31) =    71.17
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  55421.95145                Centered R2   =   0.0076
+Total (uncentered) SS   =  55421.95145                Uncentered R2 =   0.0076
+Residual SS             =  55001.22425                Root MSE      =     .873
+
+------------------------------------------------------------------------------
+             |               Robust
+    lexempts |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+     orurstd |   .1172916    .019358     6.06   0.000     .0793507    .1552325
+     drurstd |  -.1149437   .0190348    -6.04   0.000    -.1522512   -.0776361
+     ur12std |   -.028625   .0057745    -4.96   0.000    -.0399428   -.0173072
+      orinc1 |   1.116183   .2163723     5.16   0.000     .6921006    1.540265
+      drinc1 |    .583202   .1918814     3.04   0.002     .2071214    .9592826
+       trend |  -.0118446   .0013017    -9.10   0.000    -.0143958   -.0092934
+------------------------------------------------------------------------------
+Anderson canon. corr. LR statistic (underidentification test):        6340.901
+                                                   Chi-sq(5) P-val =    0.0000
+Test statistic(s) not robust
+------------------------------------------------------------------------------
+Cragg-Donald F statistic (weak identification test):                  1104.485
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    15.72
+                                         10% maximal IV relative bias     9.48
+                                         20% maximal IV relative bias     6.08
+                                         30% maximal IV relative bias     4.78
+                                         10% maximal IV size             21.68
+                                         15% maximal IV size             12.33
+                                         20% maximal IV size              9.10
+                                         25% maximal IV size              7.42
+Test statistic(s) not robust
+Source: Stock-Yogo (2005).  Reproduced by permission.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         5.324
+                                                   Chi-sq(4) P-val =    0.2557
+------------------------------------------------------------------------------
+Instrumented:         orurstd drurstd
+Included instruments: ur12std orinc1 drinc1 trend
+Excluded instruments: obartik15r1std dbartik15r1std ooilshock151rstd
+                      doilshock151rstd ooilshock151rstd2 doilshock151rstd2
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2ur
+
+. xi: ivreg28 lexempts  urateus1std  orurate1std drurate1std  orinc1 drinc1  i.ofips*trend i.dfips*trend ,  cluster(year) fwl(_I*)
+i.ofips           _Iofips_1-56        (naturally coded; _Iofips_1 omitted)
+i.ofips*trend     _IofiXtren_#        (coded as above)
+i.dfips           _Idfips_1-56        (naturally coded; _Idfips_1 omitted)
+i.dfips*trend     _IdfiXtren_#        (coded as above)
+
+OLS estimation
+--------------
+
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) = 33                        Number of obs =    74419
+                                                      F(  6,    32) =    55.45
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  57154.28169                Centered R2   =   0.0086
+Total (uncentered) SS   =  57154.28169                Uncentered R2 =   0.0086
+Residual SS             =  56663.16232                Root MSE      =    .8726
+
+------------------------------------------------------------------------------
+             |               Robust
+    lexempts |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+ urateus1std |  -.0222952   .0076698    -2.91   0.004    -.0373277   -.0072628
+ orurate1std |    .085313   .0113729     7.50   0.000     .0630226    .1076035
+ drurate1std |  -.0832633   .0113723    -7.32   0.000    -.1055525    -.060974
+      orinc1 |   .4218968   .1259812     3.35   0.001     .1749782    .6688154
+      drinc1 |   1.291762   .1459438     8.85   0.000     1.005717    1.577806
+       trend |  -.0117499   .0013784    -8.52   0.000    -.0144515   -.0090483
+------------------------------------------------------------------------------
+Included instruments: urateus1std orurate1std drurate1std orinc1 drinc1 trend
+Partialled-out (FWL): _Iofips_4 _Iofips_5 _Iofips_6 _Iofips_8 _Iofips_9
+                      _Iofips_10 _Iofips_12 _Iofips_13 _Iofips_16 _Iofips_17
+                      _Iofips_18 _Iofips_19 _Iofips_20 _Iofips_21 _Iofips_22
+                      _Iofips_23 _Iofips_24 _Iofips_25 _Iofips_26 _Iofips_27
+                      _Iofips_28 _Iofips_29 _Iofips_30 _Iofips_31 _Iofips_32
+                      _Iofips_33 _Iofips_34 _Iofips_35 _Iofips_36 _Iofips_37
+                      _Iofips_38 _Iofips_39 _Iofips_40 _Iofips_41 _Iofips_42
+                      _Iofips_44 _Iofips_45 _Iofips_46 _Iofips_47 _Iofips_48
+                      _Iofips_49 _Iofips_50 _Iofips_51 _Iofips_53 _Iofips_54
+                      _Iofips_55 _Iofips_56 _IofiXtren_4 _IofiXtren_5
+                      _IofiXtren_6 _IofiXtren_8 _IofiXtren_9 _IofiXtren_10
+                      _IofiXtren_12 _IofiXtren_13 _IofiXtren_16 _IofiXtren_17
+                      _IofiXtren_18 _IofiXtren_19 _IofiXtren_20 _IofiXtren_21
+                      _IofiXtren_22 _IofiXtren_23 _IofiXtren_24 _IofiXtren_25
+                      _IofiXtren_26 _IofiXtren_27 _IofiXtren_28 _IofiXtren_29
+                      _IofiXtren_30 _IofiXtren_31 _IofiXtren_32 _IofiXtren_33
+                      _IofiXtren_34 _IofiXtren_35 _IofiXtren_36 _IofiXtren_37
+                      _IofiXtren_38 _IofiXtren_39 _IofiXtren_40 _IofiXtren_41
+                      _IofiXtren_42 _IofiXtren_44 _IofiXtren_45 _IofiXtren_46
+                      _IofiXtren_47 _IofiXtren_48 _IofiXtren_49 _IofiXtren_50
+                      _IofiXtren_51 _IofiXtren_53 _IofiXtren_54 _IofiXtren_55
+                      _IofiXtren_56 _Idfips_4 _Idfips_5 _Idfips_6 _Idfips_8
+                      _Idfips_9 _Idfips_10 _Idfips_12 _Idfips_13 _Idfips_16
+                      _Idfips_17 _Idfips_18 _Idfips_19 _Idfips_20 _Idfips_21
+                      _Idfips_22 _Idfips_23 _Idfips_24 _Idfips_25 _Idfips_26
+                      _Idfips_27 _Idfips_28 _Idfips_29 _Idfips_30 _Idfips_31
+                      _Idfips_32 _Idfips_33 _Idfips_34 _Idfips_35 _Idfips_36
+                      _Idfips_37 _Idfips_38 _Idfips_39 _Idfips_40 _Idfips_41
+                      _Idfips_42 _Idfips_44 _Idfips_45 _Idfips_46 _Idfips_47
+                      _Idfips_48 _Idfips_49 _Idfips_50 _Idfips_51 _Idfips_53
+                      _Idfips_54 _Idfips_55 _Idfips_56 _IdfiXtren_4 _IdfiXtren_5
+                      _IdfiXtren_6 _IdfiXtren_8 _IdfiXtren_9 _IdfiXtren_10
+                      _IdfiXtren_12 _IdfiXtren_13 _IdfiXtren_16 _IdfiXtren_17
+                      _IdfiXtren_18 _IdfiXtren_19 _IdfiXtren_20 _IdfiXtren_21
+                      _IdfiXtren_22 _IdfiXtren_23 _IdfiXtren_24 _IdfiXtren_25
+                      _IdfiXtren_26 _IdfiXtren_27 _IdfiXtren_28 _IdfiXtren_29
+                      _IdfiXtren_30 _IdfiXtren_31 _IdfiXtren_32 _IdfiXtren_33
+                      _IdfiXtren_34 _IdfiXtren_35 _IdfiXtren_36 _IdfiXtren_37
+                      _IdfiXtren_38 _IdfiXtren_39 _IdfiXtren_40 _IdfiXtren_41
+                      _IdfiXtren_42 _IdfiXtren_44 _IdfiXtren_45 _IdfiXtren_46
+                      _IdfiXtren_47 _IdfiXtren_48 _IdfiXtren_49 _IdfiXtren_50
+                      _IdfiXtren_51 _IdfiXtren_53 _IdfiXtren_54 _IdfiXtren_55
+                      _IdfiXtren_56 _cons
+                      nb: variable counts and small-sample adjustments
+                      do not include partialled-out variables.
+------------------------------------------------------------------------------
+
+. estimates store m2c
+
+. estout m1gap m1ur m1c m2gap m2ur m2c,  cells(b(star fmt(3)) se(par fmt(3))) stats(N)
+
+------------------------------------------------------------------------------------------------------------
+                    m1gap            m1ur             m1c           m2gap            m2ur             m2c   
+                     b/se            b/se            b/se            b/se            b/se            b/se   
+------------------------------------------------------------------------------------------------------------
+orgapstd           -0.094***                                       -0.144**                                 
+                  (0.026)                                         (0.051)                                   
+drgapstd            0.067***                                        0.123***                                
+                  (0.017)                                         (0.037)                                   
+gapusstd            0.018***                                        0.026***                                
+                  (0.002)                                         (0.004)                                   
+orinc1              1.637***        0.737***        0.200*          2.545**         1.116***        0.422***
+                  (0.458)         (0.171)         (0.091)         (0.889)         (0.216)         (0.126)   
+drinc1             -0.273           0.214           0.756***       -0.487           0.583**         1.292***
+                  (0.336)         (0.161)         (0.089)         (0.643)         (0.192)         (0.146)   
+trend              -0.009***       -0.008***       -0.009***       -0.012***       -0.012***       -0.012***
+                  (0.001)         (0.001)         (0.001)         (0.001)         (0.001)         (0.001)   
+orurstd                             0.080***                                        0.117***                
+                                  (0.018)                                         (0.019)                   
+drurstd                            -0.074***                                       -0.115***                
+                                  (0.016)                                         (0.019)                   
+ur12std                            -0.017***                                       -0.029***                
+                                  (0.004)                                         (0.006)                   
+urateus1std                                        -0.023***                                       -0.022** 
+                                                  (0.003)                                         (0.008)   
+orurate1std                                         0.045***                                        0.085***
+                                                  (0.010)                                         (0.011)   
+drurate1std                                        -0.038***                                       -0.083***
+                                                  (0.006)                                         (0.011)   
+------------------------------------------------------------------------------------------------------------
+N               74448.000       72192.000       74448.000       74419.000       72163.000       74419.000   
+------------------------------------------------------------------------------------------------------------
+
+. 
+. 
+. quietly log off

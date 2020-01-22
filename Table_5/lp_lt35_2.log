@@ -1,0 +1,521 @@
+------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\lp_lt35_2.log
+  log type:  text
+ opened on:   4 Dec 2019, 16:16:19
+
+. /*****************************************
+> 
+> This file generates baseline estimates of a linear prob migration model using CPS
+> microdata.  
+> 
+> Business cycle variables are expressed in standardized format and SEs are HAC consistent. 
+> Local conditions are IV'd in the case of unemployment rate and emp gap.
+> 
+> Specifications are unweighted and include controls for age, educ, rac, ethnicity,
+> marital status, number of children, gender and quadratic time trend.
+> Sample is heads ages 18-65.
+> 
+> Note: This script was created for the ReStat resubmission from baseline_std.do.
+> baseline_std.do produced most estimates in the first submit to ReStat but I could not 
+> find all of them.
+> 
+> Restrict sample to those under 35 ;
+> 
+> Add metro status to controls.
+> 
+> *******************************************/
+> 
+> set matsize 100 ;
+
+. set mem 1g ;
+set memory ignored.
+    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly
+    automatically.
+
+. use marchcps_mig.dta ;
+
+. *set mem 500m ;
+. *use /homes/nber/bulk/marchcps_mig_test.dta ;
+. * CHECK that this produces same results as with earlier data ;
+. * See note in lp_gt35 ;
+. * drop if year > 2004 ;
+. drop if age > 35 ;
+(1,077,262 observations deleted)
+
+. drop if head~= 1 ;
+(0 observations deleted)
+
+. * Create age grouping along major mobility lines ;
+. gen agegrp = . ;
+(538,763 missing values generated)
+
+. replace agegrp = 1 if age <= 25 & age ~=. ;
+(141,914 real changes made)
+
+. replace agegrp = 2 if age >= 26 & age <= 30 ;
+(186,648 real changes made)
+
+. replace agegrp = 3 if age >= 31 & age <= 35 ;
+(210,201 real changes made)
+
+. replace agegrp = 4 if age >= 36 & age <= 45 ;
+(0 real changes made)
+
+. replace agegrp = 5 if age >= 46 & age <= 55 ;
+(0 real changes made)
+
+. replace agegrp = 6 if age >= 56 & age ~=. ;
+(0 real changes made)
+
+. char educ[omit] 2 ;
+
+. egen timet = group(year) ;
+
+. gen timet2 = timet*timet ;
+
+. gen kids = (nchild >=1 ) ;
+
+. summ kids nchild ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        kids |    538,763    .4762966    .4994383          0          1
+      nchild |    538,763     .922374    1.179702          0         12
+
+. * metro status - lots of not identifiable early on - set these to . ;
+. gen metrostat=. ;
+(538,763 missing values generated)
+
+. replace metrostat=0 if metro==1 ;
+(125,197 real changes made)
+
+. replace metrostat=1 if metro==2 | metro==3 | metro==4 ;
+(397,474 real changes made)
+
+.  * in later years there are lots of 4s so merge these in one group ;
+. replace ruc_rst = . if year < 1977 ;
+(0 real changes made)
+
+. replace rrucx = . if year < 1977 ;
+(92,111 real changes made, 92,111 to missing)
+
+. summ rgap gapus rruc ur12 rurate urateus ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+        rgap |    538,763   -.0001989    .0172585  -.1046872    .123191
+       gapus |    538,763    -.001524    .0189331  -.0464203   .0287829
+        rruc |    446,652   -.0011706    .0139738    -.04575   .0768333
+        ur12 |    538,763    .0595193    .0155988     .03475   .1009167
+      rurate |    538,763   -.0012918    .0316359  -.1160798   .1917409
+-------------+---------------------------------------------------------
+     urateus |    538,763    .1007132    .0274169    .067097   .1887099
+
+. * Standardize aggregate and state level variables ;
+. foreach varn in rgap gapus rruc ur12 rurate urateus { ;
+  2.    egen `varn'_std = std(`varn') ;
+  3. } ;
+(92111 missing values generated)
+
+. summ *_std ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+    rgap_std |    538,763   -1.33e-09           1  -6.054321   7.149523
+   gapus_std |    538,763   -1.89e-09           1  -2.371318    1.60074
+    rruc_std |    446,652   -1.08e-10           1  -3.190209   5.582144
+    ur12_std |    538,763    3.05e-09           1  -1.587897   2.653888
+  rurate_std |    538,763   -3.95e-10           1  -3.628412   6.101701
+-------------+---------------------------------------------------------
+ urateus_std |    538,763    1.36e-09           1  -1.226111   3.209578
+
+. gen perid = serial*10000 + year ;
+
+. summ perid ;
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+       perid |    538,763    3.75e+08    2.35e+08      11968   9.71e+08
+
+. tsset perid year ;
+       panel variable:  perid (unbalanced)
+        time variable:  year, 1964 to 2009, but with gaps
+                delta:  1 unit
+
+.  program define regs ;
+  1. ivreg2 cmigrant $bc $lbc black hisp female spouse kids timet timet2 _I* ,cluster(year) robust;
+  2. ivreg2 smigrant $bc $lbc black hisp female spouse kids timet timet2 _I* ,cluster(year) robust;
+  3. end ;
+
+. program define regsiv ;
+  1. ivreg2 cmigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r
+> ),cluster(year) robust;
+  2. ivreg2 smigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r
+> ),cluster(year) robust;
+  3. end ;
+
+. **NOTE: Compute first stages elsewhere.  These give too big Fs, since not clustered. ;
+. xi i.agegrp i.educ i.empstat i.metrostat ;
+i.agegrp          _Iagegrp_1-3        (naturally coded; _Iagegrp_1 omitted)
+i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
+i.empstat         _Iempstat_1-3       (naturally coded; _Iempstat_1 omitted)
+i.metrostat       _Imetrostat_0-1     (naturally coded; _Imetrostat_0 omitted)
+
+. gen styr = (year*100) + statefip ;
+
+. global bc ur12_std ;
+
+. global lbc rruc_std  ;
+
+. regsiv ;
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 17,    25) =   459.31
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  38725.42879                Centered R2   =   0.0304
+Total (uncentered) SS   =        43277                Uncentered R2 =   0.1324
+Residual SS             =   37548.8722                Root MSE      =    .3021
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0102364   .0126286     0.81   0.418    -.0145152     .034988
+     ur12_std |  -.0040405   .0016938    -2.39   0.017    -.0073603   -.0007207
+        black |  -.0304339   .0023022   -13.22   0.000    -.0349461   -.0259217
+         hisp |  -.0290517   .0026969   -10.77   0.000    -.0343376   -.0237659
+       female |  -.0112891   .0015972    -7.07   0.000    -.0144196   -.0081585
+       spouse |  -.0181974   .0012458   -14.61   0.000    -.0206392   -.0157557
+         kids |  -.0332858   .0010738   -31.00   0.000    -.0353903   -.0311812
+        timet |   .0032425   .0010824     3.00   0.003      .001121    .0053639
+       timet2 |  -.0001024   .0000243    -4.21   0.000    -.0001501   -.0000547
+   _Iagegrp_2 |  -.0636762   .0024002   -26.53   0.000    -.0683806   -.0589719
+   _Iagegrp_3 |  -.0928806   .0033373   -27.83   0.000    -.0994216   -.0863396
+     _Ieduc_1 |  -.0054166   .0023911    -2.27   0.023     -.010103   -.0007302
+     _Ieduc_3 |   .0150878   .0014024    10.76   0.000     .0123391    .0178364
+     _Ieduc_4 |    .052306   .0033981    15.39   0.000     .0456459    .0589662
+  _Iempstat_2 |   .0287542   .0036123     7.96   0.000     .0216741    .0358342
+  _Iempstat_3 |    .031417   .0029334    10.71   0.000     .0256677    .0371664
+_Imetrostat_1 |  -.0123998   .0025325    -4.90   0.000    -.0173635   -.0074362
+        _cons |   .1773233   .0131321    13.50   0.000     .1515849    .2030617
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              4.813
+                                                   Chi-sq(3) P-val =    0.1860
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             5646.794
+                         (Kleibergen-Paap rk Wald F statistic):          9.329
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    13.91
+                                         10% maximal IV relative bias     9.08
+                                         20% maximal IV relative bias     6.46
+                                         30% maximal IV relative bias     5.39
+                                         10% maximal IV size             22.30
+                                         15% maximal IV size             12.83
+                                         20% maximal IV size              9.54
+                                         25% maximal IV size              7.80
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         2.612
+                                                   Chi-sq(2) P-val =    0.2708
+------------------------------------------------------------------------------
+Instrumented:         rruc_std
+Included instruments: ur12_std black hisp female spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r
+------------------------------------------------------------------------------
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         26                Number of obs =   411484
+                                                      F( 17,    25) =  1216.82
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  19111.84727                Centered R2   =   0.0172
+Total (uncentered) SS   =        20093                Uncentered R2 =   0.0652
+Residual SS             =  18783.59465                Root MSE      =    .2137
+
+-------------------------------------------------------------------------------
+              |               Robust
+     smigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rruc_std |   .0006631   .0070702     0.09   0.925    -.0131942    .0145204
+     ur12_std |  -.0028988   .0012768    -2.27   0.023    -.0054013   -.0003962
+        black |  -.0095851   .0015803    -6.07   0.000    -.0126825   -.0064877
+         hisp |  -.0117705   .0015736    -7.48   0.000    -.0148548   -.0086862
+       female |  -.0095466   .0010804    -8.84   0.000    -.0116641    -.007429
+       spouse |  -.0068261    .001017    -6.71   0.000    -.0088194   -.0048328
+         kids |  -.0149264   .0010114   -14.76   0.000    -.0169086   -.0129441
+        timet |   .0024869   .0009206     2.70   0.007     .0006826    .0042911
+       timet2 |  -.0000701   .0000198    -3.55   0.000    -.0001088   -.0000313
+   _Iagegrp_2 |  -.0276571   .0012657   -21.85   0.000    -.0301379   -.0251763
+   _Iagegrp_3 |  -.0412522   .0016858   -24.47   0.000    -.0445563   -.0379482
+     _Ieduc_1 |  -.0043439   .0009796    -4.43   0.000    -.0062638    -.002424
+     _Ieduc_3 |    .005268   .0008444     6.24   0.000     .0036129     .006923
+     _Ieduc_4 |   .0356338   .0021576    16.52   0.000      .031405    .0398626
+  _Iempstat_2 |   .0218175   .0020988    10.40   0.000     .0177039    .0259311
+  _Iempstat_3 |   .0321961    .002261    14.24   0.000     .0277646    .0366277
+_Imetrostat_1 |  -.0014427   .0015709    -0.92   0.358    -.0045217    .0016363
+        _cons |    .062939   .0107461     5.86   0.000     .0418771    .0840009
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              4.813
+                                                   Chi-sq(3) P-val =    0.1860
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             5646.794
+                         (Kleibergen-Paap rk Wald F statistic):          9.329
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    13.91
+                                         10% maximal IV relative bias     9.08
+                                         20% maximal IV relative bias     6.46
+                                         30% maximal IV relative bias     5.39
+                                         10% maximal IV size             22.30
+                                         15% maximal IV size             12.83
+                                         20% maximal IV size              9.54
+                                         25% maximal IV size              7.80
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         3.342
+                                                   Chi-sq(2) P-val =    0.1880
+------------------------------------------------------------------------------
+Instrumented:         rruc_std
+Included instruments: ur12_std black hisp female spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r
+------------------------------------------------------------------------------
+
+. global bc gapus_std ;
+
+. global lbc rgap_std  ;
+
+. regsiv ;
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 17,    26) =   470.60
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  40265.79451                Centered R2   =   0.0334
+Total (uncentered) SS   =        45029                Uncentered R2 =   0.1357
+Residual SS             =  38919.91421                Root MSE      =    .3024
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0045939   .0087693     0.52   0.600    -.0125936    .0217814
+    gapus_std |      .0028    .001189     2.35   0.019     .0004695    .0051304
+        black |  -.0297609   .0019698   -15.11   0.000    -.0336217      -.0259
+         hisp |  -.0280034   .0016555   -16.92   0.000    -.0312481   -.0247587
+       female |  -.0114141   .0015782    -7.23   0.000    -.0145072   -.0083209
+       spouse |  -.0177046    .001226   -14.44   0.000    -.0201074   -.0153017
+         kids |  -.0333826   .0010926   -30.55   0.000    -.0355241   -.0312411
+        timet |   .0036046   .0013059     2.76   0.006     .0010451    .0061641
+       timet2 |  -.0001067   .0000283    -3.77   0.000    -.0001622   -.0000513
+   _Iagegrp_2 |  -.0640343    .002342   -27.34   0.000    -.0686246   -.0594441
+   _Iagegrp_3 |  -.0930355   .0032523   -28.61   0.000    -.0994099   -.0866612
+     _Ieduc_1 |  -.0047181    .001825    -2.59   0.010     -.008295   -.0011413
+     _Ieduc_3 |   .0146904   .0013582    10.82   0.000     .0120284    .0173523
+     _Ieduc_4 |   .0522481   .0032795    15.93   0.000     .0458204    .0586758
+  _Iempstat_2 |   .0320012   .0029155    10.98   0.000     .0262869    .0377154
+  _Iempstat_3 |   .0330313   .0028634    11.54   0.000     .0274192    .0386433
+_Imetrostat_1 |  -.0113871   .0015801    -7.21   0.000     -.014484   -.0082903
+        _cons |   .1705492    .014965    11.40   0.000     .1412183      .19988
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              2.806
+                                                   Chi-sq(3) P-val =    0.4225
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             8897.679
+                         (Kleibergen-Paap rk Wald F statistic):          1.894
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    13.91
+                                         10% maximal IV relative bias     9.08
+                                         20% maximal IV relative bias     6.46
+                                         30% maximal IV relative bias     5.39
+                                         10% maximal IV size             22.30
+                                         15% maximal IV size             12.83
+                                         20% maximal IV size              9.54
+                                         25% maximal IV size              7.80
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):        14.217
+                                                   Chi-sq(2) P-val =    0.0008
+------------------------------------------------------------------------------
+Instrumented:         rgap_std
+Included instruments: gapus_std black hisp female spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r
+------------------------------------------------------------------------------
+
+IV (2SLS) estimation
+--------------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         27                Number of obs =   425682
+                                                      F( 17,    26) =  1043.53
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  19827.86027                Centered R2   =   0.0175
+Total (uncentered) SS   =        20849                Uncentered R2 =   0.0656
+Residual SS             =  19481.83357                Root MSE      =    .2139
+
+-------------------------------------------------------------------------------
+              |               Robust
+     smigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+     rgap_std |   .0055631   .0040501     1.37   0.170    -.0023749    .0135011
+    gapus_std |   .0017497   .0008947     1.96   0.051    -3.84e-06    .0035032
+        black |  -.0100171   .0015043    -6.66   0.000    -.0129656   -.0070687
+         hisp |  -.0123242   .0011381   -10.83   0.000    -.0145549   -.0100936
+       female |  -.0097908    .001081    -9.06   0.000    -.0119094   -.0076721
+       spouse |     -.0067    .000994    -6.74   0.000    -.0086482   -.0047517
+         kids |  -.0149552   .0009917   -15.08   0.000    -.0168989   -.0130114
+        timet |   .0028915   .0008544     3.38   0.001     .0012169    .0045661
+       timet2 |  -.0000748   .0000192    -3.90   0.000    -.0001124   -.0000372
+   _Iagegrp_2 |  -.0280982   .0012735   -22.06   0.000    -.0305942   -.0256021
+   _Iagegrp_3 |   -.041321   .0016592   -24.90   0.000     -.044573   -.0380689
+     _Ieduc_1 |  -.0044087   .0008583    -5.14   0.000    -.0060909   -.0027265
+     _Ieduc_3 |   .0049948   .0007922     6.31   0.000     .0034422    .0065474
+     _Ieduc_4 |   .0352989   .0020708    17.05   0.000     .0312403    .0393575
+  _Iempstat_2 |   .0229697   .0018942    12.13   0.000     .0192571    .0266822
+  _Iempstat_3 |   .0333516   .0023542    14.17   0.000     .0287374    .0379658
+_Imetrostat_1 |  -.0015401   .0009259    -1.66   0.096    -.0033548    .0002746
+        _cons |   .0569359   .0093449     6.09   0.000     .0386202    .0752517
+-------------------------------------------------------------------------------
+Underidentification test (Kleibergen-Paap rk LM statistic):              2.806
+                                                   Chi-sq(3) P-val =    0.4225
+------------------------------------------------------------------------------
+Weak identification test (Cragg-Donald Wald F statistic):             8897.679
+                         (Kleibergen-Paap rk Wald F statistic):          1.894
+Stock-Yogo weak ID test critical values:  5% maximal IV relative bias    13.91
+                                         10% maximal IV relative bias     9.08
+                                         20% maximal IV relative bias     6.46
+                                         30% maximal IV relative bias     5.39
+                                         10% maximal IV size             22.30
+                                         15% maximal IV size             12.83
+                                         20% maximal IV size              9.54
+                                         25% maximal IV size              7.80
+Source: Stock-Yogo (2005).  Reproduced by permission.
+NB: Critical values are for Cragg-Donald F statistic and i.i.d. errors.
+------------------------------------------------------------------------------
+Hansen J statistic (overidentification test of all instruments):         6.779
+                                                   Chi-sq(2) P-val =    0.0337
+------------------------------------------------------------------------------
+Instrumented:         rgap_std
+Included instruments: gapus_std black hisp female spouse kids timet timet2
+                      _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3 _Ieduc_4
+                      _Iempstat_2 _Iempstat_3 _Imetrostat_1
+Excluded instruments: bartik15r oilshock151r oilshock1512r
+------------------------------------------------------------------------------
+
+. * Not instrumenting for ui claims, since that is plausibly exog by itself. ;
+. global bc urateus_std ;
+
+. global lbc rurate_std  ;
+
+. regs ;
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         36                Number of obs =   520544
+                                                      F( 17,    35) =   445.92
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  50707.67969                Centered R2   =   0.0373
+Total (uncentered) SS   =        56935                Uncentered R2 =   0.1426
+Residual SS             =  48815.59003                Root MSE      =    .3062
+
+-------------------------------------------------------------------------------
+              |               Robust
+     cmigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |  -.0046953   .0017116    -2.74   0.006    -.0080499   -.0013407
+   rurate_std |  -.0091223   .0007496   -12.17   0.000    -.0105915   -.0076531
+        black |  -.0364586   .0029479   -12.37   0.000    -.0422364   -.0306808
+         hisp |   -.028271    .001615   -17.51   0.000    -.0314363   -.0251057
+       female |  -.0131401   .0019398    -6.77   0.000    -.0169421   -.0093381
+       spouse |  -.0214919    .002154    -9.98   0.000    -.0257137   -.0172701
+         kids |  -.0295976   .0019937   -14.85   0.000    -.0335051     -.02569
+        timet |   .0005398   .0005181     1.04   0.298    -.0004757    .0015553
+       timet2 |  -.0000515   .0000128    -4.03   0.000    -.0000765   -.0000265
+   _Iagegrp_2 |  -.0667327   .0025164   -26.52   0.000    -.0716648   -.0618007
+   _Iagegrp_3 |  -.0969579   .0035326   -27.45   0.000    -.1038817   -.0900342
+     _Ieduc_1 |  -.0080024     .00192    -4.17   0.000    -.0117656   -.0042393
+     _Ieduc_3 |   .0173792    .001692    10.27   0.000      .014063    .0206954
+     _Ieduc_4 |   .0594391   .0042855    13.87   0.000     .0510397    .0678385
+  _Iempstat_2 |   .0380267   .0030103    12.63   0.000     .0321266    .0439269
+  _Iempstat_3 |   .0440859   .0049622     8.88   0.000     .0343601    .0538116
+_Imetrostat_1 |  -.0140477   .0018367    -7.65   0.000    -.0176475   -.0104478
+        _cons |   .2094506   .0064411    32.52   0.000     .1968263     .222075
+-------------------------------------------------------------------------------
+Included instruments: urateus_std rurate_std black hisp female spouse kids
+                      timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Iempstat_2 _Iempstat_3 _Imetrostat_1
+------------------------------------------------------------------------------
+
+OLS estimation
+--------------
+
+Estimates efficient for homoskedasticity only
+Statistics robust to heteroskedasticity and clustering on year
+
+Number of clusters (year) =         36                Number of obs =   520544
+                                                      F( 17,    35) =   183.31
+                                                      Prob > F      =   0.0000
+Total (centered) SS     =  25410.34513                Centered R2   =   0.0216
+Total (uncentered) SS   =        26789                Uncentered R2 =   0.0720
+Residual SS             =  24860.37907                Root MSE      =    .2185
+
+-------------------------------------------------------------------------------
+              |               Robust
+     smigrant |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------+----------------------------------------------------------------
+  urateus_std |  -.0044422   .0010196    -4.36   0.000    -.0064406   -.0024438
+   rurate_std |  -.0062723   .0006414    -9.78   0.000    -.0075294   -.0050152
+        black |   -.013515   .0018218    -7.42   0.000    -.0170857   -.0099443
+         hisp |  -.0126061   .0011746   -10.73   0.000    -.0149082   -.0103039
+       female |   -.011167   .0014291    -7.81   0.000     -.013968   -.0083661
+       spouse |  -.0081806   .0013356    -6.13   0.000    -.0107983    -.005563
+         kids |  -.0138235   .0013264   -10.42   0.000    -.0164232   -.0112238
+        timet |  -.0002933   .0003677    -0.80   0.425    -.0010139    .0004273
+       timet2 |  -.0000172   9.53e-06    -1.80   0.072    -.0000358    1.52e-06
+   _Iagegrp_2 |  -.0296298   .0015405   -19.23   0.000    -.0326492   -.0266105
+   _Iagegrp_3 |  -.0436897   .0020398   -21.42   0.000    -.0476876   -.0396918
+     _Ieduc_1 |  -.0071604   .0011782    -6.08   0.000    -.0094696   -.0048512
+     _Ieduc_3 |   .0064128   .0010241     6.26   0.000     .0044056    .0084199
+     _Ieduc_4 |   .0398961   .0027193    14.67   0.000     .0345664    .0452258
+  _Iempstat_2 |   .0263679   .0021302    12.38   0.000     .0221928    .0305431
+  _Iempstat_3 |   .0438252   .0046963     9.33   0.000     .0346206    .0530299
+_Imetrostat_1 |  -.0013637   .0008667    -1.57   0.116    -.0030623     .000335
+        _cons |   .0951569    .003943    24.13   0.000     .0874287    .1028852
+-------------------------------------------------------------------------------
+Included instruments: urateus_std rurate_std black hisp female spouse kids
+                      timet timet2 _Iagegrp_2 _Iagegrp_3 _Ieduc_1 _Ieduc_3
+                      _Ieduc_4 _Iempstat_2 _Iempstat_3 _Imetrostat_1
+------------------------------------------------------------------------------
+
+. log close ;
+      name:  <unnamed>
+       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\lp_lt35_2.log
+  log type:  text
+ closed on:   4 Dec 2019, 16:17:56
+------------------------------------------------------------------------------------------------------------------

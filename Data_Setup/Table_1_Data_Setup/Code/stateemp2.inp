@@ -1,0 +1,130 @@
+block
+ignore off
+over on
+close all
+
+load "/mcr/local/bin/fame_excel.pc"
+
+
+date * to *
+ 
+   $open us
+   freq m
+   ee_m = us'ee.m
+   etrend_m = iohpfilter(ee.m,14400)
+
+-- can't seasonally adjust for the entire timespan of data (max = 60 years)  what to do?
+
+---org. list with all states
+  statelist = {AK_N,AL_N,AR_N,AZ_N,CA_N,CO_N,CT_N,DC_N,DE_N,FL_N,GA_N,HI_N,IA_N,ID_N,IL_N,IN_N,KS_N,KY_N,LA_N,MA_N,MD_N,ME_N,MI_N,MN_N,MO_N,MS_N,MT_N,NC_N,ND_N,NE_N,NH_N,NJ_N,NM_N,NV_N,NY_N,OH_N,OK_N,OR_N,PA_N,RI_N,SC_N,SD_N,TN_N,TX_N,UT_N,VA_N,VT_N,WA_N,WI_N,WV_N,WY_N}
+  statelistm = {AK_N.M,AL_N.M,AR_N.M,AZ_N.M,CA_N.M,CO_N.M,CT_N.M,DC_N.M,DE_N.M,FL_N.M,GA_N.M,HI_N.M,IA_N.M,ID_N.M,IL_N.M,IN_N.M,KS_N.M,KY_N.M,LA_N.M,MA_N.M,MD_N.M,ME_N.M,MI_N.M,MN_N.M,MO_N.M,MS_N.M,MT_N.M,NC_N.M,ND_N.M,NE_N.M,NH_N.M,NJ_N.M,NM_N.M,NV_N.M,NY_N.M,OH_N.M,OK_N.M,OR_N.M,PA_N.M,RI_N.M,SC_N.M,SD_N.M,TN_N.M,TX_N.M,UT_N.M,VA_N.M,VT_N.M,WA_N.M,WI_N.M,WV_N.M,WY_N.M}
+  statelistq = {AK_N.Q,AL_N.Q,AR_N.Q,AZ_N.Q,CA_N.Q,CO_N.Q,CT_N.Q,DC_N.Q,DE_N.Q,FL_N.Q,GA_N.Q,HI_N.Q,IA_N.Q,ID_N.Q,IL_N.Q,IN_N.Q,KS_N.Q,KY_N.Q,LA_N.Q,MA_N.Q,MD_N.Q,ME_N.Q,MI_N.Q,MN_N.Q,MO_N.Q,MS_N.Q,MT_N.Q,NC_N.Q,ND_N.Q,NE_N.Q,NH_N.Q,NJ_N.Q,NM_N.Q,NV_N.Q,NY_N.Q,OH_N.Q,OK_N.Q,OR_N.Q,PA_N.Q,RI_N.Q,SC_N.Q,SD_N.Q,TN_N.Q,TX_N.Q,UT_N.Q,VA_N.Q,VT_N.Q,WA_N.Q,WI_N.Q,WV_N.Q,WY_N.Q}
+
+
+-- create SA employment series that extend from 1939 to 2006, then HP filter it
+ list_ee = {}
+ list_eem = {}
+ glue null
+ freq m
+ loop for xx in statelistm
+   date 1939 to 1998
+     ee&xx&sa1 = seasmult(EE_RST&xx)
+     ee&xx&sa1_pct = pct(ee&xx&sa1)/100 + 1
+   date 1950 to 2009
+     ee&xx&sa2 = seasmult(EE_RST&xx)
+   loop for i = 1 to 135
+     set <date 1950m1 - i>  ee&xx&sa2 =  ee&xx&sa2 [t+1]/ ee&xx&sa1_pct[t+1]
+   end loop
+ end loop
+
+repo < date * to *> eeal_n.msa2,eeal_n.msa1,eeal_n.msa1_pct
+
+ date 1939 to 2009
+ loop for xx in statelistm
+     ee&xx&trend = iohpfilter(ee&xx&sa2,14400)
+     ee&xx&gap = log(ee&xx&sa2/ee&xx&trend)
+     ee&xx&gap12 = convert(mave(ee&xx&gap[t-9],12),a,disc,end)
+     ee&xx&gap4 = mave(ee&xx&gap,4)
+     ee&xx&3 = convert(ee&xx&sa2[t-9],a,disc,end)
+     list2 = list_ee
+     list_ee = list2 + {ee&xx&gap12} + {ee&xx&3}
+     list2m = list_eem
+     list_eem = list2m + {ee&xx&gap} + {ee&xx&gap4} 
+ end loop 
+   date 1939 to 2009
+     ee.mtrend = iohpfilter(ee.m,14400)
+     ee.mgap = log(ee.m/ee.mtrend)
+     ee.mgap12 = convert(mave(ee.mgap[t-9],12),a,disc,end)
+     ee.mgap4 = mave(ee.mgap,4)
+     ee.m3 = convert(ee.m[t-9],a,disc,end)
+     list_ee2 = list_ee + {ee.mgap12} + {ee.m3}
+     list_eem2 = list_eem + {ee.mgap}+ {ee.mgap4} 
+   date * to *
+   
+--now we make a list that includes the underscore(just so we didnt have to type it out above)--there way be a way for the loop
+--to handle both the _ and . but for now we use this.
+ 
+ glue null
+ list_ur = {}
+
+ loop for xx in statelist
+   list2 = list_ur
+   list_ur = list2+{RUC_RST&xx}
+ end loop 
+ glue dot
+ annuallist1 = {}
+ annuallist1m = {}
+ loop for xx in list_ur
+    xx&m12 = convert(mave(xx&m[t-9],12),a,disc,end)
+    xx&msa = seasmult(xx&m)
+    xx&m4 = mave(xx&msa,4)
+    annuallist = annuallist1
+    annuallist1 = annuallist+{xx&m12}
+    annuallistm = annuallist1m
+    annuallist1m = annuallistm+{xx&msa}+{xx&m4}
+ end loop
+   ruc.m12 = convert(mave(ruc.m[t-9],12), a, disc,end)
+   annuallist2 = annuallist1 + {ruc.m12} 
+
+   ruc.m4 = mave(ruc.m,4)
+   annuallist2m = list_eem2 + annuallist1m + {ruc.m} + {ruc.m4} 
+
+
+-- now pull national and state house prices
+  $open board
+  list_hp = {}
+  glue null
+  loop for xx in statelistm
+     hp&xx =convert(convert(PJHERLTTD_rst&xx,q,disc,end),a,disc,beg)
+     list_hp1 = list_hp  
+     list_hp = list_hp1 + {hp&xx}
+  end loop
+
+  hpus = convert(PJHERLTTD_n.q,a,disc,beg)
+  list_hp2 = list_hp + {hpus}  
+    
+scalar work'bdate_a:date(annual) = 1939
+scalar work'edate_a:date(annual) = 2009
+$putExcel "statedata1.xls",annuallist2 , bdate_a, edate_a, 1, 1, 1
+$putExcel "statedata2.xls",list_ee2 , bdate_a, edate_a, 1, 1, 1
+
+scalar work'bdate_a:date(annual) = 1975
+scalar work'edate_a:date(annual) = 2009
+$putExcel "statedata3.xls",list_hp2 , bdate_a, edate_a, 1, 1, 1
+
+--scalar work'bdate_m:date(monthly) = 1980m1
+--scalar work'edate_m:date(monthly) = 2005m12
+
+--$putExcel "statedatam.xls",annuallist2m , bdate_m, edate_m, 1, 1, 1
+
+
+-- unemployment rate = # first unemployment claims / covered private employment
+--scalar work'bdate_a:date(annual) = 1938
+--scalar work'edate_a:date(annual) = 2004
+--uratelist = {urate}
+--$getExcel "urate.xls",work,bdate_a, uratelist , 1, 1, 1
+
+
+
+end block
+
