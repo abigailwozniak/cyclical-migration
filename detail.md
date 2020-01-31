@@ -7,7 +7,7 @@
 - **\Data_Setup**
   - This folder contains the materials needed to replicate the data sets used in constructing Table 1 and Table 5, 6, and A3.
 
-## Data set Construction
+## Data Set Construction
 
 *Steps for replicating the main data sets:*
 
