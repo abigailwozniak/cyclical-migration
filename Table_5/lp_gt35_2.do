@@ -25,7 +25,11 @@ Restrict sample to those 36 and up ;
 set matsize 100 ;
 
 set mem 1g ;
-use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+*use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+
+cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+
+use marchcps_mig.dta ;
 
 *set mem 500m ;
 *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;

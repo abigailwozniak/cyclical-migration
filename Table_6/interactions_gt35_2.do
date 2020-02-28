@@ -2,7 +2,7 @@
 capture program drop _all ;
 capture macro drop _all ;
 
-log using interactions_gt35_2_zs.log, replace ;
+log using interactions_gt35_2.log, replace ;
 
 /*****************************************
 
@@ -20,6 +20,9 @@ Add metro status to set of main controls.
 set matsize 100 ;
 
 set mem 1000m ;
+
+cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+
 use marchcps_mig.dta ;
 
 *set mem 500m ;

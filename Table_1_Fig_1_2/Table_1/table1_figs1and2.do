@@ -10,6 +10,8 @@ set linesize 200
 
 log using table1_figs1and2.log, replace
 
+cd ..\Input\.
+
 use table1, clear
 
 * the two series plotted in figure 1 are mv14_upsp (inter-county migration) and ds14_upsp (inter-state migration)
@@ -26,6 +28,8 @@ for var  mv14_upspd: reg X urateus1std \ reg X05 urateus1std if year<=2005\ reg 
 for var  mv14_upspd: reg X gapus \ quietly predict Xfit if e(sample), xb 
 for var  mv14_upspd: reg X ur12 \ quietly predict Xfit2 if e(sample), xb 
 for var  mv14_upspd: reg X urateus1 \ quietly predict Xfit3 if e(sample), xb 
+
+cd ..\Figures_1_2\.
 
 * top panel of Figure 2
 sort gapus

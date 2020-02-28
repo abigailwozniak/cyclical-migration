@@ -20,7 +20,11 @@ Add metro status to set of main controls.
 set matsize 100 ;
 
 set mem 1000m ;
-use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+*use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+
+cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+
+use markcps_mig.dta ;
 
 *set mem 500m ;
 *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;

@@ -397,3 +397,11 @@ mv14_upspd05 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 
 . 
 . quietly log off
+. do "C:\Users\IRZJS01\AppData\Local\Temp\STD13e58_000000.tmp"
+
+. *** Stata do-file to run regressions for Table 1 and make Figures 1 and 2
+. set trace off
+
+. set more 1 
+
+. capture log close

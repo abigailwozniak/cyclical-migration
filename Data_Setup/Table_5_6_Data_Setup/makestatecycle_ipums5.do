@@ -21,6 +21,7 @@ log using makestatecycle_ipums5.log, replace
 
 set mem 100m
 
+cd .\Input\.
 
 use ipumscps_statecodes.dta
 sort abbrev
@@ -286,6 +287,8 @@ sort year statefip ;
 
 sort year ;
 by year: summ ;
+
+cd ..\Output\. ;
 
 save statecycle_ipums.dta, replace  ;
 

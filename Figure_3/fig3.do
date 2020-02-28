@@ -11,6 +11,8 @@ set linesize 200
 
 log using fig3.log, replace
 
+cd .\Input\.
+
 use fig3, clear
 
 /*
@@ -27,6 +29,8 @@ gen ruct = ruc if ur12>7 & ur12~=.
 gen uratep = urate if urateus<=.087 & year>=1947
 gen uratet = urate if urateus>=.128 & urate~=. & year>=1947
 */
+
+cd ..\Output\.
 
 * top panel
 kdensity gapp, lcolor(black) addplot(kdensity gapt, lcolor(black)) legend(lab(1 "years in the top quartile of the national employment gap") lab(2 "years in the bottom quartile of the national employment gap")) xtitle("Distribution of State Employment Gaps") ylab(,nogrid) lpattern(dash) note("") title("") saving(g1, replace) graphregion(color(white))

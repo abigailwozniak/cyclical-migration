@@ -13,6 +13,9 @@ Cluster on year only.
 set matsize 100 ;
 
 set mem 1g ;
+
+cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+
 use marchcps_mig.dta ;
 
 *set mem 500m ;

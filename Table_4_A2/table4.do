@@ -13,7 +13,12 @@ version 7.0
 
 log using table4.log, replace
 
+cd .\Input\.
+
 use table4, clear
+
+cd ..\Output\.
+
 set seed 423985738
 foreach V of var exems2is exems2os lexems2i lexems2o {
    foreach C of var gapus1std rucusstd urateus1std {

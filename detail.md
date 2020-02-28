@@ -1,4 +1,4 @@
-## Repository Structure
+﻿## Repository Structure
 
 *The repository is structured as follows:*
 
@@ -30,7 +30,7 @@
 *Note that the coefficients for the relative and average house price covariates are not included in the Tables 2-4 because the data are proprietary (CoreLogic). Also note that because the CoreLogic data are not included in these analyses, the results will not exactly match the published tables.*
 
 - **Table 1 and Figures 1 and 2**
-  - **table1_figs1and2.do** – uses **table1.dta** to produce the results in Table 1, Figure 1 (g1.gph), and Figure 2 (g2.gph).
+  - **table1_figs1and2.do** – uses **table1.dta** to produce the results in Table 1 and the graphs in Figure 2 - **g1.gph**, **g2.gph**, and **g3.gph**. The time series data for Figure 1 is available in the log file.
 
 - **Table 2**
   - **table2.do** – uses **table2.dta** to produce the results in Table 2.
@@ -42,7 +42,7 @@
   - **table4.do** – uses **table4.dta** to produce **t4results.dta** and the results in Table 4 and Appendix Table A2.
 
 - **Figure 3**
-  - **fig3.do** – uses **fig3.dta** to produce Figure 3 (**g3.gph**).
+  - **fig3.do** – uses **fig3.dta** to produce the graphs in Figure 3 - **g1.gph**, **g2.gph**, and **g3.gph**.
 
 - **Table 5**
   - **lp_lt35_2.do** – uses **marchcps_mig.dta** to the produce the “18-35” results in Table 5.

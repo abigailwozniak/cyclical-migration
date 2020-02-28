@@ -8,6 +8,8 @@ log using make_marchcps.log, replace
 * read in extract from ipums - contains March CPS data 1962-2009
 * now create separate data sets for heads and nonheads, keep everyone in allcps data set
 
+cd .\Input.
+
 quietly do ipums6.do 
 
 * drop years for which migration status 1 year ago is n.a.
@@ -137,6 +139,8 @@ replace wgtfnl = int(perwt / 100) if wgtfnl==.
 
 * merge in annual business cycle variables using statecycle
 * contains state and national BC vars, supercedes cycle.dta
+
+cd ..\Output\.
 
 preserve
 clear
