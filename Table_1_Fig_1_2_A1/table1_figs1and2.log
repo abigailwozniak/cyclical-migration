@@ -1,11 +1,12 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\table1_figs1and2.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_1_Fig_1_2\table1_figs1and2.log
   log type:  text
- opened on:   4 Dec 2019, 09:49:20
+ opened on:   2 Mar 2020, 10:52:17
 
 . 
-. use table1, clear
+. *use table1, clear
+. use Input\table1, clear
 
 . 
 . * the two series plotted in figure 1 are mv14_upsp (inter-county migration) and ds14_upsp (inter-state migration)
@@ -367,7 +368,7 @@ mv14_upspd05 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 . sort gapus
 
 . gr7 mv14_upspd mv14_upspdfit gapus, c(.l) s([year].)   ylab(-.006(.002).008) xlab(-.05(.01).04) b2("Ln(US Employment/Trend Employment)") b1("") l1("Detrended Migration 14+") l2("(Fraction of Populat
-> ion 14+)") key1("") saving(g1, replace)
+> ion 14+)") key1("") saving(Output\g1, replace)
 
 . * middle panel of Figure 2
 . replace ur12 = ur12*100
@@ -376,7 +377,7 @@ mv14_upspd05 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 . sort ur12
 
 . gr7 mv14_upspd mv14_upspdfit2 ur12, c(.l) s([year].)   ylab(-.006(.002).008) xlab(3(1)10) b2("Unemployment Rate") b1("") l1("Detrended Migration 14+") l2("(Fraction of Population 14+)") key1("") sav
-> ing(g2, replace)
+> ing(Output\g2, replace)
 
 . * bottom panel of Figure 2
 . replace urateus1 = urateus1*100
@@ -385,23 +386,18 @@ mv14_upspd05 |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
 . sort urateus1
 
 . gr7 mv14_upspd mv14_upspdfit3 urateus1, c(.l) s([year].)   ylab(-.006(.002).008) xlab(6(3)24) b2("UI Claims Rate") b1("") l1("Detrended Migration 14+") l2("(Fraction of Population 14+)") key1("") sa
-> ving(g3, replace)
+> ving(Output\g3, replace)
 
 . * Appendix Figure 1
 . gen gapus100 = gapus*100
 
 . sort year
 
+. *twoway line gapus100 ur12 urateus1 year if year>=1948, legend(lab(1 "Employment Gap") lab(2 "Unemployment Rate") lab(3 "UI Claims Rate")) xlab(1950(10)2010) ylab(-5(5)25, nogrid) ysca(r(-5 25)) lpa
+> ttern(solid dash shortdash) lcolor(black black black) graphregion(color(white))
 . twoway line gapus100 ur12 urateus1 year if year>=1948, legend(lab(1 "Employment Gap") lab(2 "Unemployment Rate") lab(3 "UI Claims Rate")) xlab(1950(10)2010) ylab(-5(5)25, nogrid) ysca(r(-5 25)) lpat
-> tern(solid dash shortdash) lcolor(black black black) graphregion(color(white))
+> tern(solid dash shortdash) lcolor(black black black) graphregion(color(white)) saving(Output\A1, replace)
+(file Output\A1.gph saved)
 
 . 
 . quietly log off
-. do "C:\Users\IRZJS01\AppData\Local\Temp\STD13e58_000000.tmp"
-
-. *** Stata do-file to run regressions for Table 1 and make Figures 1 and 2
-. set trace off
-
-. set more 1 
-
-. capture log close

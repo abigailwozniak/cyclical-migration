@@ -1,8 +1,8 @@
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_gt35_2_zs.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6\interactions_gt35_2.log
   log type:  text
- opened on:   9 Dec 2019, 15:13:29
+ opened on:   3 Mar 2020, 15:45:02
 
 . /*****************************************
 > 
@@ -23,7 +23,13 @@
 set memory ignored.
     Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly automatically.
 
-. use marchcps_mig.dta ;
+. cd ..\Data_Setup\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Data_Setup
+
+. use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+
+. cd ..\Table_6\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6
 
 . *set mem 500m ;
 . *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;
@@ -2138,7 +2144,7 @@ Dropped collinear:    _Kmetrostat_1 _Ikids_1
 
 . log close ;
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_gt35_2_zs.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6\interactions_gt35_2.log
   log type:  text
- closed on:   9 Dec 2019, 15:20:59
---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ closed on:   3 Mar 2020, 15:52:16
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

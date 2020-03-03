@@ -1,8 +1,8 @@
-------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\lp_lt35_2.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_5\lp_lt35_2.log
   log type:  text
- opened on:   4 Dec 2019, 16:16:19
+ opened on:   3 Mar 2020, 15:57:46
 
 . /*****************************************
 > 
@@ -30,10 +30,16 @@
 
 . set mem 1g ;
 set memory ignored.
-    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly
-    automatically.
+    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly automatically.
 
-. use marchcps_mig.dta ;
+. *use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+. cd ..\Data_Setup\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Data_Setup
+
+. use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+
+. cd ..\Table_5\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Table_5
 
 . *set mem 500m ;
 . *use /homes/nber/bulk/marchcps_mig_test.dta ;
@@ -149,10 +155,8 @@ set memory ignored.
   3. end ;
 
 . program define regsiv ;
-  1. ivreg2 cmigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r
-> ),cluster(year) robust;
-  2. ivreg2 smigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r
-> ),cluster(year) robust;
+  1. ivreg2 cmigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r),cluster(year) robust;
+  2. ivreg2 smigrant $bc black hisp female spouse kids timet timet2 _I* ($lbc=bartik15r oilshock151r oilshock1512r),cluster(year) robust;
   3. end ;
 
 . **NOTE: Compute first stages elsewhere.  These give too big Fs, since not clustered. ;
@@ -515,7 +519,7 @@ Included instruments: urateus_std rurate_std black hisp female spouse kids
 
 . log close ;
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\lp_lt35_2.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_5\lp_lt35_2.log
   log type:  text
- closed on:   4 Dec 2019, 16:17:56
-------------------------------------------------------------------------------------------------------------------
+ closed on:   3 Mar 2020, 15:59:10
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

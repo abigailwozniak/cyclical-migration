@@ -1,8 +1,9 @@
 ------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\makestatecycle_ipums5.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Data_Setup\Table_5_6_Data_Setup\makestatecycle_
+> ipums5.log
   log type:  text
- opened on:  10 Dec 2019, 10:11:44
+ opened on:   2 Mar 2020, 10:38:36
 
 . 
 . ** merge IPUMS cps state codes by abbreviation to state level BC data
@@ -29,13 +30,14 @@ set memory ignored.
     automatically.
 
 . 
-. 
-. use ipumscps_statecodes.dta
+. *use ipumscps_statecodes.dta
+. use Input\ipumscps_statecodes.dta
 
 . sort abbrev
 
-. save ipumscps_statecodes.dta, replace 
-file ipumscps_statecodes.dta saved
+. *save ipumscps_statecodes.dta, replace 
+. save Input\ipumscps_statecodes.dta, replace 
+file Input\ipumscps_statecodes.dta saved
 
 . clear
 
@@ -49,18 +51,21 @@ file ipumscps_statecodes.dta saved
 > clear
 > */
 . 
-. use bartik_s10.dta
+. *use bartik_s10.dta
+. use Input\bartik_s10.dta
 
 . sort year state
 
-. save bartik_s10.dta, replace
-file bartik_s10.dta saved
+. *save bartik_s10.dta, replace
+. save Input\bartik_s10.dta, replace
+file Input\bartik_s10.dta saved
 
 . clear
 
 . 
 . 
-. use stateemp3
+. *use stateemp3
+. use Input\stateemp3
 
 . 
 . summ
@@ -268,7 +273,8 @@ file bartik_s10.dta saved
 . sort year state
 
 . 
-. merge year state using bartik_s10
+. *merge year state using bartik_s10
+. merge year state using Input\bartik_s10
 (note: you are using old merge syntax; see [D] merge for new syntax)
 
 . tab1 _merge
@@ -652,8 +658,10 @@ file bartik_s10.dta saved
 
 . tempfile tempUI
 
-. save tempUI, replace
-file tempUI.dta saved
+. *save tempUI, replace
+. save Output\tempUI, replace
+(note: file Output\tempUI.dta not found)
+file Output\tempUI.dta saved
 
 . clear
 
@@ -664,7 +672,8 @@ file tempUI.dta saved
 
 . sort year xstatefip
 
-. merge year xstatefip using tempUI
+. *merge year xstatefip using tempUI
+. merge year xstatefip using Output\tempUI
 (note: you are using old merge syntax; see [D] merge for new syntax)
 
 . tab1 _merge 
@@ -753,8 +762,10 @@ file tempUI.dta saved
 . *list
 . tempfile tempdev
 
-. save tempdev, replace
-file tempdev.dta saved
+. *save tempdev, replace
+. save Output\tempdev, replace
+(note: file Output\tempdev.dta not found)
+file Output\tempdev.dta saved
 
 . clear
 
@@ -765,7 +776,8 @@ file tempdev.dta saved
 . 
 . sort year
 
-. merge year using tempdev
+. *merge year using tempdev
+. merge year using Output\tempdev
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable year does not uniquely identify observations in the master data
 
@@ -789,7 +801,7 @@ variable year does not uniquely identify observations in the master data
 
 . *by abbrev: gen c1ruc_rst = ruc_rst[_n] - ruc_rst[_n-1]
 . by abbrev: gen c1urated = urated[_n] - urated[_n-1]
-(330 missing values generated)
+(328 missing values generated)
 
 . 
 . by abbrev: gen l1gap = gap[_n-1]
@@ -1069,7 +1081,7 @@ oilsh~61012r |      1,560    5.29e-12    .0010626  -.0023559   .0204655
   L1uratedus |      3,610    5.40e-06    .0319801    -.08611   .1311143
 -------------+---------------------------------------------------------
        c1gap |      3,394    .0004235    .0321483  -.1772275   .2847034
-    c1urated |      3,434   -.0013741    .0398347  -.3103697   .3066066
+    c1urated |      3,436   -.0014129    .0401665  -.3103697   .3066066
        l1gap |      3,394   -.0005593    .0349779  -.1532079   .2397948
    l1ruc_rst |      1,568    .0581656    .0196882     .02275   .1665833
     l1urated |      3,473   -.0001699    .0359769  -.1861619   .3240443
@@ -1088,8 +1100,10 @@ oilsh~61012r |      1,560    5.29e-12    .0010626  -.0023559   .0204655
 . 
 . tempfile tempstateemp
 
-. save tempstateemp, replace
-file tempstateemp.dta saved
+. *save tempstateemp, replace
+. save Output\tempstateemp, replace
+(note: file Output\tempstateemp.dta not found)
+file Output\tempstateemp.dta saved
 
 . clear
 
@@ -1097,7 +1111,8 @@ file tempstateemp.dta saved
 . 
 . ** Merge in cps fips codes by year of survey
 . 
-. use tempstateemp
+. *use tempstateemp
+. use Output\tempstateemp
 
 . drop if year > 1967 | year < 1963
 (3,509 observations deleted)
@@ -1110,7 +1125,8 @@ file tempstateemp.dta saved
 
 . sort abbrev year
 
-. merge abbrev using ipumscps_statecodes.dta
+. *merge abbrev using ipumscps_statecodes.dta
+. merge abbrev using Input\ipumscps_statecodes.dta
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable abbrev does not uniquely identify observations in the master data
 
@@ -1135,13 +1151,16 @@ variable abbrev does not uniquely identify observations in the master data
 . *summ
 . tempfile temp6367
 
-. save temp6367, replace
-file temp6367.dta saved
+. *save temp6367, replace
+. save Output\temp6367, replace
+(note: file Output\temp6367.dta not found)
+file Output\temp6367.dta saved
 
 . clear
 
 . 
-. use tempstateemp
+. *use tempstateemp
+. use Output\tempstateemp
 
 . drop if year > 1972 | year < 1968
 (3,505 observations deleted)
@@ -1154,7 +1173,8 @@ file temp6367.dta saved
 
 . sort abbrev year
 
-. merge abbrev using ipumscps_statecodes.dta
+. *merge abbrev using ipumscps_statecodes.dta
+. merge abbrev using Input\ipumscps_statecodes.dta
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable abbrev does not uniquely identify observations in the master data
 
@@ -1178,13 +1198,16 @@ variable abbrev does not uniquely identify observations in the master data
 
 . tempfile temp6872
 
-. save temp6872, replace
-file temp6872.dta saved
+. *save temp6872, replace
+. save Output\temp6872, replace
+(note: file Output\temp6872.dta not found)
+file Output\temp6872.dta saved
 
 . clear
 
 . 
-. use tempstateemp
+. *use tempstateemp
+. use Output\tempstateemp
 
 . drop if year > 1975 | year < 1973
 (3,608 observations deleted)
@@ -1197,7 +1220,8 @@ file temp6872.dta saved
 
 . sort abbrev year
 
-. merge abbrev using ipumscps_statecodes.dta
+. *merge abbrev using ipumscps_statecodes.dta
+. merge abbrev using Input\ipumscps_statecodes.dta
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable abbrev does not uniquely identify observations in the master data
 
@@ -1221,13 +1245,16 @@ variable abbrev does not uniquely identify observations in the master data
 
 . tempfile temp7375
 
-. save temp7375, replace
-file temp7375.dta saved
+. *save temp7375, replace
+. save Output\temp7375, replace
+(note: file Output\temp7375.dta not found)
+file Output\temp7375.dta saved
 
 . clear
 
 . 
-. use tempstateemp
+. *use tempstateemp
+. use Output\tempstateemp
 
 . drop if year ~= 1976
 (3,712 observations deleted)
@@ -1240,7 +1267,8 @@ file temp7375.dta saved
 
 . sort abbrev year
 
-. merge abbrev using ipumscps_statecodes.dta
+. *merge abbrev using ipumscps_statecodes.dta
+. merge abbrev using Input\ipumscps_statecodes.dta
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable abbrev does not uniquely identify observations in the master data
 
@@ -1264,13 +1292,16 @@ variable abbrev does not uniquely identify observations in the master data
 
 . tempfile temp76
 
-. save temp76, replace
-file temp76.dta saved
+. *save temp76, replace
+. save Output\temp76, replace
+(note: file Output\temp76.dta not found)
+file Output\temp76.dta saved
 
 . clear
 
 . 
-. use tempstateemp
+. *use tempstateemp
+. use Output\tempstateemp
 
 . drop if year < 1977
 (1,997 observations deleted)
@@ -1283,7 +1314,8 @@ file temp76.dta saved
 
 . sort abbrev year
 
-. merge abbrev using ipumscps_statecodes.dta
+. *merge abbrev using ipumscps_statecodes.dta
+. merge abbrev using Input\ipumscps_statecodes.dta
 (note: you are using old merge syntax; see [D] merge for new syntax)
 variable abbrev does not uniquely identify observations in the master data
 
@@ -1307,21 +1339,28 @@ variable abbrev does not uniquely identify observations in the master data
 
 . tempfile temp77plus
 
-. save temp77plus, replace
-file temp77plus.dta saved
+. *save temp77plus, replace
+. save Output\temp77plus, replace
+(note: file Output\temp77plus.dta not found)
+file Output\temp77plus.dta saved
 
 . clear
 
 . 
-. use temp6367
+. *use temp6367
+. use Output\temp6367
 
-. append using temp6872
+. *append using temp6872
+. append using Output\temp6872
 
-. append using temp7375
+. *append using temp7375
+. append using Output\temp7375
 
-. append using temp76
+. *append using temp76
+. append using Output\temp76
 
-. append using temp77plus
+. *append using temp77plus
+. append using Output\temp77plus
 
 . 
 . *summ
@@ -3374,12 +3413,14 @@ oilsho~1512r |          0
       rurate |          0
 
 
-. save statecycle_ipums.dta, replace  ;
-file statecycle_ipums.dta saved
+. *save statecycle_ipums.dta, replace  ;
+. save Output\statecycle_ipums.dta, replace  ;
+file Output\statecycle_ipums.dta saved
 
 . log close ;
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\makestatecycle_ipums5.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Data_Setup\Table_5_6_Data_Setup\makestatecycle_
+> ipums5.log
   log type:  text
- closed on:  10 Dec 2019, 10:11:48
+ closed on:   2 Mar 2020, 10:38:40
 ------------------------------------------------------------------------------------------------------------------

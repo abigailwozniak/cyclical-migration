@@ -1,11 +1,12 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\table2.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_2\table2.log
   log type:  text
- opened on:   3 Dec 2019, 13:09:41
+ opened on:   2 Mar 2020, 14:47:12
 
 . 
-. use table2, clear
+. *use table2, clear
+. use Input\table2, clear
 
 . 
 . xi: ivreg28 exemptss  gapusstd  (orgapstd drgapstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2) orinc1 drinc1  i.ofips*trend i.dfips*trend ,  

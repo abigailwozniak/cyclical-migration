@@ -14,9 +14,11 @@ set matsize 100 ;
 
 set mem 1g ;
 
-cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+cd ..\Data_Setup\. ;
 
-use marchcps_mig.dta ;
+use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+
+cd ..\Table_A3\. ;
 
 *set mem 500m ;
 *use ~waggoner/bulk/marchcps_mig_test.dta ;
@@ -63,7 +65,7 @@ program define firststage1 ;
 
 ivreg2 $lbc bartik15r_std oilshock151r_std oilshock1512r_std $bc black hisp female spouse kids metrostat timet timet2 _I*, cluster(year) robust ;
 test (bartik15r_std=0) (oilshock151r_std=0) (oilshock1512r_std=0) ;
-outreg using firststage2.out, se br bdec(4) replace ;
+outreg using firststage2.out, se bdec(4)  replace ;
 
 end ;
 
@@ -71,7 +73,7 @@ program define firststage ;
 
 ivreg2 $lbc bartik15r_std oilshock151r_std oilshock1512r_std $bc black hisp female spouse kids metrostat timet timet2 _I*, cluster(year) robust ;
 test (bartik15r_std=0) (oilshock151r_std=0) (oilshock1512r_std=0) ;
-outreg using firststage2.out, se br bdec(4) append ;
+outreg using firststage2.out, se bdec(4) merge ;
 
 end ;
 

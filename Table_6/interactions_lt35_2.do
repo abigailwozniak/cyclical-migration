@@ -22,9 +22,11 @@ set matsize 100 ;
 set mem 1000m ;
 *use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
 
-cd ..\Data_Setup\Table_5_6_Data_Setup\Output\. ;
+cd ..\Data_Setup\. ;
 
-use markcps_mig.dta ;
+use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+
+cd ..\Table_6\. ;
 
 *set mem 500m ;
 *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;

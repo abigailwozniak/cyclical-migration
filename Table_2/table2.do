@@ -13,9 +13,8 @@ set linesize 200
 
 log using table2.log, replace
 
-cd .\Input\.
-
-use table2, clear
+*use table2, clear
+use Input\table2, clear
 
 xi: ivreg28 exemptss  gapusstd  (orgapstd drgapstd=obartik15r1std dbartik15r1std ooilshock151rstd doilshock151rstd ooilshock151rstd2 doilshock151rstd2) orinc1 drinc1  i.ofips*trend i.dfips*trend ,  cluster(year) first fwl(_I*)
 estimates store m1gap

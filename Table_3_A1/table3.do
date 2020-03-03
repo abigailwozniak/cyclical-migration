@@ -12,9 +12,8 @@ set linesize 200
 
 log using table3.log, replace
 
-cd .\Input\.
-
-use table3, clear
+*use table3, clear
+use Input\table3, clear
 
 xi: ivreg28 inexemss gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first cluster(year)
 estimates store m1igap

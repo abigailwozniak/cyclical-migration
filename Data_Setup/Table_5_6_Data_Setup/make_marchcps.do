@@ -8,9 +8,8 @@ log using make_marchcps.log, replace
 * read in extract from ipums - contains March CPS data 1962-2009
 * now create separate data sets for heads and nonheads, keep everyone in allcps data set
 
-cd .\Input.
-
-quietly do ipums6.do 
+*quietly do ipums6.do 
+quietly do Input\ipums6.do 
 
 * drop years for which migration status 1 year ago is n.a.
 
@@ -140,21 +139,22 @@ replace wgtfnl = int(perwt / 100) if wgtfnl==.
 * merge in annual business cycle variables using statecycle
 * contains state and national BC vars, supercedes cycle.dta
 
-cd ..\Output\.
-
 preserve
 clear
 
-use statecycle_ipums.dta
+*use statecycle_ipums.dta
+use Output/statecycle_ipums.dta
 sort year statefip
 tempfile tempstatecycle
-save tempstatecycle, replace
+*save tempstatecycle, replace
+save Output\tempstatecycle, replace
 clear
 
 restore
 
 sort year statefip
-merge year statefip using tempstatecycle
+*merge year statefip using tempstatecycle
+merge year statefip using Output\tempstatecycle
 tab1 _merge
 drop if _merge < 3
 
@@ -168,8 +168,8 @@ summ
 
 compress
 
-save marchcps_mig_allcps.dta, replace
-
+*save marchcps_mig_allcps.dta, replace
+save Output\marchcps_mig_allcps.dta, replace
 
 * data set as before with only hhhs ages 18 to 65
 * keep only working age individuals
@@ -180,19 +180,21 @@ drop if age < 18 | age > 65
 summ age
 drop if head==0
 
-save marchcps_mig.dta, replace
-* save marchcps_mig.dta, replace
+*save marchcps_mig.dta, replace
+save Output\marchcps_mig.dta, replace
 
 summ 
 
 sample 10 
-save marchcps_mig_test.dta, replace
+*save marchcps_mig_test.dta, replace
+save Output\marchcps_mig_test.dta, replace
 
 restore 
 
 drop if age  < 65 
 
-save marchcps_mig_65up.dta, replace
+*save marchcps_mig_65up.dta, replace
+save Output\marchcps_mig_65up.dta, replace
 
 log close
 clear

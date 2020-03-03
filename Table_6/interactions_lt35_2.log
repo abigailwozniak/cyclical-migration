@@ -1,8 +1,8 @@
-------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_lt35_2.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6\interactions_lt35_2.log
   log type:  text
- opened on:   5 Dec 2019, 15:32:41
+ opened on:   3 Mar 2020, 15:37:26
 
 . /*****************************************
 > 
@@ -21,10 +21,16 @@
 
 . set mem 1000m ;
 set memory ignored.
-    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly
-    automatically.
+    Memory no longer needs to be set in modern Statas; memory adjustments are performed on the fly automatically.
 
-. use marchcps_mig.dta ;
+. *use /homes/nber/waggoner/bulk/marchcps_mig.dta ;
+. cd ..\Data_Setup\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Data_Setup
+
+. use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+
+. cd ..\Table_6\. ;
+H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6
 
 . *set mem 500m ;
 . *use /homes/nber/waggoner/bulk/marchcps_mig_test.dta ;
@@ -172,8 +178,7 @@ Survey year |      Freq.     Percent        Cum.
                 delta:  1 unit
 
 .  program define regs ;
-  1. ivreg2 cmigrant $bc $lbc black hisp spouse kids timet timet2 _I* ,cluster(year) robust 
-> ;
+  1. ivreg2 cmigrant $bc $lbc black hisp spouse kids timet timet2 _I* ,cluster(year) robust ;
   2. capture drop _J* _K* ;
   3. end ;
 
@@ -183,8 +188,7 @@ Survey year |      Freq.     Percent        Cum.
   3. end ;
 
 . program define regsiv ;
-  1. ivreg2 cmigrant $bc black hisp spouse kids timet timet2 _I* ($lbc = $zvars),cluster(yea
-> r) robust ;
+  1. ivreg2 cmigrant $bc black hisp spouse kids timet timet2 _I* ($lbc = $zvars),cluster(year) robust ;
   2. capture drop _J* _K* _Z* ;
   3. end ;
 
@@ -201,8 +205,7 @@ Survey year |      Freq.     Percent        Cum.
 -------------+---------------------------------------------------------
         year |    538,763    1990.719    12.70606       1964       2009
 
-. * preferred spec includes aggregate BC, state relative conditions, and group interactions 
-> with these;
+. * preferred spec includes aggregate BC, state relative conditions, and group interactions with these;
 . ** age interactions ;
 . xi i.educ i.owner i.female i.metrostat ;
 i.educ            _Ieduc_1-4          (naturally coded; _Ieduc_2 omitted)
@@ -1018,8 +1021,7 @@ i.hisp|rruc_std   _KhisXrruc__#       (coded as above)
 
 . global lbc rruc_std _K* ;
 
-. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik1
-> 5r i.hisp|oilshock151r i.hisp|oilshock1512r ;
+. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik15r i.hisp|oilshock151r i.hisp|oilshock1512r ;
 i.black           _Zblack_0-1         (naturally coded; _Zblack_0 omitted)
 i.black|bar~15r   _ZblaXbarti_#       (coded as above)
 i.black|oi~151r   _ZblaXoilsh_#       (coded as above)
@@ -1125,8 +1127,7 @@ i.hisp|rgap_std   _KhisXrgap__#       (coded as above)
 
 . global lbc rgap_std _K* ;
 
-. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik1
-> 5r i.hisp|oilshock151r i.hisp|oilshock1512r ;
+. xi, prefix(_Z) i.black|bartik15r i.black|oilshock151r i.black|oilshock1512r i.hisp|bartik15r i.hisp|oilshock151r i.hisp|oilshock1512r ;
 i.black           _Zblack_0-1         (naturally coded; _Zblack_0 omitted)
 i.black|bar~15r   _ZblaXbarti_#       (coded as above)
 i.black|oi~151r   _ZblaXoilsh_#       (coded as above)
@@ -1577,8 +1578,7 @@ i.kids|rruc_std   _KkidXrruc__#       (coded as above)
 
 . global lbc rruc_std _K* ;
 
-. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik1
-> 5r i.kids|oilshock151r i.kids|oilshock1512r ;
+. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
 i.owner           _Zowner_0-1         (naturally coded; _Zowner_0 omitted)
 i.owner|bar~15r   _ZownXbarti_#       (coded as above)
 i.owner|oi~151r   _ZownXoilsh_#       (coded as above)
@@ -1688,8 +1688,7 @@ i.kids|rgap_std   _KkidXrgap__#       (coded as above)
 
 . global lbc rgap_std _K* ;
 
-. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik1
-> 5r i.kids|oilshock151r i.kids|oilshock1512r ;
+. xi, prefix(_Z) i.owner|bartik15r i.owner|oilshock151r i.owner|oilshock1512r i.kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
 i.owner           _Zowner_0-1         (naturally coded; _Zowner_0 omitted)
 i.owner|bar~15r   _ZownXbarti_#       (coded as above)
 i.owner|oi~151r   _ZownXoilsh_#       (coded as above)
@@ -1878,8 +1877,7 @@ i.metr~t|rruc~d   _KmetXrruc__#       (coded as above)
 
 . global lbc rruc_std _K* ;
 
-. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.
-> kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
+. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
 i.metrostat       _Zmetrostat_0-1     (naturally coded; _Zmetrostat_0 omitted)
 i.metr~t|ba~15r   _ZmetXbarti_#       (coded as above)
 i.metr~t|o~151r   _ZmetXoilsh_#       (coded as above)
@@ -1985,8 +1983,7 @@ i.metr~t|rgap~d   _KmetXrgap__#       (coded as above)
 
 . global lbc rgap_std _K* ;
 
-. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.
-> kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
+. xi, prefix(_Z) i.metrostat|bartik15r i.metrostat|oilshock151r i.metrostat|oilshock1512r i.kids|bartik15r i.kids|oilshock151r i.kids|oilshock1512r ;
 i.metrostat       _Zmetrostat_0-1     (naturally coded; _Zmetrostat_0 omitted)
 i.metr~t|ba~15r   _ZmetXbarti_#       (coded as above)
 i.metr~t|o~151r   _ZmetXoilsh_#       (coded as above)
@@ -2148,8 +2145,7 @@ Dropped collinear:    _Kmetrostat_1 _Ikids_1
 
 . log close ;
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\tables 5 and 6\interactions_lt35_2
-> .log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_6\interactions_lt35_2.log
   log type:  text
- closed on:   5 Dec 2019, 15:37:02
---------------------------------------------------------------------------------------------
+ closed on:   3 Mar 2020, 15:42:26
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------

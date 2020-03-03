@@ -1,11 +1,11 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\table3.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_3_A1\table3.log
   log type:  text
- opened on:   3 Dec 2019, 13:14:22
+ opened on:   2 Mar 2020, 15:17:00
 
 . 
-. use table3, clear
+. use Input\table3, clear
 
 . 
 . xi: ivreg28 inexemss gapusstd (rgapstd rgapxstd= bartik151rstd oilshock151rstd oilshock151rstd2 bartik151rxstd oilshock151rxstd oilshock151rxstd2 ) rinc1 rincx1 i.state*trend ,  fwl(_I*) first clust
