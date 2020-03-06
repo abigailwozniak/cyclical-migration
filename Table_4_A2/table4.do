@@ -25,7 +25,7 @@ foreach V of var exems2is exems2os lexems2i lexems2o {
       use Output\t4results, clear
 	  mat accum VCE = bs1 bs2 bs3, dev nocons
       mat VCE = VCE/(50-1)
-      use table4, clear
+      use Input\table4, clear
       quietly xi: qreg `V' `C' rgap1std lrincpc1 i.cbsa*trend
       mat myb=e(b)
       matrix myb = myb[1,1..3]

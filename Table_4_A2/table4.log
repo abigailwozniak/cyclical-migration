@@ -1,22 +1,28 @@
-------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\table4.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Table_4_A2\table4.l
+> og
   log type:  text
- opened on:   9 Dec 2019, 16:54:41
+ opened on:   4 Mar 2020, 18:03:38
 
 . 
-. use table4, clear
+. *use table4, clear
+. use Input\table4, clear
 
+. 
 . set seed 423985738
 
 . foreach V of var exems2is exems2os lexems2i lexems2o {
   2.    foreach C of var gapus1std rucusstd urateus1std {
-  3.       bs "xi: qreg `V' `C' rgap1std lrincpc1  i.cbsa*trend" "_b[`C'] _b[rgap1std] _b[lrincpc1]", cluster(year
-> ) reps(50) saving(t4results) replace
-  4.       use t4results, clear
-  5.       mat accum VCE = bs1 bs2 bs3, dev nocons
+  3.       *bs "xi: qreg `V' `C' rgap1std lrincpc1  i.cbsa*trend" "_b[`C'] _b[rgap1std
+> ] _b[lrincpc1]", cluster(year) reps(50) saving(t4results) replace
+.       bs "xi: qreg `V' `C' rgap1std lrincpc1  i.cbsa*trend" "_b[`C'] _b[rgap1std] _b
+> [lrincpc1]", cluster(year) reps(50) saving(Output\t4results) replace
+  4.           *use t4results, clear
+.       use Output\t4results, clear
+  5.           mat accum VCE = bs1 bs2 bs3, dev nocons
   6.       mat VCE = VCE/(50-1)
-  7.       use table4, clear
+  7.       use Input\table4, clear
   8.       quietly xi: qreg `V' `C' rgap1std lrincpc1 i.cbsa*trend
   9.       mat myb=e(b)
  10.       matrix myb = myb[1,1..3]
@@ -258,55 +264,32 @@ statistics:  _b[rucusstd] _b[rgap1std] _b[lrincpc1]
 
 Bootstrap statistics
 
-Variable |   Reps   Observed       Bias   Std. Err.   [95% Conf. Interva
-> l]
----------+--------------------------------------------------------------
-> -----
-     bs1 |     50  -.0082917  -.0005468   .0069445   -.0222471  .0056637
->   (N)
-         |                                           -.0228541  .0045311
->   (P)
-         |                                           -.0228541  .0074001
->  (BC)
----------+--------------------------------------------------------------
-> -----
-     bs2 |     50   .0201077   .0002831   .0029291    .0142214  .0259941
->   (N)
-         |                                              .01416  .0257838
->   (P)
-         |                                            .0140278  .0254294
->  (BC)
----------+--------------------------------------------------------------
-> -----
-     bs3 |     50   .5378395   .0016587   .1252701    .2860998  .7895793
->   (N)
-         |                                            .3087946  .8165524
->   (P)
-         |                                            .3087946  .8201743
->  (BC)
-------------------------------------------------------------------------
-> -----
-                              N = normal, P = percentile, BC = bias-corr
-> ected
+Variable |   Reps   Observed       Bias   Std. Err.   [95% Conf. Interval]
+---------+-------------------------------------------------------------------
+     bs1 |     50  -.0082917  -.0005468   .0069445   -.0222471  .0056637  (N)
+         |                                           -.0228541  .0045311  (P)
+         |                                           -.0228541  .0074001 (BC)
+---------+-------------------------------------------------------------------
+     bs2 |     50   .0201077   .0002831   .0029291    .0142214  .0259941  (N)
+         |                                              .01416  .0257838  (P)
+         |                                            .0140278  .0254294 (BC)
+---------+-------------------------------------------------------------------
+     bs3 |     50   .5378395   .0016587   .1252701    .2860998  .7895793  (N)
+         |                                            .3087946  .8165524  (P)
+         |                                            .3087946  .8201743 (BC)
+-----------------------------------------------------------------------------
+                              N = normal, P = percentile, BC = bias-corrected
 (bs: xi: qreg lexems2i rucusstd rgap1std lrincpc1  i.cbsa*trend)
 (obs=50)
-------------------------------------------------------------------------
-> ------
-             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Int
-> erval]
--------------+----------------------------------------------------------
-> ------
-    rucusstd |  -.0082917   .0069445    -1.19   0.232    -.0219026    .0
-> 053192
-    rgap1std |   .0201077   .0029291     6.86   0.000     .0143667    .0
-> 258487
-    lrincpc1 |   .5378395   .1252701     4.29   0.000     .2923146    .7
-> 833645
-------------------------------------------------------------------------
-> ------
+------------------------------------------------------------------------------
+             |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    rucusstd |  -.0082917   .0069445    -1.19   0.232    -.0219026    .0053192
+    rgap1std |   .0201077   .0029291     6.86   0.000     .0143667    .0258487
+    lrincpc1 |   .5378395   .1252701     4.29   0.000     .2923146    .7833645
+------------------------------------------------------------------------------
 
-command:     xi: qreg lexems2i urateus1std rgap1std lrincpc1  i.cbsa*tre
-> nd
+command:     xi: qreg lexems2i urateus1std rgap1std lrincpc1  i.cbsa*trend
 statistics:  _b[urateus1std] _b[rgap1std] _b[lrincpc1]
 (1,795 observations deleted)
 (clusters=26)
