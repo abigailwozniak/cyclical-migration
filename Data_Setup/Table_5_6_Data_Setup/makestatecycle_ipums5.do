@@ -22,10 +22,10 @@ log using makestatecycle_ipums5.log, replace
 set mem 100m
 
 *use ipumscps_statecodes.dta
-use Input\ipumscps_statecodes.dta
+use Input/ipumscps_statecodes.dta
 sort abbrev
 *save ipumscps_statecodes.dta, replace 
-save Input\ipumscps_statecodes.dta, replace 
+save Input/ipumscps_statecodes.dta, replace 
 clear
 
 /*
@@ -38,15 +38,15 @@ clear
 */
 
 *use bartik_s10.dta
-use Input\bartik_s10.dta
+use Input/bartik_s10.dta
 sort year state
 *save bartik_s10.dta, replace
-save Input\bartik_s10.dta, replace
+save Input/bartik_s10.dta, replace
 clear
 
 
 *use stateemp3
-use Input\stateemp3
+use Input/stateemp3
 
 summ
 
@@ -55,7 +55,7 @@ summ
 sort year state
 
 *merge year state using bartik_s10
-merge year state using Input\bartik_s10
+merge year state using Input/bartik_s10
 tab1 _merge
 tab1 year if _merge < 3
 tab1 year state if _merge==1
@@ -77,14 +77,14 @@ replace year = year + 1
 sort year xstatefip
 tempfile tempUI
 *save tempUI, replace
-save Output\tempUI, replace
+save Output/tempUI, replace
 clear
 
 restore
 drop urated uratedus ruratedx urate urateus
 sort year xstatefip
 *merge year xstatefip using tempUI
-merge year xstatefip using Output\tempUI
+merge year xstatefip using Output/tempUI
 tab1 _merge 
 tab1 year if _merge < 3
 drop _merge
@@ -116,7 +116,7 @@ sort year
 *list
 tempfile tempdev
 *save tempdev, replace
-save Output\tempdev, replace
+save Output/tempdev, replace
 clear
 
 
@@ -124,7 +124,7 @@ restore
 
 sort year
 *merge year using tempdev
-merge year using Output\tempdev
+merge year using Output/tempdev
 tab1 _merge
 drop _merge
 
@@ -152,19 +152,19 @@ summ
 
 tempfile tempstateemp
 *save tempstateemp, replace
-save Output\tempstateemp, replace
+save Output/tempstateemp, replace
 clear
 
 
 ** Merge in cps fips codes by year of survey
 
 *use tempstateemp
-use Output\tempstateemp
+use Output/tempstateemp
 drop if year > 1967 | year < 1963
 summ year
 sort abbrev year
 *merge abbrev using ipumscps_statecodes.dta
-merge abbrev using Input\ipumscps_statecodes.dta
+merge abbrev using Input/ipumscps_statecodes.dta
 tab1 _merge
 drop _merge
 drop code6872 code7375 code76 code77plus
@@ -172,83 +172,83 @@ rename code6367 statefip
 *summ
 tempfile temp6367
 *save temp6367, replace
-save Output\temp6367, replace
+save Output/temp6367, replace
 clear
 
 *use tempstateemp
-use Output\tempstateemp
+use Output/tempstateemp
 drop if year > 1972 | year < 1968
 summ year
 sort abbrev year
 *merge abbrev using ipumscps_statecodes.dta
-merge abbrev using Input\ipumscps_statecodes.dta
+merge abbrev using Input/ipumscps_statecodes.dta
 tab1 _merge
 drop _merge
 drop code6367 code7375 code76 code77plus
 rename code6872 statefip
 tempfile temp6872
 *save temp6872, replace
-save Output\temp6872, replace
+save Output/temp6872, replace
 clear
 
 *use tempstateemp
-use Output\tempstateemp
+use Output/tempstateemp
 drop if year > 1975 | year < 1973
 summ year
 sort abbrev year
 *merge abbrev using ipumscps_statecodes.dta
-merge abbrev using Input\ipumscps_statecodes.dta
+merge abbrev using Input/ipumscps_statecodes.dta
 tab1 _merge
 drop _merge
 drop code6367 code6872 code76 code77plus
 rename code7375 statefip
 tempfile temp7375
 *save temp7375, replace
-save Output\temp7375, replace
+save Output/temp7375, replace
 clear
 
 *use tempstateemp
-use Output\tempstateemp
+use Output/tempstateemp
 drop if year ~= 1976
 summ year
 sort abbrev year
 *merge abbrev using ipumscps_statecodes.dta
-merge abbrev using Input\ipumscps_statecodes.dta
+merge abbrev using Input/ipumscps_statecodes.dta
 tab1 _merge
 drop _merge
 drop code6367 code6872 code7375 code77plus
 rename code76 statefip
 tempfile temp76
 *save temp76, replace
-save Output\temp76, replace
+save Output/temp76, replace
 clear
 
 *use tempstateemp
-use Output\tempstateemp
+use Output/tempstateemp
 drop if year < 1977
 summ year
 sort abbrev year
 *merge abbrev using ipumscps_statecodes.dta
-merge abbrev using Input\ipumscps_statecodes.dta
+merge abbrev using Input/ipumscps_statecodes.dta
 tab1 _merge
 drop _merge
 drop code6367 code6872 code7375 code76
 rename code77plus statefip
 tempfile temp77plus
 *save temp77plus, replace
-save Output\temp77plus, replace
+save Output/temp77plus, replace
 clear
 
 *use temp6367
-use Output\temp6367
+use Output/temp6367
 *append using temp6872
-append using Output\temp6872
+append using Output/temp6872
 *append using temp7375
-append using Output\temp7375
+append using Output/temp7375
 *append using temp76
-append using Output\temp76
+append using Output/temp76
 *append using temp77plus
-append using Output\temp77plus
+append using Output/temp77plus
 
 *summ
 
@@ -318,7 +318,7 @@ sort year ;
 by year: summ ;
 
 *save statecycle_ipums.dta, replace  ;
-save Output\statecycle_ipums.dta, replace  ;
+save Output/statecycle_ipums.dta, replace  ;
 
 log close ;
 clear ;

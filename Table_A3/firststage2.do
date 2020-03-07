@@ -14,11 +14,11 @@ set matsize 100 ;
 
 set mem 1g ;
 
-cd ..\Data_Setup\. ;
+cd ../Data_Setup/. ;
 
-use Table_5_6_Data_Setup\Output\marchcps_mig.dta ;
+use Table_5_6_Data_Setup/Output/marchcps_mig.dta ;
 
-cd ..\Table_A3\. ;
+cd ../Table_A3/. ;
 
 *set mem 500m ;
 *use ~waggoner/bulk/marchcps_mig_test.dta ;

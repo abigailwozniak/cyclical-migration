@@ -1,11 +1,12 @@
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  H:\Other\Tables 1-4 Public Programs and Data\fig3.log
+       log:  H:\Other\Paper Codes for Uploading\cyclical-migration\Figure_3\fig3.log
   log type:  text
- opened on:  11 Dec 2019, 15:29:03
+ opened on:   6 Mar 2020, 17:53:17
 
 . 
-. use fig3, clear
+. *use fig3, clear
+. use Input/fig3, clear
 
 . 
 . /*
@@ -25,18 +26,18 @@
 . 
 . * top panel
 . kdensity gapp, lcolor(black) addplot(kdensity gapt, lcolor(black)) legend(lab(1 "years in the top quartile of the national employment gap") lab(2 "years in the bottom quartile of the national employ
-> ment gap")) xtitle("Distribution of State Employment Gaps") ylab(,nogrid) lpattern(dash) note("") title("") saving(g1, replace) graphregion(color(white))
-(file g1.gph saved)
+> ment gap")) xtitle("Distribution of State Employment Gaps") ylab(,nogrid) lpattern(dash) note("") title("") saving(Output/g1, replace) graphregion(color(white))
+(file Output/g1.gph saved)
 
 . * middle panel
 . kdensity ruct, lcolor(black) addplot(kdensity rucp, lcolor(black)) legend(lab(1 "years in the top quartile of the national unemployment rate") lab(2 "years in the bottom quartile of the national une
-> mployment rate")) xtitle("Distribution of State Unemployment Rates") ylab(,nogrid) lpattern(dash) note("") title("") saving(g2, replace) graphregion(color(white))
-(file g2.gph saved)
+> mployment rate")) xtitle("Distribution of State Unemployment Rates") ylab(,nogrid) lpattern(dash) note("") title("") saving(Output/g2, replace) graphregion(color(white))
+(file Output/g2.gph saved)
 
 . * bottom panel
 . kdensity uratet, lcolor(black) addplot(kdensity uratep, lcolor(black)) legend(lab(1 "years in the top quartile of the national UI claims rate") lab(2 "years in the bottom quartile of the national UI
->  claims rate")) xtitle("Distribution of State UI Claims Rates") ylab(,nogrid) lpattern(dash) note("") title("") saving(g3, replace) graphregion(color(white))
-(file g3.gph saved)
+>  claims rate")) xtitle("Distribution of State UI Claims Rates") ylab(,nogrid) lpattern(dash) note("") title("") saving(Output/g3, replace) graphregion(color(white))
+(file Output/g3.gph saved)
 
 . 
 . 
