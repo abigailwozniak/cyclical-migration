@@ -22,8 +22,8 @@
   2.	From IPUMS downloads site, copy the do file (renamed **ipums#.do**) to this folder.
   3.	**ipums#.do** is referenced in **make_marchcps.do**, which creates **marchcps_mig.dta** and **marchcps_mig_test.dta**.
   4.	**makestatecycle_ipums#.do** creates **statecycle_ipums.dta** from the latest versions of Raven's data (**bartik_s10.dta** and **stateemp3.dta**) by merging it into the appropriate state codes (**ipumscps_statecodes.dta**) for matching with IPUMS data by year from 1962 on.
-  **5.**	If adding new cycle information, run **makestatecycle_ipums#.do** first. Then rerun **make_marchcps.do**.
-  **6.**	If adding new CPS variables, just run **ipums#.do** within **make_marchcps.dta**.
+  5.	If adding new cycle information, run **makestatecycle_ipums#.do** first. Then rerun **make_marchcps.do**.
+  6.	If adding new CPS variables, just run **ipums#.do** within **make_marchcps.dta**.
 
 ## Tables 1-6, Figures 1-3, and Appendix Replication Materials
 
